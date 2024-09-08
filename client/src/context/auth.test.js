@@ -45,6 +45,7 @@ describe('AuthProvider Component', () => {
     });
 
 
+    //Default value for auth state
     describe('should have default value for its auth state', () => {
         beforeEach(() => {
             consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
@@ -95,10 +96,43 @@ describe('AuthProvider Component', () => {
             });
         });
     });
+
+
+    //Non-default value for auth state
+    describe("should have non default value for its auth state", () => {
+        //Test case 3
+        it('if auth information in localStorage is not null', () => {
+            //ARRANGE
+            localStorage.getItem.mockImplementation(() =>
+                '{"user": {"_id": 1, "name": "James", "email": "james@gmail.com", "phone": "91234567", "address": "Singapore", "role": 0}, "token": "12345678"}');
+       
+            //ACTION
+            render(
+                <AuthProvider>
+                    <AuthContextChild />
+                </AuthProvider>
+            );
+
+            //ASSERT
+            expect(axios.defaults.headers.common['Authorization']).toBe("12345678"); //Component gets refreshed
+            expect(localStorage.getItem).toHaveBeenCalledWith("auth");
+            expect(consoleLogSpy).toHaveBeenCalledWith({
+                user: {
+                    _id: 1,
+                    name: "James",
+                    email: "james@gmail.com",
+                    phone: "91234567",
+                    address: "Singapore",
+                    role: 0
+                },
+                token: "12345678"
+            });
+        });
+    });
 });
 
 
-//Stub component, with minimal logic, that uses AuthContext
+//Mock component, with minimal logic, that uses AuthContext
 const AuthContextChild = () => {
     const [auth, setAuth] = useAuth();
     
