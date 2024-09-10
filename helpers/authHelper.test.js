@@ -35,7 +35,7 @@ describe('Hash Password Method', () => {
     });
 
     it('should log error if bcrypt hash throws an error', async () => {
-        // ARRANGE
+        //ARRANGE
         const password = 'password';
         const error = new Error('Exception for hashing');
         // Mock bcrypt.hash to throw an exception
