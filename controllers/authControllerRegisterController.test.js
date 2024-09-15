@@ -377,7 +377,7 @@ describe('registerController', () => {
 
             //ASSERT
             expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.status).toHaveBeenCalledWith(409);
             expect(res.send).toHaveBeenCalledTimes(1);
             expect(res.send).toHaveBeenCalledWith({ success: false, message: "Already Registered please login" });
         });
@@ -445,6 +445,7 @@ describe('registerController', () => {
             expect(res.status).toHaveBeenCalledWith(500);
             expect(res.send).toHaveBeenCalledTimes(1);
             expect(res.send).toHaveBeenCalledWith({ success: false, message: "Error in Registration", error });
+            expect(consoleLogSpy).toHaveBeenCalledWith(error);
         });
     });
 
