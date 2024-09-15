@@ -2,12 +2,13 @@ import { loginController } from './authController.js';
 import userModel from '../models/userModel.js';
 import { describe } from 'node:test';
 import authHelper from './../helpers/authHelper.js';
-
+import JWT from "jsonwebtoken";
 
 // Mock functions
 jest.mock('./../helpers/authHelper', () => ({
     comparePassword: jest.fn(async (passwordToCheck, correctPassword) => Promise.resolve(true))
 }));
+
 
 jest.mock('../models/userModel.js', () => ({
     findOne: jest.fn(async (inputQuery) => Promise.resolve({
@@ -18,6 +19,11 @@ jest.mock('../models/userModel.js', () => ({
         address: "Sentosa",
         answer: "Badminton"
     }))
+}));
+
+
+jest.mock('jsonwebtoken', () => ({
+    sign: jest.fn(async (userId, environmentKey, expirationDate) => Promise.resolve("token"))
 }));
 
 
@@ -128,6 +134,90 @@ describe('loginController', () => {
             expect(res.send).toHaveBeenCalledWith({ success: false, message: "Invalid Password" });
         });
 
+    });
+
+
+    describe('should work correctly', () => {
+        let req;
+        let consoleLogSpy;
+        
+        beforeEach(() => {
+            req = {
+                body: {
+                    email: "james@gmail.com",
+                    password: "james123",
+                }
+            };
+
+            //Email is found
+            userModel.findOne.mockImplementation((queryInput) => {
+                return Promise.resolve({
+                    _id: 1,
+                    name: "James",
+                    email: "james@gmail.com",
+                    phone: "91234567",
+                    address: "Sentosa",
+                    role: 1,
+                });
+            });
+
+            //Password is correct
+            authHelper.comparePassword.mockImplementation((passwordToCheck, correctPassword) => {
+                return Promise.resolve(true); 
+            });
+
+            //Reinitialise console log spy
+            consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+        });
+
+
+        afterEach(() => {
+            //Restore original functionality of console.log
+            consoleLogSpy.mockRestore();
+        });
+
+
+        //SHOULD NOT PASS
+        it('where it allows user to log in if there is no error', async () => {
+            //ARRANGE
+        
+            //ACTION
+            await loginController(req, res);
+
+            //ASSERT
+            expect(res.status).toHaveBeenCalledTimes(1);
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.send).toHaveBeenCalledTimes(1);
+            expect(res.send).toHaveBeenCalledWith({ success: true, message: "Login successful", user: {
+                _id: 1,
+                name: "James",
+                email: "james@gmail.com",
+                phone: "91234567",
+                address: "Sentosa",
+                role: 1,
+            },
+            token: "token"
+            });
+        });
+
+
+        it('where it denies log in if there is an error', async () => {
+            //ARRANGE
+            const error = new Error('Exception during login');
+            JWT.sign.mockImplementation((userId, environmentKey, expirationDate) => {
+                throw error;
+            });
+
+            //ACTION
+            await loginController(req, res);
+
+            //ASSERT
+            expect(res.status).toHaveBeenCalledTimes(1);
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.send).toHaveBeenCalledTimes(1);
+            expect(res.send).toHaveBeenCalledWith({success: false, message: "Error in login", error});
+            expect(consoleLogSpy).toHaveBeenCalledWith(error);
+        });
     });
 
 
