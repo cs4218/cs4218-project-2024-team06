@@ -17,6 +17,8 @@ jest.mock('mongoose', () => ({
     Schema: jest.fn(),
 }));
 
+const mockAuth = { token: '123' };
+
 jest.mock('axios');
 
 jest.mock('react-router-dom', () => ({
@@ -35,14 +37,19 @@ describe('PrivateRoute', () => {
     });
     
     it('should render Outlet if auth token is valid', () => {
-        useAuth.mockReturnValue([{token: true}, jest.fn()]);
+        useAuth.mockReturnValue([mockAuth, jest.fn()]);
         const res = { data: { ok: true } };
         axios.get.mockResolvedValue(res);
     });
 
     it('should render Spinner if auth token is invalid', () => {
-        useAuth.mockReturnValue([{token: false}, jest.fn()]);
+        useAuth.mockReturnValue([mockAuth, jest.fn()]);
         const res = { data: { ok: false } };
         axios.get.mockResolvedValue(res);
     });
+
+    // it('should render Spinner if axios request fails', () => {
+    //     useAuth.mockReturnValue([mockAuth, jest.fn()]);
+    //     axios.get.mockRejectedValue(new Error('Async error'));
+    // });
 });
