@@ -40,9 +40,9 @@ describe('PrivateRoute', () => {
         axios.get.mockResolvedValue(res);
     });
 
-    // it('should render Spinner if auth token is invalid', () => {
-    //     useAuth.mockReturnValue([{token: false}, jest.fn()]);
-    //     const res = { data: { ok: false } };
-    //     axios.get.mockResolvedValue(res);
-    // });
+    it('should render Spinner if auth token is invalid', () => {
+        useAuth.mockReturnValue([{token: false}, jest.fn()]);
+        const res = { data: { ok: false } };
+        axios.get.mockResolvedValue(res);
+    });
 });
