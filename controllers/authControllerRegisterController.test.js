@@ -1,7 +1,5 @@
 import { registerController } from './authController';
 import userModel from '../models/userModel.js';
-import { describe } from 'node:test';
-
 
 // Mock functions
 jest.mock('./../helpers/authHelper', () => ({
