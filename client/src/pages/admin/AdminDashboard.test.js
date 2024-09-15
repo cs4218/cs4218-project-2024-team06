@@ -64,57 +64,10 @@ describe('AdminDashboard Component', () => {
     });
 
 
-    
-describe('AdminDashboard Component', () => {
-   
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
-
-    describe("should correctly render the mocked components", () => {
-        beforeEach(() => {
-            useAuth.mockReturnValue([]);
-        });
-
-        it('AdminMenu', () => {
-            //ARRANGE
-
-            //ACTION
-            render(
-            <MemoryRouter initialEntries={['/dashboard/admin']}>
-                <Routes>
-                <Route path='/dashboard/admin' element={<AdminDashboard />} />
-                </Routes>
-            </MemoryRouter>
-            );
-    
-            //ASSERT
-            expect(screen.getByText("Mocked AdminMenu")).toBeInTheDocument();
-        });
-
-
-        it('Layout', () => {
-            //ARRANGE
-
-            //ACTION
-            render(
-            <MemoryRouter initialEntries={['/dashboard/admin']}>
-                <Routes>
-                <Route path='/dashboard/admin' element={<AdminDashboard />} />
-                </Routes>
-            </MemoryRouter>
-            );
-    
-            //ASSERT
-            expect(screen.getByText("Mocked Layout")).toBeInTheDocument();
-        });
-    });
-
-
     describe("should correctly render admin details", () => {
         it('where name, email and contact are empty if useAuth did not return any information', () => {
             //ARRANGE
+            //Auth does not contain any information
             useAuth.mockReturnValue([]);
 
             //ACTION
@@ -127,16 +80,62 @@ describe('AdminDashboard Component', () => {
             );
     
             //ASSERT
-            screen.debug();
             expect(screen.getByText("Admin Name :")).toBeInTheDocument();
-            //expect(screen.getByText(/Admin Name :/)).toBeInTheDocument();
-            // expect(screen.getByText("Admin Email : ")).toBeInTheDocument();
-            // expect(screen.getByText("Admin Contact : ")).toBeInTheDocument();
+            expect(screen.getByText("Admin Email :")).toBeInTheDocument();
+            expect(screen.getByText("Admin Contact :")).toBeInTheDocument();
+        });
+
+
+        it('where name, email and contact are empty if useAuth did not return any user information', () => {
+            //ARRANGE
+            //Auth does not contain user information
+            useAuth.mockReturnValue([{
+                noUser: {}
+            }]);
+
+            //ACTION
+            render(
+            <MemoryRouter initialEntries={['/dashboard/admin']}>
+                <Routes>
+                <Route path='/dashboard/admin' element={<AdminDashboard />} />
+                </Routes>
+            </MemoryRouter>
+            );
+    
+            //ASSERT
+            expect(screen.getByText("Admin Name :")).toBeInTheDocument();
+            expect(screen.getByText("Admin Email :")).toBeInTheDocument();
+            expect(screen.getByText("Admin Contact :")).toBeInTheDocument();
+        });
+
+
+        it('where name, email and contact are filled if useAuth returns valid user information', () => {
+            //ARRANGE
+            //Auth contains valid user information
+            useAuth.mockReturnValue([{
+                user: {
+                    name: "Admin",
+                    email: "admin@gmail.com",
+                    phone: "91234567"
+                }
+            }]);
+
+            //ACTION
+            render(
+            <MemoryRouter initialEntries={['/dashboard/admin']}>
+                <Routes>
+                <Route path='/dashboard/admin' element={<AdminDashboard />} />
+                </Routes>
+            </MemoryRouter>
+            );
+    
+            //ASSERT
+            expect(screen.getByText("Admin Name : Admin")).toBeInTheDocument();
+            expect(screen.getByText("Admin Email : admin@gmail.com")).toBeInTheDocument();
+            expect(screen.getByText("Admin Contact : 91234567")).toBeInTheDocument();
         });
     });
 
-
-
 });
 
-});
+
