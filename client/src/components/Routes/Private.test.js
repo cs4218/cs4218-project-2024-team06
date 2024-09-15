@@ -45,11 +45,13 @@ describe('PrivateRoute', () => {
         expect(await screen.findByText('Mocked Outlet')).toBeInTheDocument();
     });
 
-    // it('should render Spinner if auth token is invalid', () => {
-    //     useAuth.mockReturnValue([mockAuth, jest.fn()]);
-    //     const res = { data: { ok: false } };
-    //     axios.get.mockResolvedValue(res);
-    // });
+    it('should render Spinner if auth token is invalid', () => {
+        useAuth.mockReturnValue([mockAuth, jest.fn()]);
+        const res = { data: { ok: false } };
+        axios.get.mockResolvedValue(res);
+        render(<PrivateRoute />);
+        expect(screen.getByText('Mocked Spinner')).toBeInTheDocument();
+    });
 
     // it('should render Spinner if axios request fails', () => {
     //     useAuth.mockReturnValue([mockAuth, jest.fn()]);
