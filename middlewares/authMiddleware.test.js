@@ -97,6 +97,7 @@ describe('isAdmin Middleware', () => {
     });
 
 
+    //NEVER PASS
     it('should return unauthorised access if user is not an admin, such as if role is 0', async () => {
         //ARRANGE
         userModel.findById = jest.fn();
@@ -115,6 +116,7 @@ describe('isAdmin Middleware', () => {
     });
 
 
+    //NEVER PASS
     it('should return unauthorised access if user is not an admin, such as if role is 2', async () => {
         //ARRANGE
         userModel.findById = jest.fn();

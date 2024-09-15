@@ -88,6 +88,7 @@ describe('Compare Password Method', () => {
     });
 
 
+    //NEVER PASS
     it('should not crash even if bcrypt.compare() throws an error', async () => {
         //ARRANGE
         const error = new Error('Exception for comparing');
