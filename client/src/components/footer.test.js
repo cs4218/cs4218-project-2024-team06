@@ -27,4 +27,4 @@ describe('Footer component', () => {
         expect(getByText('Contact')).toHaveAttribute('href', '/contact');
         expect(getByText('Privacy Policy')).toHaveAttribute('href', '/policy');
     })
-})  
+});
