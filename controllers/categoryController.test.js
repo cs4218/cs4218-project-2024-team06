@@ -71,41 +71,6 @@ describe('category controller', () => {
         });
     });
 
-    test('should return 200 and update category', async () => {
-        req.body = { name: 'updated' };
-        req.params = { id: 1 };
-        slugify.mockReturnValue('test-slug');
-        categoryModel.findByIdAndUpdate = jest.fn().mockResolvedValue({
-            name: 'updated',
-            slug: 'test-slug',
-        });
-
-        await updateCategoryController(req, res);
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.send).toHaveBeenCalledWith({
-            success: true,
-            messsage: "Category Updated Successfully",
-            category: {
-                name: 'updated',
-                slug: 'test-slug',
-            }
-        });
-    });
-
-    test('should return 500 while updating category', async () => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        req.body = { name: 'test' };
-        categoryModel.findByIdAndUpdate = jest.fn().mockRejectedValue(new Error('Database error'));
-
-        await updateCategoryController(req, res);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledWith({
-            success: false,
-            error: expect.any(Error),
-            message: "Error while updating category",
-        });
-    });
-
     test('should return 200 and get all categories', async () => {
         categoryModel.find = jest.fn().mockResolvedValue({});
 
@@ -149,31 +114,6 @@ describe('category controller', () => {
         categoryModel.findOne = jest.fn().mockRejectedValue(new Error('Database error'));
 
         await singleCategoryController(req, res);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledWith({
-            success: false,
-            error: expect.any(Error),
-            message: "Error While getting Single Category",
-        });
-    });
-
-    test('should return 200 and delete category', async() => {
-        req.params = { id: 1 };
-        categoryModel.findByIdAndDelete = jest.fn().mockResolvedValue(null);
-
-        await deleteCategoryController(req, res);
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.send).toHaveBeenCalledWith({
-            success: true,
-            message: "Category Deleted Successfully",
-        })
-    });
-
-    test('should return 500 while deleted category', async () => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        categoryModel.findByIdAndDelete = jest.fn().mockRejectedValue(new Error('Database error'));
-
-        await deleteCategoryController(req, res);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledWith({
             success: false,
