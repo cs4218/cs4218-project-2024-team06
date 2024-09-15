@@ -96,7 +96,7 @@ describe('loginController', () => {
         });
 
 
-        //SHOULD NOT PASS
+        //NEVER PASS
         it('email is not registered in database', async () => {
             //ARRANGE
             userModel.findOne.mockImplementation((queryInput) => {
@@ -114,7 +114,7 @@ describe('loginController', () => {
         });
 
         
-        //SHOULD NOT PASS
+        //NEVER PASS
         it('password is incorrect', async () => {
             //ARRANGE
             userModel.findOne.mockImplementation((queryInput) => {
@@ -177,7 +177,7 @@ describe('loginController', () => {
         });
 
 
-        //SHOULD NOT PASS
+        //NEVER PASS
         it('where it allows user to log in if there is no error', async () => {
             //ARRANGE
         
