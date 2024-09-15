@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Outlet } from 'react-router-dom';
 import PrivateRoute from './Private';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { findByTestId, findByText, render, screen } from '@testing-library/react';
 import Spinner from "../Spinner";
 import { useAuth } from '../../context/auth';
 
@@ -17,7 +17,8 @@ jest.mock('mongoose', () => ({
     Schema: jest.fn(),
 }));
 
-const mockAuth = { token: '123' };
+// Sample token for testing
+const mockAuth = { token: 'sample token' };
 
 jest.mock('axios');
 
@@ -36,17 +37,19 @@ describe('PrivateRoute', () => {
         expect(screen.getByText('Mocked Spinner')).toBeInTheDocument();
     });
     
-    it('should render Outlet if auth token is valid', () => {
+    it('should render Outlet if auth token is valid', async () => {
         useAuth.mockReturnValue([mockAuth, jest.fn()]);
         const res = { data: { ok: true } };
         axios.get.mockResolvedValue(res);
+        render(<PrivateRoute />);
+        expect(await screen.findByText('Mocked Outlet')).toBeInTheDocument();
     });
 
-    it('should render Spinner if auth token is invalid', () => {
-        useAuth.mockReturnValue([mockAuth, jest.fn()]);
-        const res = { data: { ok: false } };
-        axios.get.mockResolvedValue(res);
-    });
+    // it('should render Spinner if auth token is invalid', () => {
+    //     useAuth.mockReturnValue([mockAuth, jest.fn()]);
+    //     const res = { data: { ok: false } };
+    //     axios.get.mockResolvedValue(res);
+    // });
 
     // it('should render Spinner if axios request fails', () => {
     //     useAuth.mockReturnValue([mockAuth, jest.fn()]);
