@@ -11,6 +11,7 @@ jest.mock("slugify");
 
 describe('category controller', () => {
     let req, res, consoleLogSpy;
+    const error = new Error('Database error');
 
     beforeEach(() => {
         req = {};
@@ -33,8 +34,8 @@ describe('category controller', () => {
     });
 
     test('should return 500 while getting categories', async () => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        categoryModel.find = jest.fn().mockRejectedValue(new Error('Database error'));
+        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {error});
+        categoryModel.find = jest.fn().mockRejectedValue(error);
 
         await categoryController(req, res);
         expect(res.status).toHaveBeenCalledWith(500);
@@ -43,11 +44,13 @@ describe('category controller', () => {
             error: expect.any(Error),
             message: "Error while getting all categories",
         });
+        expect(consoleLogSpy).toHaveBeenCalledWith(error);
     });
 });
 
 describe('createCategoryController', () => {
     let req, res, consoleLogSpy;
+    const error = new Error('Database error');
 
     beforeEach(() => {
         req = {};
@@ -95,7 +98,7 @@ describe('createCategoryController', () => {
     test('should return 500 and error while creating category', async () => {
         consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
         req.body = { name: 'test' };
-        categoryModel.findOne = jest.fn().mockRejectedValue(new Error('Database error'));
+        categoryModel.findOne = jest.fn().mockRejectedValue(error);
 
         await createCategoryController(req, res);
         expect(res.status).toHaveBeenCalledWith(500);
@@ -104,11 +107,13 @@ describe('createCategoryController', () => {
             error: expect.any(Error),
             message: 'Error in category'
         });
+        expect(consoleLogSpy).toHaveBeenCalledWith(error);
     });
 })
 
 describe('singleCategoryController', () => {
     let req, res, consoleLogSpy;
+    const error = new Error('Database error');
 
     beforeEach(() => {
         req = {};
@@ -142,5 +147,6 @@ describe('singleCategoryController', () => {
             error: expect.any(Error),
             message: "Error While getting Single Category",
         });
+        expect(consoleLogSpy).toHaveBeenCalledWith(error);
     });
 })
