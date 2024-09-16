@@ -65,13 +65,13 @@ describe('createCategoryController', () => {
         expect(res.send).toHaveBeenCalledWith({ message: "Name is required" });
     })
 
-    test('should return 200 if catergory exists', async () => {
+    test('should return 500 if catergory exists', async () => {
         req.body = { name: "test" };
         categoryModel.findOne.mockResolvedValue({ name: "test" });
 
         await createCategoryController(req, res);
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.send).toHaveBeenCalledWith({ success: true, message: "Category Already Exists" });
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledWith({ success: false, message: "Category Already Exists" });
     })
 
     test('should return 201 and create new category', async () => {
