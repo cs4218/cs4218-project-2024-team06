@@ -6,6 +6,14 @@ import userModel from "../models/userModel.js";
 jest.mock('jsonwebtoken');
 
 
+jest.mock('../models/userModel.js', () => ({
+    findById: jest.fn()
+}));
+
+
+
+
+
 describe('requireSignIn Middleware', () => {
     let req, res, next, consoleLogSpy;
 
@@ -85,8 +93,9 @@ describe('isAdmin Middleware', () => {
 
     it('should not return any response if user is an admin', async () => {
         //ARRANGE
-        userModel.findById = jest.fn();
-        userModel.findById.mockResolvedValue({ role: 1 });
+        userModel.findById.mockImplementation((queryInput) => {
+            return { role: 1 };
+        });
 
         //ACTION
         const result = await isAdmin(req, res, next);
@@ -100,8 +109,9 @@ describe('isAdmin Middleware', () => {
     //NEVER PASS
     it('should return unauthorised access if user is not an admin, such as if role is 0', async () => {
         //ARRANGE
-        userModel.findById = jest.fn();
-        userModel.findById.mockResolvedValue({ role: 0 });
+        userModel.findById.mockImplementation((queryInput) => {
+            return { role: 0 };
+        });
        
         //ACTION
         await isAdmin(req, res, next);
@@ -119,8 +129,9 @@ describe('isAdmin Middleware', () => {
     //NEVER PASS
     it('should return unauthorised access if user is not an admin, such as if role is 2', async () => {
         //ARRANGE
-        userModel.findById = jest.fn();
-        userModel.findById.mockResolvedValue({ role: 2 });
+        userModel.findById.mockImplementation((queryInput) => {
+            return { role: 2 };
+        });
        
         //ACTION
         await isAdmin(req, res, next);
@@ -137,14 +148,15 @@ describe('isAdmin Middleware', () => {
 
     it('should log error and return error message if there is an error in processing user status', async () => {
         //ARRANGE
-        userModel.findById = jest.fn();
         const error = new Error('Exception in finding user id');
-        userModel.findById.mockRejectedValueOnce(error);
+        userModel.findById.mockImplementation((queryInput) => {
+            throw error;
+        });
+        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
         //ACTION
         await isAdmin(req, res, next);
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-
+        
         //ASSERT
         expect(next).toHaveBeenCalledTimes(0);
         expect(res.status).toHaveBeenCalledWith(401);
