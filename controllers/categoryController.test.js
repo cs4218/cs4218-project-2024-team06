@@ -2,16 +2,51 @@ import slugify from "slugify";
 import categoryModel from "../models/categoryModel";
 import { 
     createCategoryController, 
-    updateCategoryController, 
     categoryControlller, 
     singleCategoryController, 
-    deleteCategoryCOntroller
 } from "./categoryController";
 
 jest.mock("../models/categoryModel");
 jest.mock("slugify");
 
 describe('category controller', () => {
+    let req, res, consoleLogSpy;
+
+    beforeEach(() => {
+        req = {};
+        res = {
+            status: jest.fn().mockReturnThis(),
+            send: jest.fn(),
+        };
+    });
+
+    test('should return 200 and get all categories', async () => {
+        categoryModel.find = jest.fn().mockResolvedValue({});
+
+        await categoryController(req, res);
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.send).toHaveBeenCalledWith({
+            success: true,
+            message: "All Categories List",
+            category: {},
+        })
+    });
+
+    test('should return 500 while getting categories', async () => {
+        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+        categoryModel.find = jest.fn().mockRejectedValue(new Error('Database error'));
+
+        await categoryController(req, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledWith({
+            success: false,
+            error: expect.any(Error),
+            message: "Error while getting all categories",
+        });
+    });
+});
+
+describe('createCategoryController', () => {
     let req, res, consoleLogSpy;
 
     beforeEach(() => {
@@ -70,30 +105,17 @@ describe('category controller', () => {
             message: 'Error in category'
         });
     });
+})
 
-    test('should return 200 and get all categories', async () => {
-        categoryModel.find = jest.fn().mockResolvedValue({});
+describe('singleCategoryController', () => {
+    let req, res, consoleLogSpy;
 
-        await categoryController(req, res);
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.send).toHaveBeenCalledWith({
-            success: true,
-            message: "All Categories List",
-            category: {},
-        })
-    });
-
-    test('should return 500 while getting categories', async () => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        categoryModel.find = jest.fn().mockRejectedValue(new Error('Database error'));
-
-        await categoryController(req, res);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledWith({
-            success: false,
-            error: expect.any(Error),
-            message: "Error while getting all categories",
-        });
+    beforeEach(() => {
+        req = {};
+        res = {
+            status: jest.fn().mockReturnThis(),
+            send: jest.fn(),
+        };
     });
 
     test('should return 200 and get single category', async () => {
@@ -121,4 +143,4 @@ describe('category controller', () => {
             message: "Error While getting Single Category",
         });
     });
-});
+})
