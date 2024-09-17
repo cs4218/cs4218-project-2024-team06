@@ -10,7 +10,7 @@ jest.mock('../models/userModel', () => {
     //Need to mock the constructor because the constructor is used in registerController
     const mockSave = jest.fn().mockResolvedValue({
         name: "James",
-        email: "james",
+        email: "james@gmail.com",
         password: "james123",
         phone: "9123 4567",
         address: "Sentosa",
@@ -394,7 +394,7 @@ describe('registerController', () => {
             expect(res.send).toHaveBeenCalledTimes(1);
             expect(res.send).toHaveBeenCalledWith({ success: true, message: "User Register Successfully", user: {
                 name: "James",
-                email: "james",
+                email: "james@gmail.com",
                 password: "james123",
                 phone: "9123 4567",
                 address: "Sentosa",

@@ -11,9 +11,6 @@ jest.mock('../models/userModel.js', () => ({
 }));
 
 
-
-
-
 describe('requireSignIn Middleware', () => {
     let req, res, next, consoleLogSpy;
 

@@ -42,12 +42,13 @@ describe('loginController', () => {
 
    
     describe('should return error messages for its input validations if', () => {
+        //SHOULD NOT PASS
         it('email is empty', async () => {
             //ARRANGE
             const req = {
                 body: {
                     email: "",
-                    password: "",
+                    password: "password",
                 }
             };
     
@@ -56,7 +57,7 @@ describe('loginController', () => {
 
             //ASSERT
             expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.status).toHaveBeenCalledWith(401);
             expect(res.send).toHaveBeenCalledTimes(1);
             expect(res.send).toHaveBeenCalledWith({ success: false, message: "Invalid email or password" });
         });
@@ -76,7 +77,7 @@ describe('loginController', () => {
 
             //ASSERT
             expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.status).toHaveBeenCalledWith(401);
             expect(res.send).toHaveBeenCalledTimes(1);
             expect(res.send).toHaveBeenCalledWith({ success: false, message: "Invalid email or password" });
         });
@@ -107,7 +108,7 @@ describe('loginController', () => {
 
             //ASSERT
             expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.status).toHaveBeenCalledWith(401);
             expect(res.send).toHaveBeenCalledTimes(1);
             expect(res.send).toHaveBeenCalledWith({ success: false, message: "Email is not registered" });
         });
@@ -128,7 +129,7 @@ describe('loginController', () => {
 
             //ASSERT
             expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(404);
+            expect(res.status).toHaveBeenCalledWith(401);
             expect(res.send).toHaveBeenCalledTimes(1);
             expect(res.send).toHaveBeenCalledWith({ success: false, message: "Invalid Password" });
         });

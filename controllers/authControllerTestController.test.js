@@ -20,7 +20,7 @@ describe('testController', () => {
     });
 
 
-    it('should return protected routes if there is no error', async () => {
+    it('should return protected routes if there is no error', () => {
         //ARRANGE
         const res = {
             send: jest.fn(),
@@ -35,7 +35,7 @@ describe('testController', () => {
     });
 
 
-    it('should return error if there is an error', async () => {
+    it('should return error if there is an error', () => {
         //ARRANGE
         const error = new Error('Exception during login');
         const res = {

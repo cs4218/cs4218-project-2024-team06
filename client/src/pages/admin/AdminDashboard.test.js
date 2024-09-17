@@ -6,7 +6,7 @@ import AdminDashboard from './AdminDashboard';
 import { useAuth } from '../../context/auth';
 import '@testing-library/jest-dom/extend-expect';
 
-// Mock the external components that AdmiNDashboard uses
+// Mock the external components that AdminDashboard uses
 jest.mock('../../components/AdminMenu', () => () => <div>Mocked AdminMenu</div>);
 jest.mock('./../../components/Layout', () => ({ children }) => <div><h1>Mocked Layout</h1><div>{ children }</div></div>);
 

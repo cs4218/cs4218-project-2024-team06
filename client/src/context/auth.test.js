@@ -47,11 +47,6 @@ describe('AuthProvider Component', () => {
 
     //Default value for auth state
     describe('should have default value for its auth state', () => {
-        beforeEach(() => {
-            consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-
-        });
-
 
         //Test case 1
         it('if auth information in localStorage is null', () => {
