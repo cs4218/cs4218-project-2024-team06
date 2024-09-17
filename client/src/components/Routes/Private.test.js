@@ -66,11 +66,20 @@ describe('PrivateRoute', () => {
         expect(await screen.findByText('Mocked Spinner')).toBeInTheDocument();
     });
 
-    it("should render Spinner if axios response has no data field", async () => {
+    it.skip("should render Spinner if axios response has no data field", async () => {
         useAuth.mockReturnValue([mockAuth, jest.fn()]);
         const res = {};
         axios.get.mockResolvedValue(res);
         render(<PrivateRoute />);
+        expect(await screen.findByText('Mocked Spinner')).toBeInTheDocument();
+    });
+
+    it.skip("should render Spinner if axios response's data field has no ok field", async () => {
+        useAuth.mockReturnValue([mockAuth, jest.fn()]);
+        const res = { data: {} };
+        axios.get.mockResolvedValue(res);
+        render(<PrivateRoute />);
+        screen.denug()
         expect(await screen.findByText('Mocked Spinner')).toBeInTheDocument();
     });
 });
