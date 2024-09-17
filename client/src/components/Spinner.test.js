@@ -34,12 +34,14 @@ describe('Spinner Componenet', () => {
         render(<Spinner/>);
 
         expect(screen.getByText('redirecting you in 3 seconds')).toBeInTheDocument();
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
 
     test('should count down and navigate after 3 seconds', () => {
         render(<Spinner/>);
 
         expect(screen.getByText('redirecting you in 3 seconds')).toBeInTheDocument();
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
 
         advanceTimers(1000);
         expect(screen.getByText('redirecting you in 2 seconds')).toBeInTheDocument();
