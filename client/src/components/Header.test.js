@@ -72,7 +72,7 @@ describe('Header component', () => {
             expect(screen.getByText('Cart')).toHaveAttribute('href', '/cart');
         });
 
-        test('displays categories', () => {
+        test('displays categories and renders link properly', () => {
             const categories = [
                 { name: 'test-cat-1', slug: 'test-cat-1-slug' },
                 { name: 'test-cat-2', slug: 'test-cat-2-slug' },
@@ -86,6 +86,8 @@ describe('Header component', () => {
             expect(screen.getByText('All Categories')).toBeInTheDocument();
             expect(screen.getByText('test-cat-1')).toBeInTheDocument();
             expect(screen.getByText('test-cat-2')).toBeInTheDocument();
+            expect(screen.getByText('test-cat-1')).toHaveAttribute('href', '/category/test-cat-1-slug');
+            expect(screen.getByText('test-cat-2')).toHaveAttribute('href', '/category/test-cat-2-slug');
         });
 
         test('displays number of cart items correctly', () => {
