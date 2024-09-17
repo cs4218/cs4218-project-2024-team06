@@ -60,7 +60,7 @@ describe('PrivateRoute', () => {
     // This test is skipped because it is not working as expected
     it.skip('should render Spinner if axios request fails', async () => {
         useAuth.mockReturnValue([mockAuth, jest.fn()]);
-        axios.get.mockRejectedValue(new Error('Mocked error'));
+        axios.get.mockRejectedValue(new Error('Get request failed'));
         render(<PrivateRoute />);
         expect(await screen.findByText('Mocked Spinner')).toBeInTheDocument();
     });
@@ -72,7 +72,7 @@ describe('PrivateRoute', () => {
      * response or throw an error. In this case, a null response would indicate that the error 
      * is in the API implementation and not the call.
      */
-    it.skip("should render Spinner if axios response has no data field", async () => {
+    it.skip("should render Spinner if axios response is null", async () => {
         useAuth.mockReturnValue([mockAuth, jest.fn()]);
         const res = null;
         axios.get.mockResolvedValue(res);
@@ -87,7 +87,7 @@ describe('PrivateRoute', () => {
      * response or throw an error. In this case, a null response would indicate that the error 
      * is in the API implementation and not the call.
      */
-    it.skip("should render Spinner if axios response's data field has no ok field", async () => {
+    it.skip("should render Spinner if axios response's data field is null", async () => {
         useAuth.mockReturnValue([mockAuth, jest.fn()]);
         const res = { data: null };
         axios.get.mockResolvedValue(res);
