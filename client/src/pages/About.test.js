@@ -3,7 +3,6 @@ import About from "./About";
 import Layout from "../components/Layout";
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { beforeEach } from "node:test";
 
 // Mock layout component
 jest.mock('../components/Layout', () => ({title, children}) => (
