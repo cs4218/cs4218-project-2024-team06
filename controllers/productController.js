@@ -271,7 +271,6 @@ export const searchProductController = async (req, res) => {
       .select("-photo");
     res.json(resutls);
   } catch (error) {
-    console.log(error);
     res.status(400).send({
       success: false,
       message: "Error In Search Product API",
