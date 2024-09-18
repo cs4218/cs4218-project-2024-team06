@@ -30,6 +30,7 @@ describe('Spinner Componenet', () => {
         jest.clearAllMocks();
     });
 
+    // NEVER PASS
     test('should render spinner with countdown', () => {
         render(<Spinner/>);
 
@@ -37,6 +38,7 @@ describe('Spinner Componenet', () => {
         expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
 
+    // NEVER PASS
     test('should count down and navigate after 3 seconds', () => {
         render(<Spinner/>);
 
