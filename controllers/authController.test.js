@@ -2,8 +2,6 @@ import { describe } from "node:test";
 import { hashPassword } from "../helpers/authHelper.js";
 import { updateProfileController } from "./authController";
 import userModel from "../models/userModel";
-import { GiUnderwear } from "react-icons/gi";
-
 
 jest.mock("../models/userModel.js");
 
