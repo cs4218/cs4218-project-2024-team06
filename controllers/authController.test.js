@@ -2,22 +2,28 @@ import { describe } from "node:test";
 import { hashPassword } from "../helpers/authHelper.js";
 import { updateProfileController } from "./authController";
 import userModel from "../models/userModel";
+import { GiUnderwear } from "react-icons/gi";
+
 
 jest.mock("../models/userModel.js");
 
 const oldProfile = {
-  name: "Halimah Yacob",
-  email: "yacob@gov.sg",
-  password: "safePassword",
-  address: "Istana, Orchard Road, Singapore 238823",
-  phone: "999"
+    name: "Halimah Yacob", 
+    email: "yacob@gov.sg", 
+    password: "safePassword", 
+    address: "Istana, Orchard Road, Singapore 238823", 
+    phone: "999"
 };
 
-const validName = "John Doe";
-const validEmail = "johndoe@gmail.com";
-const invalidEmailNoName = "@gmail.com";
-const invalidEmailNoAt = "johndoegmail.com";
-const invalidEmailNoDomain = "johndoe@gmail";
+const oldProfileUpdate = {
+    name: "Halimah Yacob", 
+    password: "safePassword", 
+    address: "Istana, Orchard Road, Singapore 238823", 
+    phone: "999"
+}
+
+const sampleName = "John Doe";
+const sampleEmail = "johndoe@gmail.com";
 const passwordLenMoreThan6 = "password";
 const passwordLen6 = "passwo";
 const passwordLen5 = "passw";
@@ -27,15 +33,22 @@ const validPhone = "99999999";
 const invalidPhone = "abc";
 
 const newProfile = {
-    name: validName, 
-    email: validEmail, 
+    name: sampleName, 
+    email: sampleEmail, 
     password: passwordLenMoreThan6, 
     address: validAddress, 
     phone: validPhone
 }
 
+const newProfileUpdate = {
+    name: sampleName, 
+    password: passwordHash, 
+    address: validAddress, 
+    phone: validPhone
+}
+
 const req = {
-    body: JSON.parse(JSON.stringify(newProfile)), 
+    body: {}, 
     user: { _id: "123" }
 }
 
@@ -58,40 +71,73 @@ describe("updateProfileController", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        req.body = JSON.parse(JSON.stringify(newProfile));
     });
 
     it("should update user's profile", async () => {
         await updateProfileController(req, res);
+
+        expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
+        expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, newProfileUpdate, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
     });
 
     it("should update user's profile with new password of length 6", async () => {
         req.body.password = passwordLen6;
+
+        let updatedUser = JSON.parse(JSON.stringify(newProfileUpdate));
+        updatedUser.password = passwordHash;
+
         await updateProfileController(req, res);
+
+        expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
+        expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
     });
 
-    it("should not update user's profile new password of less than length 6", async () => {
+    it("should not update user's profile with new password of less than length 6", async () => {
         req.body.password = passwordLen5;
+
         await updateProfileController(req, res);
         expect(res.json).toHaveBeenCalledTimes(1);
     });
 
+    it("should keep old password if new password is null", async () => {
+        req.body.password = null;
+
+        let updatedUser = JSON.parse(JSON.stringify(newProfileUpdate));
+        updatedUser.password = "safePassword";
+
+        await updateProfileController(req, res);
+        expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
+        expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
+    });
+
+    it("should keep old password if hashpassword fails", async () => {
+        hashPassword.mockReturnValueOnce(undefined);
+
+        let updatedUser = JSON.parse(JSON.stringify(newProfileUpdate));
+        updatedUser.password = "safePassword";
+
+        await updateProfileController(req, res);
+        expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
+        expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
+    });
+
     it("should not update empty password and empty phone fields", async () => {
         req.body = {
-            name: validName,
+            name: sampleName,
             email: "",
             password: "",
             address: validAddress,
             phone: ""
         };
 
-        let updatedUser = JSON.parse(JSON.stringify(oldProfile));
-        updatedUser.name = validName;
+        let updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
+        updatedUser.name = sampleName;
         updatedUser.address = validAddress;
-        delete updatedUser.email;
 
         await updateProfileController(req, res);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
@@ -103,16 +149,15 @@ describe("updateProfileController", () => {
     it("should not update empty name and empty address fields", async () => {
         req.body = {
             name: "",
-            email: validEmail,
+            email: sampleEmail,
             password: passwordLenMoreThan6,
             address: "",
             phone: validPhone
         };
 
-        let updatedUser = JSON.parse(JSON.stringify(oldProfile));
+        let updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
         updatedUser.password = passwordHash;
         updatedUser.phone = validPhone;
-        delete updatedUser.email;
 
         await updateProfileController(req, res);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
@@ -130,13 +175,50 @@ describe("updateProfileController", () => {
             phone: ""
         };
 
-        let updatedUser = JSON.parse(JSON.stringify(oldProfile));
-        delete updatedUser.email;
+        let updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
 
         await updateProfileController(req, res);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
+    });
+
+    it("should keep old profile if new profile has null fields", async () => {
+        req.body = {
+            name: null,
+            email: null,
+            password: null,
+            address: null,
+            phone: null
+        };
+
+        let updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
+
+        await updateProfileController(req, res);
+        expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
+        expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.send).toHaveBeenCalledTimes(1);
+    });
+
+    it("should not update profile with invalid phone number", async () => {
+        req.body = {
+            name: sampleName,
+            email: sampleEmail,
+            password: passwordLenMoreThan6,
+            address: validAddress,
+            phone: invalidPhone
+        };
+
+        await updateProfileController(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+    });
+
+    it("should catch error if findById fails", async () => {
+        userModel.findById.mockRejectedValueOnce(new Error("findById failed"));
+
+        await updateProfileController(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
     });
 });
