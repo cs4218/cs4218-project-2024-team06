@@ -217,7 +217,12 @@ describe("updateProfileController", () => {
 
     it("should catch error if findById fails", async () => {
         userModel.findById.mockRejectedValueOnce(new Error("findById failed"));
+        await updateProfileController(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+    });
 
+    it("should catch error if findByIdAndUpdate fails", async () => {
+        userModel.findByIdAndUpdate.mockRejectedValueOnce(new Error("findByIdAndUpdate failed"));
         await updateProfileController(req, res);
         expect(res.status).toHaveBeenCalledWith(400);
     });
