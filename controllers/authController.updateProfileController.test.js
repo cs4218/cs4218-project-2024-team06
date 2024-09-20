@@ -100,7 +100,7 @@ describe("updateProfileController", () => {
 
         await updateProfileController(req, res);
 
-        // expect(hashPassword).toHaveBeenCalledTimes(0);
+        expect(hashPassword).toHaveBeenCalledTimes(0);
         expect(res.json).toHaveBeenCalledTimes(1);
     });
 
@@ -112,7 +112,7 @@ describe("updateProfileController", () => {
 
         await updateProfileController(req, res);
 
-        // expect(hashPassword).toHaveBeenCalledTimes(0);
+        expect(hashPassword).toHaveBeenCalledTimes(0);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
     });
@@ -125,7 +125,6 @@ describe("updateProfileController", () => {
 
         await updateProfileController(req, res);
 
-        // expect(hashPassword).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
     });
