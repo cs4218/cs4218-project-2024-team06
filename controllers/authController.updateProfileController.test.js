@@ -1,6 +1,7 @@
 import { hashPassword } from "../helpers/authHelper.js";
 import { updateProfileController } from "./authController.js";
 import userModel from "../models/userModel.js";
+import { hash } from "crypto";
 
 jest.mock("../models/userModel.js");
 
@@ -74,11 +75,13 @@ describe("updateProfileController", () => {
     });
 
     it("should update user's profile", async () => {
+        userModel.findByIdAndUpdate.mockReturnValueOnce(newProfileUpdate);
         await updateProfileController(req, res);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, newProfileUpdate, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser: newProfileUpdate }));
     });
 
     it("should update user's profile with new password of length 6", async () => {
@@ -87,12 +90,15 @@ describe("updateProfileController", () => {
         let updatedUser = JSON.parse(JSON.stringify(newProfileUpdate));
         updatedUser.password = passwordHash;
 
+        userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
+
         await updateProfileController(req, res);
 
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
     });
 
     it("should not update user's profile with new password of less than length 6", async () => {
@@ -110,11 +116,16 @@ describe("updateProfileController", () => {
         let updatedUser = JSON.parse(JSON.stringify(newProfileUpdate));
         updatedUser.password = "safePassword";
 
+        userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
+        
         await updateProfileController(req, res);
-
+        
         expect(hashPassword).toHaveBeenCalledTimes(0);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
     });
 
     it("should keep old password if hashpassword fails", async () => {
@@ -123,10 +134,15 @@ describe("updateProfileController", () => {
         let updatedUser = JSON.parse(JSON.stringify(newProfileUpdate));
         updatedUser.password = "safePassword";
 
+        userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
+        
         await updateProfileController(req, res);
-
+        
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
     });
 
     it("should not update empty password and empty phone fields", async () => {
@@ -142,11 +158,14 @@ describe("updateProfileController", () => {
         updatedUser.name = sampleName;
         updatedUser.address = validAddress;
 
+        userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
+        
         await updateProfileController(req, res);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
     })
 
     it("should not update empty name and empty address fields", async () => {
@@ -161,12 +180,14 @@ describe("updateProfileController", () => {
         let updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
         updatedUser.password = passwordHash;
         updatedUser.phone = validPhone;
-
+        userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
+        
         await updateProfileController(req, res);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
     })
 
     it("should keep old profile if new profile is empty", async () => {
@@ -196,13 +217,15 @@ describe("updateProfileController", () => {
             phone: null
         };
 
-        let updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
-
+        const updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
+        userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
+        
         await updateProfileController(req, res);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
     });
 
     // This test will fail as there is currently no validation for phone number in original code.
@@ -222,6 +245,7 @@ describe("updateProfileController", () => {
     it("should catch error if findById fails", async () => {
         userModel.findById.mockRejectedValueOnce(new Error("findById failed"));
         await updateProfileController(req, res);
+        expect(hashPassword).toHaveBeenCalledTimes(0);
         expect(res.status).toHaveBeenCalledWith(400);
     });
 
