@@ -5,7 +5,7 @@ jest.mock("../models/userModel.js");
 
 const req = {
     body: {}, 
-    user: { _id: "123" }
+    user: { _id: "mockUserId" }
 }
 
 const res = {
@@ -66,10 +66,35 @@ const mockProduct4 = {
     shipping: true
 }
 
+const mockUser1 = {
+    name: "Halimah Yacob"
+}
+
+const mockUser2 = {
+    name: "Tony Tan"
+}
+
+const mockOrder1 = {
+    products: [mockProduct1, mockProduct2],
+    buyer: mockUser1
+}
+
+const mockOrder2 = {
+    products: [mockProduct3, mockProduct4],
+    buyer: mockUser2
+}
+
+const mockOrder3 = {
+    products: [mockProduct1, mockProduct3], 
+    buyer: mockUser1
+}
+
+const orderList = [mockOrder1, mockOrder2, mockOrder3];
+
 // Tests for getOrdersController
 describe("getOrdersController", () => {
     beforeAll(() => {
-        console.log()
+        orderModel.find.mockReturnValue({ populate: jest.fn(() => jest.fn()) });
     })
 
     beforeEach(() => {
