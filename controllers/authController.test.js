@@ -255,3 +255,92 @@ describe("updateProfileController", () => {
         expect(res.status).toHaveBeenCalledWith(400);
     });
 });
+
+const mockProduct1 = {
+    name: "iphone 16",
+    slug: "iphone 16",
+    description: "Apple's latest smartphone.",
+    price: 2000, 
+    category: { name: "Smartphone" },
+    quantity: 3,
+    photo: {
+        data: null, 
+        contentType: "mockedContent"
+    },
+    shipping: true
+};
+
+const mockProduct2 = {
+    name: "s24",
+    slug: "s24",
+    description: "Samsung's latest smartphone.",
+    price: 1000, 
+    category: { name: "Smartphone" },
+    quantity: 5,
+    photo: {
+        data: null, 
+        contentType: "mockedContent"
+    },
+    shipping: true
+};
+
+const mockProduct3 = {
+    name: "M3 Macbook Air",
+    slug: "M3 Macbook Air",
+    description: "Apple's lightest laptop.",
+    price: 3000, 
+    category: { name: "Laptop" },
+    quantity: 10,
+    photo: {
+        data: null, 
+        contentType: "mockedContent"
+    },
+    shipping: true
+};
+
+const mockProduct4 = {
+    name: "Leobog Hi75",
+    slug: "Leobog Hi75",
+    description: "Thocky keyboard.",
+    price: 40, 
+    category: { name: "Mechanical Keyboard" },
+    quantity: 1,
+    shipping: true
+}
+
+const mockUser1 = {
+    name: "Halimah Yacob"
+}
+
+const mockUser2 = {
+    name: "Tony Tan"
+}
+
+const mockOrder1 = {
+    products: [mockProduct1, mockProduct2],
+    buyer: mockUser1
+}
+
+const mockOrder2 = {
+    products: [mockProduct3, mockProduct4],
+    buyer: mockUser2
+}
+
+const mockOrder3 = {
+    products: [mockProduct1, mockProduct3], 
+    buyer: mockUser1
+}
+
+const orderList = [mockOrder1, mockOrder2, mockOrder3];
+
+// Tests for getOrdersController
+describe("getOrdersController", () => {
+    beforeAll(() => {
+        orderModel.find.mockReturnValue({ populate: jest.fn(() => jest.fn()) });
+    })
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        req.body = JSON.parse(JSON.stringify(newProfile));
+    });
+});
