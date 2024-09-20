@@ -1,4 +1,3 @@
-import { beforeEach, describe } from "node:test";
 import { hashPassword } from "../helpers/authHelper.js";
 import orderModel from "../models/orderModel";
 import { updateProfileController } from "./authController";
@@ -77,7 +76,6 @@ describe("updateProfileController", () => {
 
     it("should update user's profile", async () => {
         await updateProfileController(req, res);
-
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, newProfileUpdate, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
@@ -102,6 +100,8 @@ describe("updateProfileController", () => {
         req.body.password = passwordLen5;
 
         await updateProfileController(req, res);
+
+        // expect(hashPassword).toHaveBeenCalledTimes(0);
         expect(res.json).toHaveBeenCalledTimes(1);
     });
 
@@ -112,6 +112,8 @@ describe("updateProfileController", () => {
         updatedUser.password = "safePassword";
 
         await updateProfileController(req, res);
+
+        // expect(hashPassword).toHaveBeenCalledTimes(0);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
     });
@@ -123,6 +125,8 @@ describe("updateProfileController", () => {
         updatedUser.password = "safePassword";
 
         await updateProfileController(req, res);
+
+        // expect(hashPassword).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
     });
@@ -203,6 +207,7 @@ describe("updateProfileController", () => {
         expect(res.send).toHaveBeenCalledTimes(1);
     });
 
+    // This test will fail as there is currently no validation for phone number in original code.
     it("should not update profile with invalid phone number", async () => {
         req.body = {
             name: sampleName,
@@ -282,12 +287,12 @@ const mockProduct4 = {
 }
 
 // Tests for getOrdersController
-describe("getOrdersController", () => {
-    beforeAll(() => {
-        orderModel.find.mockReturnValue()
-    })
+// describe("getOrdersController", () => {
+//     beforeAll(() => {
+//         console.log()
+//     })
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-});
+//     beforeEach(() => {
+//         jest.clearAllMocks();
+//     });
+// });
