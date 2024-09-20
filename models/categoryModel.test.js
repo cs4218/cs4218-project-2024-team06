@@ -26,6 +26,7 @@ describe('Category Model', () => {
         expect(savedCategory.slug).toBe(categoryData.slug);
     });
 
+    // NEVER PASS
     test('should throw error if name is missing', async () => {
         const categoryData = { slug: 'test-slug' };
         const invalidCategory = new Category(categoryData);
@@ -33,6 +34,7 @@ describe('Category Model', () => {
         expect(await invalidCategory.save()).rejects.toThrow(mongoose.Error.ValidationError);
     })
 
+    // NEVER PASS
     test('should throw error if slug is missing', async () => {
         const categoryData = { name: 'test' };
         const invalidCategory = new Category(categoryData);
