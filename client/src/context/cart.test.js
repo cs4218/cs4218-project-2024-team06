@@ -78,4 +78,14 @@ describe(('cartProvider'), () => {
 
         expect(screen.getByText('Cart Length: 2')).toBeInTheDocument();
     });
+
+    test('should handle error if cart item is not valid', () => {
+        const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+        const mockCart = 'Invalid JSON';
+        localStorage.getItem.mockReturnValue(mockCart);
+
+        renderComponent();
+
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.any(Error));
+    });
 });
