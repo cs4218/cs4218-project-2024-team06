@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import DropIn from "braintree-web-drop-in-react";
 import CartPage from "./CartPage";
 import { BrowserRouter as Router } from "react-router-dom";
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 jest.mock('./../components/Layout', () => ({ children }) => (<div>{children}</div>));
@@ -21,6 +21,15 @@ jest.mock('axios');
 jest.mock('react-hot-toast', () => ({
     success: jest.fn(),
     error: jest.fn(),
+}));
+jest.mock('braintree-web-drop-in-react', () => ({
+    __esModule: true,
+    default: ({ onInstance }) => {
+        setTimeout(() => {
+            onInstance('test-instance'); // Simulate setting an instance
+        }, 0);
+        return null; // Return a mock component
+    },
 }));
 
 const renderComponent = () => {
@@ -203,25 +212,40 @@ describe('CartPage component', () => {
         });
 
         test('handles payment correctly', async () => {
-            const handlePayment = jest.fn();
-            axios.post.mockResolvedValue({ data: {} });
+            // Mock the Axios payment POST request
+            axios.post.mockImplementation((url) => {
+                if (url === '/api/v1/product/braintree/payment') {
+                    return Promise.resolve({ data: { success: true } });
+                }
+                return Promise.reject(new Error('Not Found'));
+            });
 
-            // Similar setup as before
+            // Render the component
             renderComponent();
-            const instance = { requestPaymentMethod: jest.fn().mockResolvedValue({ nonce: 'fake-nonce' }) };
+
             const paymentButton = await screen.findByText('Make Payment');
+            expect(paymentButton).not.toBeDisabled();
+            expect(paymentButton).toBeInTheDocument();
+
             fireEvent.click(paymentButton);
 
-            expect(handlePayment).toHaveBeenCalled();
-            // expect(axios.post).toHaveBeenCalledWith("/api/v1/product/braintree/payment", {
-            //     nonce: 'test-nonce',
-            //     cart: expect.anything(), // Assuming cart is passed correctly
-            // });
+            await waitFor(() => {
+                expect(toast.success).toHaveBeenCalledWith("Payment Completed Successfully ");
+            });
+        });
 
-            // expect(toast.success).toHaveBeenCalledWith('Payment Completed Successfully ');
+        test('should handle error during payment', async () => {
+            const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
+            const error = new Error('API error');
+            axios.post.mockImplementation((url) => {
+                if (url === '/api/v1/product/braintree/payment') {
+                    return error;
+                }
+            });
 
-            // Optionally check navigation or other side effects
-            // expect(window.location.pathname).toBe('/dashboard/user/orders');
+            renderComponent();
+
+            expect(consoleLogSpy).toHaveBeenCalledWith(error);
         });
     });
 }); 
