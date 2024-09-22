@@ -13,7 +13,6 @@ const sampleInput = {
     email: 'james@gmail.com',
     password: 'password',
 };
-
 const sampleToastOptions =  {
     duration: 5000,
     icon: "🙏",
@@ -24,19 +23,7 @@ const sampleToastOptions =  {
 }
 
 
-//Helper function to render Login component
-const renderLoginComponent = () => {
-    render(
-    <MemoryRouter initialEntries={['/login']}>
-        <Routes>
-        <Route path="/login" element={<Login />} />
-        </Routes>
-    </MemoryRouter>
-    );
-}
-
-
-// Mock modules
+//MOCK MODULES
 jest.mock('axios');
 jest.mock('react-hot-toast', () => ({
     success: jest.fn(),
@@ -46,10 +33,12 @@ jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useNavigate: jest.fn(),
     useLocation: jest.fn(),
-  }));
+}));
 jest.mock('./../../components/Layout', () => ({ children }) => <div><h1>Mocked Login - Ecommerce App</h1><div>{ children }</div></div>);
 jest.mock("../../context/auth");
-//Mock localStorage window object
+
+
+//MOCK localStorage WINDOW OBJECT
 Object.defineProperty(window, 'localStorage', {
     value: {
         setItem: jest.fn(),
@@ -58,7 +47,9 @@ Object.defineProperty(window, 'localStorage', {
 });
   
 
+
 describe('Login Component should correctly offer the Login functionality', () => {
+    const mockNavigateFunction = jest.fn();
     beforeEach(() => {
         jest.clearAllMocks();
 
@@ -66,6 +57,11 @@ describe('Login Component should correctly offer the Login functionality', () =>
         const mockSetAuth = jest.fn();
         const mockAuth = { user: null, token: "" };
         useAuth.mockReturnValue([mockAuth, mockSetAuth]);
+
+        const mockLocationValue = { state: '/categories' };
+      
+        useLocation.mockReturnValue(mockLocationValue);
+        useNavigate.mockReturnValue(mockNavigateFunction);
     });
 
 
@@ -78,7 +74,6 @@ describe('Login Component should correctly offer the Login functionality', () =>
             token: 'mockToken'
         };
         axios.post.mockResolvedValueOnce({ data: data});
-        useLocation.mockReturnValueOnce({ state: '/categories' });
 
 
 
@@ -103,8 +98,8 @@ describe('Login Component should correctly offer the Login functionality', () =>
             expect(toast.success).toHaveBeenCalledTimes(1);
             expect(toast.success).toHaveBeenCalledWith('Login successfully', sampleToastOptions);
             expect(localStorage.setItem).toHaveBeenCalledWith('auth', JSON.stringify(data));
-            // expect(useNavigate).toHaveBeenCalledTimes(1);
-            // expect(mockNavigateFunction).toHaveBeenCalledWith('/categories');
+            expect(mockNavigateFunction).toHaveBeenCalledTimes(1);
+            expect(mockNavigateFunction).toHaveBeenCalledWith('/categories');
         });
     });
 
