@@ -31,6 +31,14 @@ describe('Categories component', () => {
         ]);
     });
 
+    test('should render nothing when categories is empty', () => {
+        useCategory.mockReturnValue([]);
+
+        renderComponent();
+
+        // Checks that document body only has the layout title
+        expect(document.body).toHaveTextContent(/^All Categories$/);
+    });
 
     test('should render text correctly', () => {
         renderComponent();
