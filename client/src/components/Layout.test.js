@@ -26,9 +26,22 @@ jest.mock('./Header', () => () => <div>Header Mock</div>);
 describe('Layout component', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-    })
+    });
 
-    test('should render Helmet component properly', () => {
+    test('should render Helmet component with default parameters properly', () => {
+        render(
+            <Layout>
+                <div>Child</div>
+            </Layout>
+        );
+
+        expect(screen.getByText('Ecommerce app - shop now')).toBeInTheDocument();
+        expect(document.querySelector('meta[name="description"]').getAttribute('content')).toBe('mern stack project');
+        expect(document.querySelector('meta[name="keywords"]').getAttribute('content')).toBe('mern,react,node,mongodb');
+        expect(document.querySelector('meta[name="author"]').getAttribute('content')).toBe('Techinfoyt');
+    });
+
+    test('should render Helmet component with specified parameters properly', () => {
         render(
             <Layout
                 title='Test Title'
@@ -38,7 +51,7 @@ describe('Layout component', () => {
             >
                 <div>Child</div>
             </Layout>
-        )
+        );
 
         expect(screen.getByText('Test Title')).toBeInTheDocument();
         expect(document.querySelector('meta[name="description"]').getAttribute('content')).toBe('Test Description');
