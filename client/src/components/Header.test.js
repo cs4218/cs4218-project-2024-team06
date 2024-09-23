@@ -27,6 +27,15 @@ jest.mock('antd', () => ({
     ),
 }));
 
+Object.defineProperty(window, 'localStorage', {
+    value: {
+        setItem: jest.fn(),
+        getItem: jest.fn(),
+        removeItem: jest.fn(),
+    },
+    writable: true,
+});
+
 describe('Header component', () => {
     const setAuthMock = jest.fn();
     const renderComponent = () => {
@@ -134,7 +143,6 @@ describe('Header component', () => {
                 setAuthMock,
             ]);
             renderComponent();
-            const mockRemoveItem = jest.spyOn(Storage.prototype, 'removeItem');
             const logoutButton = screen.getByText('Logout');
             fireEvent.click(logoutButton);
 
@@ -143,7 +151,7 @@ describe('Header component', () => {
                 token: ''
             })
             expect(toast.success).toHaveBeenCalledWith('Logout Successfully');
-            expect(mockRemoveItem).toHaveBeenCalledWith('auth');
+            expect(window.localStorage.removeItem).toHaveBeenCalledWith('auth');
         })
     })
 
