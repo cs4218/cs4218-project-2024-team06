@@ -26,11 +26,24 @@ jest.mock('braintree-web-drop-in-react', () => ({
     __esModule: true,
     default: ({ onInstance }) => {
         setTimeout(() => {
-            onInstance('test-instance'); // Simulate setting an instance
+            const mockInstance = {
+                requestPaymentMethod: jest.fn().mockResolvedValue({ nonce: 'mock-nonce' }),
+            };
+
+            onInstance(mockInstance); // Call onInstance with the mock instance
         }, 0);
         return null; // Return a mock component
     },
 }));
+
+Object.defineProperty(window, 'localStorage', {
+    value: {
+        setItem: jest.fn(),
+        getItem: jest.fn(),
+        removeItem: jest.fn(),
+    },
+    writable: true,
+});
 
 const renderComponent = () => {
     render(
@@ -57,41 +70,43 @@ describe('CartPage component', () => {
         setupMocks();
     });
 
-    test('should handle cart item removal correctly', () => {
-        mockCart = [
-            { _id: 1, name: 'macbook', description: 'best laptop', price: 1000 },
-            { _id: 2, name: 'book', description: 'best book', price: 20 },
-        ];
-        const setCartMock = jest.fn();
-        setupMocks();
+    describe('cart item removal', () => {
+        test('should handle cart item removal correctly', () => {
+            mockCart = [
+                { _id: 1, name: 'macbook', description: 'best laptop', price: 1000 },
+                { _id: 2, name: 'book', description: 'best book', price: 20 },
+            ];
+            const setCartMock = jest.fn();
+            setupMocks();
 
-        useCart.mockReturnValue([mockCart, setCartMock]);
+            useCart.mockReturnValue([mockCart, setCartMock]);
 
-        renderComponent();
+            renderComponent();
 
-        const removeButton = screen.queryAllByText('Remove')[0];
-        fireEvent.click(removeButton);
+            const removeButton = screen.queryAllByText('Remove')[0];
+            fireEvent.click(removeButton);
 
-        expect(setCartMock).toHaveBeenCalledWith([
-            { _id: 2, name: 'book', description: 'best book', price: 20 }
-        ]);
-    });
+            expect(setCartMock).toHaveBeenCalledWith([
+                { _id: 2, name: 'book', description: 'best book', price: 20 }
+            ]);
+        });
 
-    test('should handle error during cart item removal', () => {
-        mockCart = [
-            { _id: 1, name: 'macbook', description: 'best laptop', price: 1000 },
-            { _id: 2, name: 'book', description: 'best book', price: 20 },
-        ];
+        test('should handle error during cart item removal', () => {
+            mockCart = [
+                { _id: 1, name: 'macbook', description: 'best laptop', price: 1000 },
+                { _id: 2, name: 'book', description: 'best book', price: 20 },
+            ];
 
-        const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
-        const error = new Error('Cart removal error');
-        useCart.mockReturnValue([mockCart, () => { throw error }]);
+            const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
+            const error = new Error('Cart removal error');
+            useCart.mockReturnValue([mockCart, () => { throw error }]);
 
-        renderComponent();
-        const removeButton = screen.queryAllByText('Remove')[0];
-        fireEvent.click(removeButton);
+            renderComponent();
+            const removeButton = screen.queryAllByText('Remove')[0];
+            fireEvent.click(removeButton);
 
-        expect(consoleLogSpy).toHaveBeenCalledWith(error);
+            expect(consoleLogSpy).toHaveBeenCalledWith(error);
+        });
     });
 
     describe('is logged in', () => {
@@ -103,61 +118,58 @@ describe('CartPage component', () => {
             setupMocks();
         });
 
+        test('should render correctly with empty cart', () => {
+            mockCart = [];
+            setupMocks();
 
-        describe('has username', () => {
-            test('should render correctly with empty cart', () => {
-                mockCart = [];
-                setupMocks();
+            renderComponent();
 
-                renderComponent();
+            expect(screen.getByText('Hello test-user')).toBeInTheDocument();
+            expect(screen.getByText('Your Cart Is Empty')).toBeInTheDocument();
+        });
 
-                expect(screen.getByText('Hello test-user')).toBeInTheDocument();
-                expect(screen.getByText('Your Cart Is Empty')).toBeInTheDocument();
-            });
+        test('should render correctly with non empty cart', () => {
+            mockCart = [
+                { _id: 1, name: 'macbook', description: 'best laptop', price: 1000 },
+                { _id: 2, name: 'book', description: 'best book', price: 20 },
+            ];
+            setupMocks();
 
-            test('should render correctly with non empty cart', () => {
-                mockCart = [
-                    { _id: 1, name: 'macbook', description: 'best laptop', price: 1000 },
-                    { _id: 2, name: 'book', description: 'best book', price: 20 },
-                ];
-                setupMocks();
+            renderComponent();
 
-                renderComponent();
+            expect(screen.getByAltText('macbook')).toHaveAttribute('src', '/api/v1/product/product-photo/1');
+            expect(screen.getByText('best laptop')).toBeInTheDocument();
+            expect(screen.getByText('Price : 1000')).toBeInTheDocument();
+            expect(screen.getByText('Total : $1,020.00')).toBeInTheDocument();
+            expect(screen.getByText('You have 2 items in your cart')).toBeInTheDocument();
+        });
 
-                expect(screen.getByAltText('macbook')).toHaveAttribute('src', '/api/v1/product/product-photo/1');
-                expect(screen.getByText('best laptop')).toBeInTheDocument();
-                expect(screen.getByText('Price : 1000')).toBeInTheDocument();
-                expect(screen.getByText('Total : $1,020.00')).toBeInTheDocument();
-                expect(screen.getByText('You have 2 items in your cart')).toBeInTheDocument();
-            });
+        test('should render correctly with address', () => {
+            renderComponent();
+            const button = screen.getByRole('button', 'Update Address');
+            fireEvent.click(button);
 
-            test('should render correctly with address', () => {
-                renderComponent();
-                const button = screen.getByRole('button', 'Update Address');
-                fireEvent.click(button);
+            expect(screen.getByText('Current Address')).toBeInTheDocument();
+            expect(screen.getByText('test-address')).toBeInTheDocument();
+            expect(screen.getByText('Update Address')).toBeInTheDocument();
+            expect(window.location.pathname).toBe('/dashboard/user/profile');
+        });
 
-                expect(screen.getByText('Current Address')).toBeInTheDocument();
-                expect(screen.getByText('test-address')).toBeInTheDocument();
-                expect(screen.getByText('Update Address')).toBeInTheDocument();
-                expect(window.location.pathname).toBe('/dashboard/user/profile');
-            });
+        test('should render correctly with no address', () => {
+            mockAuth = {
+                token: 'test-token',
+                user: { name: 'test-user', address: null },
+            }
+            setupMocks();
 
-            test('should render correctly with no address', () => {
-                mockAuth = {
-                    token: 'test-token',
-                    user: { name: 'test-user', address: null },
-                }
-                setupMocks();
+            renderComponent();
+            const button = screen.getByRole('button', 'Update Address');
+            fireEvent.click(button);
 
-                renderComponent();
-                const button = screen.getByRole('button', 'Update Address');
-                fireEvent.click(button);
-
-                expect(screen.queryByText('Current Address')).not.toBeInTheDocument();
-                expect(screen.queryByText('test-address')).not.toBeInTheDocument();
-                expect(screen.getByText('Update Address')).toBeInTheDocument();
-                expect(window.location.pathname).toBe('/dashboard/user/profile');
-            });
+            expect(screen.queryByText('Current Address')).not.toBeInTheDocument();
+            expect(screen.queryByText('test-address')).not.toBeInTheDocument();
+            expect(screen.getByText('Update Address')).toBeInTheDocument();
+            expect(window.location.pathname).toBe('/dashboard/user/profile');
         });
     });
 
@@ -188,12 +200,7 @@ describe('CartPage component', () => {
 
     describe('payment', () => {
         beforeEach(() => {
-            axios.get.mockImplementation((url) => {
-                if (url === '/api/v1/product/braintree/token') {
-                    return Promise.resolve({ data: { clientToken: 'mock-token' } });
-                }
-                return Promise.reject(new Error('Not Found'));
-            });
+            axios.get.mockImplementation(() => Promise.resolve({ data: { clientToken: 'mock-token' } }));
 
             mockAuth = {
                 token: 'test-token',
@@ -204,46 +211,72 @@ describe('CartPage component', () => {
             setupMocks();
         });
 
-        test('renders payment button when conditions are met', async () => {
+        test('should renders payment button when conditions are met', async () => {
             renderComponent();
 
             const paymentButton = await screen.findByText('Make Payment');
             expect(paymentButton).toBeInTheDocument();
         });
 
-        test('handles payment correctly', async () => {
-            // Mock the Axios payment POST request
-            axios.post.mockImplementation((url) => {
-                if (url === '/api/v1/product/braintree/payment') {
-                    return Promise.resolve({ data: { success: true } });
-                }
-                return Promise.reject(new Error('Not Found'));
+        test('button should not be disabled when conditions are met', async () => {
+            await act(async () => {
+                renderComponent();
             });
 
-            // Render the component
-            renderComponent();
+            const paymentButton = await screen.findByText('Make Payment');
+            await waitFor(() => {
+                expect(paymentButton).not.toBeDisabled();
+            });
+        });
+
+        test('should handle payment correctly', async () => {
+            axios.post.mockImplementation(() => Promise.resolve({ data: { success: true } }));
+
+            await act(async () => {
+                renderComponent();
+            });
 
             const paymentButton = await screen.findByText('Make Payment');
-            expect(paymentButton).not.toBeDisabled();
-            expect(paymentButton).toBeInTheDocument();
-
+            await waitFor(() => {
+                expect(paymentButton).not.toBeDisabled();
+            });
             fireEvent.click(paymentButton);
 
             await waitFor(() => {
-                expect(toast.success).toHaveBeenCalledWith("Payment Completed Successfully ");
+                expect(window.localStorage.removeItem).toHaveBeenCalledWith('cart');
+                expect(window.location.pathname).toBe('/dashboard/user/orders');
+                expect(toast.success).toHaveBeenCalledWith("Payment Completed Successfully");
             });
         });
 
         test('should handle error during payment', async () => {
-            const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
-            const error = new Error('API error');
-            axios.post.mockImplementation((url) => {
-                if (url === '/api/v1/product/braintree/payment') {
-                    return error;
-                }
+            const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+            const error = new Error('Post API error');
+            axios.post.mockImplementation(() => Promise.reject(error));
+
+            await act(async () => {
+                renderComponent();
             });
 
-            renderComponent();
+            const paymentButton = await screen.findByText('Make Payment');
+            await waitFor(() => {
+                expect(paymentButton).not.toBeDisabled();
+            })
+            fireEvent.click(paymentButton);
+
+            await waitFor(() => {
+                expect(consoleLogSpy).toHaveBeenCalledWith(error);
+            });
+        });
+
+        test('should handle error while getting token', async () => {
+            const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+            const error = new Error('Get API error');
+            axios.get.mockImplementation(() => Promise.reject(error));
+
+            await act(() => {
+                renderComponent();
+            })
 
             expect(consoleLogSpy).toHaveBeenCalledWith(error);
         });
