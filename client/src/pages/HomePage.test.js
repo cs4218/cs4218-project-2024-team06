@@ -93,7 +93,13 @@ describe('HomePage component', () => {
         axios.post.mockResolvedValueOnce({
             data: {
                 products: [
-                    { _id: 'p1', name: 'Product 1', category: '1' },
+                    {   
+                        _id: '1',
+                        name: 'Product 1',
+                        price: 20,
+                        description: 'Description 1',
+                        category: '1' 
+                    },
                 ],
             },
         });
@@ -138,20 +144,13 @@ describe('HomePage component', () => {
         expect(await screen.findByText('Product 1')).toBeInTheDocument();
 
         // Verify that the product not in the selected category is not displayed
-        expect(screen.queryByText('Product 2')).toBeNull();
+        await waitFor(() => {
+            expect(screen.queryByText('Product 2')).not.toBeInTheDocument();
+        });
     })
 
 
     test('should filter products based on prices', async () => {
-        const mockFilteredProducts = [
-            { _id: "1", category: 1, name: "Product 1", price: 20, description: "Product 1 description", slug: "product-1" }
-        ];
-        axios.post.mockImplementation((url, body) => {
-            if (url.includes("/api/v1/product/product-filters")) {
-                console.log("Filter triggered with body:", body);
-                return Promise.resolve({ data: { products: mockFilteredProducts } });
-            }
-        });
         renderComponent();
 
         // Wait for categories to load and be displayed
@@ -165,6 +164,8 @@ describe('HomePage component', () => {
         expect(await screen.findByText('Product 1')).toBeInTheDocument();
 
         // Verify that the product not in the selected category is not displayed
-        expect(screen.queryByText('Product 2')).not.toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.queryByText('Product 2')).not.toBeInTheDocument();
+        });
     })
 });
