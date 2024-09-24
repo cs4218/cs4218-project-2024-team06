@@ -35,6 +35,7 @@ jobs:
   # Job 2: Test Job
   test:
     runs-on: ubuntu-latest
+    needs: build # This ensures the 'test' job runs only after the 'build' job is successful
 
     steps:
       # Step 1: Checkout the code
@@ -50,6 +51,7 @@ jobs:
       # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
+        run: npm i @testing-library/react
 
       # Step 4: Run tests
       - name: Run tests
