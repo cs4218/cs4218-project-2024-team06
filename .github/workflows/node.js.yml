@@ -53,7 +53,10 @@ jobs:
         run: npm install
 
       - name: Install testing library react
-        run: npm i @testing-library/react
+        run: npm install @testing-library/react
+
+      - name: Install testing library jest dom
+        run: npm install @testing-library/jest-dom
 
       # Step 4: Run tests
       - name: Run tests
