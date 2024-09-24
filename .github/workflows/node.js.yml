@@ -56,7 +56,10 @@ jobs:
         run: npm install @testing-library/react
 
       - name: Install testing library jest dom
-        run: npm install @testing-library/jest-dom
+        run: npm install @testing-library/jest-dom/extend-expect
+
+      - name: Install axios
+        run: npm install axios
 
       # Step 4: Run tests
       - name: Run tests
