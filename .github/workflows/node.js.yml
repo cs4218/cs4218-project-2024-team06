@@ -48,15 +48,14 @@ jobs:
         with:
           node-version: "21"
 
-      # Step 3: Install dependencies
+      # Step 3: Install server-side dependencies
       - name: Install dependencies
         run: npm install
 
-      - name: Install testing library react
-        run: npm install @testing-library/react
-
-      - name: Install axios
-        run: npm install axios
+      # Step 4: Install client-side dependencies
+      - name: Install client dependencies
+        working-directory: ./client
+        run: npm install
 
       # Step 4: Run tests
       - name: Run tests
