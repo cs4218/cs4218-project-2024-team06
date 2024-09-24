@@ -50,8 +50,9 @@ jobs:
 
       # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
-        run: npm i @testing-library/react
+        run: |
+          npm install
+          npm i @testing-library/react
 
       # Step 4: Run tests
       - name: Run tests
