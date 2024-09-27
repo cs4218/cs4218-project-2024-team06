@@ -6,6 +6,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Spinner from "../Spinner";
 import { useAuth } from '../../context/auth';
+import exp from 'constants';
 
 jest.mock('../../context/auth', () => ({
     useAuth: jest.fn()
@@ -30,6 +31,8 @@ jest.mock('../Spinner', () =>
     () => <div>Mocked Spinner</div>
 );
 
+const apiString = "/api/v1/auth/user-auth";
+
 describe('PrivateRoute', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -39,6 +42,7 @@ describe('PrivateRoute', () => {
         useAuth.mockReturnValue([null, jest.fn()]);
         render(<PrivateRoute />);
         expect(await screen.findByText('Mocked Spinner')).toBeInTheDocument();
+        expect(axios.get).not.toHaveBeenCalled();
     });
     
     it('should render Outlet if axios reports valid token', async () => {
@@ -47,6 +51,7 @@ describe('PrivateRoute', () => {
         axios.get.mockResolvedValue(res);
         render(<PrivateRoute />);
         expect(await screen.findByText('Mocked Outlet')).toBeInTheDocument();
+        expect(axios.get).toHaveBeenCalledWith(apiString);
     });
 
     it('should render Spinner if axios reports invalid token', async () => {
@@ -55,6 +60,7 @@ describe('PrivateRoute', () => {
         axios.get.mockResolvedValue(res);
         render(<PrivateRoute />);
         expect(await screen.findByText('Mocked Spinner')).toBeInTheDocument();
+        expect(axios.get).toHaveBeenCalledWith(apiString);
     });
 
     // This test is skipped because it is not working as expected
