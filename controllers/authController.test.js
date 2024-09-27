@@ -2,6 +2,7 @@ import { hashPassword } from "../helpers/authHelper.js";
 import { updateProfileController } from "./authController.js";
 import userModel from "../models/userModel.js";
 import { hash } from "crypto";
+import { describe } from "node:test";
 
 jest.mock("../models/userModel.js");
 
@@ -47,7 +48,8 @@ const newProfileUpdate = {
 
 const req = {
     body: {}, 
-    user: { _id: "123" }
+    user: { _id: "123" }, 
+    params: "mockParams"
 }
 
 const res = {
@@ -316,22 +318,45 @@ const mockUser2 = {
     name: "Tony Tan"
 }
 
+const mockUser3 = {
+    name: "SR Nathan"
+}
+
+const mockUser4 = {
+    name: "Tharman Shanmugaratnam"
+}
+
 const mockOrder1 = {
     products: [mockProduct1, mockProduct2],
-    buyer: mockUser1
+    buyer: mockUser1, 
+    status: "Not Process"
 }
 
 const mockOrder2 = {
-    products: [mockProduct3, mockProduct4],
-    buyer: mockUser2
+    products: [mockProduct1, mockProduct3],
+    buyer: mockUser2, 
+    status: "Processing"
 }
 
 const mockOrder3 = {
-    products: [mockProduct1, mockProduct3], 
-    buyer: mockUser1
+    products: [mockProduct3, mockProduct4], 
+    buyer: mockUser1, 
+    status: "Shipped"
 }
 
-const orderList = [mockOrder1, mockOrder2, mockOrder3];
+const mockOrder4 = {
+    products: [mockProduct2, mockProduct3, mockProduct4], 
+    buyer: mockUser3, 
+    status: "deliverd"
+}
+
+const mockOrder5 = {
+    products: [mockProduct1, mockProduct2, mockProduct3, mockProduct4], 
+    buyer: mockUser4, 
+    status: "cancel"
+}
+
+const orderList = [mockOrder1, mockOrder2, mockOrder3, mockOrder4, mockOrder5];
 
 // Tests for getOrdersController
 describe("getOrdersController", () => {
@@ -344,3 +369,10 @@ describe("getOrdersController", () => {
         req.body = JSON.parse(JSON.stringify(newProfile));
     });
 });
+
+// Tests for orderStatusController
+describe("orderStatusController", () => {
+    beforeAll(() => {
+        console.log()
+    });
+})
