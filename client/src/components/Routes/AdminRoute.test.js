@@ -11,11 +11,11 @@ jest.mock('../../context/auth', () => ({
     useAuth: jest.fn()
 }));
 
-jest.mock('mongoose', () => ({
-    connect: jest.fn(),
-    model: jest.fn(),
-    Schema: jest.fn(),
-}));
+// jest.mock('mongoose', () => ({
+//     connect: jest.fn(),
+//     model: jest.fn(),
+//     Schema: jest.fn(),
+// }));
 
 // Sample token for testing
 const mockAuth = { token: 'sample token' };
