@@ -413,9 +413,30 @@ describe("getOrdersController", () => {
 
     it("should catch error thrown by frst populate function", async () => {
         const mockedPopulateError = new Error("find failed");
-        orderModel.find.mockImplementation(() => ({ populate: jest.fn(() => {
-            throw mockedPopulateError;
-        }) }));
+        orderModel.find.mockImplementation(() => ({
+            populate: jest.fn(() => {
+                throw mockedPopulateError;
+            })
+        }));
+        await getOrdersController(req, res);
+        expect(orderModel.find).toHaveBeenCalledTimes(1);
+        expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
+        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedPopulateError }));
+    });
+
+    it("should catch error thrown by frst populate function", async () => {
+        const mockedPopulateError = new Error("find failed");
+        orderModel.find.mockImplementation(() => ({
+            populate: jest.fn(() => ({
+                populate: jest.fn(() => {
+                    throw mockedPopulateError;
+                })
+            }))
+        }));
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
