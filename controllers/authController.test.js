@@ -362,7 +362,8 @@ const mockOrder5 = {
     status: "cancel"
 }
 
-const sameUserOrderList = [mockOrder1, mockOrder3];
+const sameUserOrderArray = [mockOrder1, mockOrder3];
+const emptyOrderArray = [];
 
 // Tests for getOrdersController
 describe("getOrdersController", () => {
@@ -374,15 +375,28 @@ describe("getOrdersController", () => {
     it("should respond with all the orders from requested buyer", async () => {
         orderModel.find.mockReturnValue({
             populate: jest.fn(() => ({
-                populate: jest.fn(() => sameUserOrderList)
+                populate: jest.fn(() => sameUserOrderArray)
             }))
         });
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
         expect(res.json).toHaveBeenCalledTimes(1);
-        expect(res.json).toHaveBeenCalledWith(sameUserOrderList);
+        expect(res.json).toHaveBeenCalledWith(sameUserOrderArray);
     });
+
+    it("should respond with empty array if requested buyer has no orders", async () => {
+        orderModel.find.mockReturnValue({
+            populate: jest.fn(() => ({
+                populate: jest.fn(() => emptyOrderArray)
+            }))
+        });
+        await getOrdersController(req, res);
+        expect(orderModel.find).toHaveBeenCalledTimes(1);
+        expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
+        expect(res.json).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith(emptyOrderArray);
+    })
 });
 
 // Tests for orderStatusController
