@@ -48,8 +48,13 @@ jobs:
         with:
           node-version: "21"
 
-      # Step 3: Install dependencies
+      # Step 3: Install server-side dependencies
       - name: Install dependencies
+        run: npm install
+
+      # Step 4: Install client-side dependencies
+      - name: Install client dependencies
+        working-directory: ./client
         run: npm install
 
       # Step 4: Run tests
