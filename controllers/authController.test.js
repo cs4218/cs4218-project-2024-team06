@@ -394,11 +394,12 @@ describe("getOrdersController", () => {
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
         expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith(emptyOrderArray);
-    })
+    });
 
     it("should catch error thrown by find", async () => {
+        const mockedFindError = new Error("find failed");
         orderModel.find.mockImplementation(() => {
-            throw new Error("find failed");
+            throw mockedFindError;
         });
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
@@ -407,8 +408,8 @@ describe("getOrdersController", () => {
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: new Error("find failed") }));
-    })
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedFindError }));
+    });
 });
 
 // Tests for orderStatusController
