@@ -230,7 +230,10 @@ describe("updateProfileController", () => {
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
     });
 
-    // This test will fail as there is currently no validation for phone number in original code.
+    /**
+     * This test will fail as there is currently no validation for phone number in original code.
+     * Updating phone number with invalid strings like "abc" should not work but the original code allows it.
+     */
     it("should not update profile with invalid phone number", async () => {
         req.body = {
             name: sampleName,
@@ -367,6 +370,15 @@ describe("getOrdersController", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         req.body = JSON.parse(JSON.stringify(newProfile));
+    });
+
+    it ("should return all orders of a buyer", async () => {
+        // orderModel.find.mockReturnValueOnce(orderList);
+        await getOrdersController(req, res);
+        expect(orderModel.find).toHaveBeenCalledTimes(1);
+        // expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
+        expect(res.json).toHaveBeenCalledTimes(1);
+        // expect(res.json).toHaveBeenCalledWith(orderList);
     });
 });
 
