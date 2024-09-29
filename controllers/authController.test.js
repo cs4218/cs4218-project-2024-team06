@@ -1,5 +1,6 @@
+import { getAllOrdersController, getOrdersController, updateProfileController } from "./authController.js";
 import { hashPassword } from "../helpers/authHelper.js";
-import { updateProfileController } from "./authController.js";
+import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
 import { hash } from "crypto";
 import { describe } from "node:test";
@@ -261,6 +262,8 @@ describe("updateProfileController", () => {
     });
 });
 
+jest.mock("../models/orderModel.js");
+
 const mockProduct1 = {
     name: "iphone 16",
     slug: "iphone 16",
@@ -359,32 +362,28 @@ const mockOrder5 = {
     status: "cancel"
 }
 
-const orderList = [mockOrder1, mockOrder2, mockOrder3, mockOrder4, mockOrder5];
+const sameUserOrderList = [mockOrder1, mockOrder3];
 
 // Tests for getOrdersController
 describe("getOrdersController", () => {
-    beforeAll(() => {
-        orderModel.find.mockReturnValue({ populate: jest.fn(() => jest.fn()) });
-    })
-
     beforeEach(() => {
         jest.clearAllMocks();
         req.body = JSON.parse(JSON.stringify(newProfile));
     });
 
     it ("should return all orders of a buyer", async () => {
-        // orderModel.find.mockReturnValueOnce(orderList);
+        orderModel.find.mockReturnValue({ populate: jest.fn(() => sameUserOrderList) });
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
-        // expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
+        expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
         expect(res.json).toHaveBeenCalledTimes(1);
-        // expect(res.json).toHaveBeenCalledWith(orderList);
+        expect(res.json).toHaveBeenCalledWith(sameUserOrderList);
     });
 });
 
 // Tests for orderStatusController
-describe("orderStatusController", () => {
-    beforeAll(() => {
-        console.log()
-    });
-})
+// describe("orderStatusController", () => {
+//     beforeAll(() => {
+//         console.log()
+//     });
+// })
