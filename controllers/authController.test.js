@@ -2,8 +2,6 @@ import { getAllOrdersController, getOrdersController, updateProfileController } 
 import { hashPassword } from "../helpers/authHelper.js";
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
-import { hash } from "crypto";
-import { describe } from "node:test";
 
 jest.mock("../models/userModel.js");
 
@@ -396,6 +394,20 @@ describe("getOrdersController", () => {
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
         expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith(emptyOrderArray);
+    })
+
+    it("should catch error thrown by find", async () => {
+        orderModel.find.mockImplementation(() => {
+            throw new Error("find failed");
+        });
+        await getOrdersController(req, res);
+        expect(orderModel.find).toHaveBeenCalledTimes(1);
+        expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
+        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: new Error("find failed") }));
     })
 });
 
