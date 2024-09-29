@@ -371,8 +371,12 @@ describe("getOrdersController", () => {
         req.body = JSON.parse(JSON.stringify(newProfile));
     });
 
-    it ("should return all orders of a buyer", async () => {
-        orderModel.find.mockReturnValue({ populate: jest.fn(() => sameUserOrderList) });
+    it("should respond with all the orders from requested buyer", async () => {
+        orderModel.find.mockReturnValue({
+            populate: jest.fn(() => ({
+                populate: jest.fn(() => sameUserOrderList)
+            }))
+        });
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
