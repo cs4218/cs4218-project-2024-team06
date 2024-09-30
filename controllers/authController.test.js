@@ -372,27 +372,27 @@ describe("getOrdersController", () => {
     });
 
     it("should respond with all the orders from requested buyer", async () => {
-        orderModel.find.mockReturnValue({
-            populate: jest.fn(() => ({
-                populate: jest.fn(() => sameUserOrderArray)
-            }))
-        });
+        orderModel.find.mockReturnValue(orderModel);
+        orderModel.populate.mockReturnValueOnce(orderModel).mockReturnValue(sameUserOrderArray);
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
+        expect(orderModel.populate).toHaveBeenCalledTimes(2);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(1, "products", "-photo");
+        expect(orderModel.populate).toHaveBeenNthCalledWith(2, "buyer", "name");
         expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith(sameUserOrderArray);
     });
 
     it("should respond with empty array if requested buyer has no orders", async () => {
-        orderModel.find.mockReturnValue({
-            populate: jest.fn(() => ({
-                populate: jest.fn(() => emptyOrderArray)
-            }))
-        });
+        orderModel.find.mockReturnValue(orderModel);
+        orderModel.populate.mockReturnValueOnce(orderModel).mockReturnValue(emptyOrderArray);
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
+        expect(orderModel.populate).toHaveBeenCalledTimes(2);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(1, "products", "-photo");
+        expect(orderModel.populate).toHaveBeenNthCalledWith(2, "buyer", "name");
         expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith(emptyOrderArray);
     });
@@ -405,6 +405,7 @@ describe("getOrdersController", () => {
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
+        expect(orderModel.populate).toHaveBeenCalledTimes(0);
         expect(res.json).toHaveBeenCalledTimes(0);
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
@@ -414,14 +415,15 @@ describe("getOrdersController", () => {
 
     it("should catch error thrown by first populate function", async () => {
         const mockedPopulateError = new Error("find failed");
-        orderModel.find.mockImplementation(() => ({
-            populate: jest.fn(() => {
-                throw mockedPopulateError;
-            })
-        }));
+        orderModel.find.mockReturnValue(orderModel);
+        orderModel.populate.mockImplementation(() => {
+            throw mockedPopulateError;
+        });
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
+        expect(orderModel.populate).toHaveBeenCalledTimes(1);
+        expect(orderModel.populate).toHaveBeenCalledWith("products", "-photo");
         expect(res.json).toHaveBeenCalledTimes(0);
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
@@ -431,16 +433,18 @@ describe("getOrdersController", () => {
 
     it("should catch error thrown by second populate function", async () => {
         const mockedPopulateError = new Error("find failed");
-        orderModel.find.mockImplementation(() => ({
-            populate: jest.fn(() => ({
-                populate: jest.fn(() => {
-                    throw mockedPopulateError;
-                })
-            }))
-        }));
+        orderModel.find.mockReturnValue(orderModel);
+        orderModel.populate
+            .mockReturnValueOnce(orderModel)
+            .mockImplementation(() => {
+                throw mockedPopulateError;
+            });
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
+        expect(orderModel.populate).toHaveBeenCalledTimes(2);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(1, "products", "-photo");
+        expect(orderModel.populate).toHaveBeenNthCalledWith(2, "buyer", "name");
         expect(res.json).toHaveBeenCalledTimes(0);
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
@@ -449,9 +453,26 @@ describe("getOrdersController", () => {
     });
 });
 
+const allOrdersArray = [mockOrder1, mockOrder2, mockOrder3, mockOrder4, mockOrder5];
+
 // Tests for orderStatusController
-describe("orderStatusController", () => {
+describe("getAllOrdersController", () => {    
     beforeEach(() => {
         jest.clearAllMocks();
+    });
+
+    it("should respond with all orders from all buyers", async () => {
+        orderModel.find.mockReturnValue({
+            populate: jest.fn(() => ({
+                populate: jest.fn(() => ({
+                    sort: jest.fn(() => allOrdersArray)
+                }))
+            }))
+        });
+        await getAllOrdersController(req, res);
+        expect(orderModel.find).toHaveBeenCalledTimes(1);
+        expect(orderModel.find).toHaveBeenCalledWith({});
+        expect(res.json).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith(allOrdersArray);
     });
 })
