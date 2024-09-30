@@ -42,7 +42,7 @@ describe('loginController', () => {
 
    
     describe('should return error messages for its input validations if', () => {
-        //SHOULD NOT PASS
+        //NEVER PASS
         it('email is empty', async () => {
             //ARRANGE
             const req = {
