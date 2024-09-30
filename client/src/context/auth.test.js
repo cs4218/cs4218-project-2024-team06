@@ -69,34 +69,33 @@ describe('AuthProvider Component', () => {
             });
         });
 
-
-        //Test case 2
-        it('if auth information in localStorage is an empty string', () => {
-            //ARRANGE
-            localStorage.getItem.mockImplementation(() => "");
+        //REMOVED AS AUTH INFORMATION IS EITHER NULL OR AN OBJECT, AS TRACED THROUGH CODE
+        // it('if auth information in localStorage is an empty string', () => {
+        //     //ARRANGE
+        //     localStorage.getItem.mockImplementation(() => "");
             
-            //ACTION
-            render(
-                <AuthProvider>
-                    <AuthContextChild />
-                </AuthProvider>
-            );
+        //     //ACTION
+        //     render(
+        //         <AuthProvider>
+        //             <AuthContextChild />
+        //         </AuthProvider>
+        //     );
 
-            //ASSERT
-            expect(axios.defaults.headers.common['Authorization']).toBe("");
-            expect(localStorage.getItem).toHaveBeenCalledWith("auth");
-            expect(consoleLogSpy).toHaveBeenCalledWith({
-                user: null,
-                token: ""
-            });
-        });
+        //     //ASSERT
+        //     expect(axios.defaults.headers.common['Authorization']).toBe("");
+        //     expect(localStorage.getItem).toHaveBeenCalledWith("auth");
+        //     expect(consoleLogSpy).toHaveBeenCalledWith({
+        //         user: null,
+        //         token: ""
+        //     });
+        // });
     });
 
 
     //Non-default value for auth state
     describe("should have non default value for its auth state", () => {
-        //Test case 3
-        it('if auth information in localStorage is not null', () => {
+        //Test case 2
+        it('if auth information in localStorage is a valid user object', () => {
             //ARRANGE
             localStorage.getItem.mockImplementation(() =>
                 '{"user": {"_id": 1, "name": "James", "email": "james@gmail.com", "phone": "91234567", "address": "Singapore", "role": 0}, "token": "12345678"}');
