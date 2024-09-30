@@ -413,7 +413,7 @@ describe("getOrdersController", () => {
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedFindError }));
     });
 
-    it("should catch error thrown by frst populate function", async () => {
+    it("should catch error thrown by first populate function", async () => {
         const mockedPopulateError = new Error("find failed");
         orderModel.find.mockImplementation(() => ({
             populate: jest.fn(() => {
@@ -430,7 +430,7 @@ describe("getOrdersController", () => {
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedPopulateError }));
     });
 
-    it("should catch error thrown by frst populate function", async () => {
+    it("should catch error thrown by second populate function", async () => {
         const mockedPopulateError = new Error("find failed");
         orderModel.find.mockImplementation(() => ({
             populate: jest.fn(() => ({
