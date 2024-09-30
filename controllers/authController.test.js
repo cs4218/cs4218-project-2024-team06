@@ -369,7 +369,6 @@ const emptyOrderArray = [];
 describe("getOrdersController", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        req.body = JSON.parse(JSON.stringify(newProfile));
     });
 
     it("should respond with all the orders from requested buyer", async () => {
@@ -451,8 +450,8 @@ describe("getOrdersController", () => {
 });
 
 // Tests for orderStatusController
-// describe("orderStatusController", () => {
-//     beforeAll(() => {
-//         console.log()
-//     });
-// })
+describe("orderStatusController", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+})
