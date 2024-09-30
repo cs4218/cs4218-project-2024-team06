@@ -416,7 +416,7 @@ describe("getOrdersController", () => {
     });
 
     it("should catch error thrown by first populate function", async () => {
-        const mockedPopulateError = new Error("find failed");
+        const mockedPopulateError = new Error("first populate failed");
         orderModel.find.mockReturnValue(orderModel);
         orderModel.populate.mockImplementation(() => {
             throw mockedPopulateError;
@@ -434,7 +434,7 @@ describe("getOrdersController", () => {
     });
 
     it("should catch error thrown by second populate function", async () => {
-        const mockedPopulateError = new Error("find failed");
+        const mockedPopulateError = new Error("second populate failed");
         orderModel.find.mockReturnValue(orderModel);
         orderModel.populate
             .mockReturnValueOnce(orderModel)
@@ -460,12 +460,9 @@ const sortParams = { createdAt: "-1" };
 
 // Tests for orderStatusController
 describe("getAllOrdersController", () => {
-    beforeAll(() => {
-        orderModel.find.mockReturnValue(orderModel);
-    })
-
     beforeEach(() => {
         jest.clearAllMocks();
+        orderModel.find.mockReturnValue(orderModel);
     });
 
     it("should respond with all orders from all buyers", async () => {
@@ -483,4 +480,92 @@ describe("getAllOrdersController", () => {
         expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith(allOrdersArray);
     });
+
+    it("should respond with empty array if there are no orders", async () => {
+        orderModel.populate
+            .mockReturnValueOnce(orderModel)
+            .mockReturnValue({ sort: jest.fn().mockReturnValue(emptyOrderArray) });
+        await getAllOrdersController(req, res);
+        expect(orderModel.find).toHaveBeenCalledTimes(1);
+        expect(orderModel.find).toHaveBeenCalledWith({});
+        expect(orderModel.populate).toHaveBeenCalledTimes(2);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
+        expect(orderModel.populate().sort).toHaveBeenCalledTimes(1);
+        expect(orderModel.populate().sort).toHaveBeenCalledWith(sortParams);
+        expect(res.json).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith(emptyOrderArray);
+    });
+
+    it("should catch error thrown by find", async () => {
+        const mockedFindError = new Error("find failed");
+        orderModel.find.mockImplementation(() => {
+            throw mockedFindError;
+        });
+        await getAllOrdersController(req, res);
+        expect(orderModel.find).toHaveBeenCalledTimes(1);
+        expect(orderModel.find).toHaveBeenCalledWith({});
+        expect(orderModel.populate).toHaveBeenCalledTimes(0);
+        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedFindError }));
+    });
+
+    it("should catch error thrown by first populate function", async () => {
+        const mockedPopulateError = new Error("first populate failed");
+        orderModel.populate.mockImplementation(() => {
+            throw mockedPopulateError;
+        });
+        await getAllOrdersController(req, res);
+        expect(orderModel.find).toHaveBeenCalledTimes(1);
+        expect(orderModel.find).toHaveBeenCalledWith({});
+        expect(orderModel.populate).toHaveBeenCalledTimes(1);
+        expect(orderModel.populate).toHaveBeenCalledWith(firstPopulateParams[0], firstPopulateParams[1]);
+        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedPopulateError }));
+    });
+
+    it("should catch error thrown by second populate function", async () => {
+        const mockedPopulateError = new Error("second populate failed");
+        orderModel.populate
+            .mockReturnValueOnce(orderModel)
+            .mockImplementation(() => {
+                throw mockedPopulateError;
+            });
+        await getAllOrdersController(req, res);
+        expect(orderModel.find).toHaveBeenCalledTimes(1);
+        expect(orderModel.find).toHaveBeenCalledWith({});
+        expect(orderModel.populate).toHaveBeenCalledTimes(2);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
+        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedPopulateError }));
+    });
+
+    it("should catch error thrown by sort", async () => {
+        const mockedSortError = new Error("sort failed");
+        orderModel.populate
+            .mockReturnValueOnce(orderModel)
+            .mockReturnValue({ sort: jest.fn(() => { throw mockedSortError; }) });
+        await getAllOrdersController(req, res);
+        expect(orderModel.find).toHaveBeenCalledTimes(1);
+        expect(orderModel.find).toHaveBeenCalledWith({});
+        expect(orderModel.populate).toHaveBeenCalledTimes(2);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
+        expect(orderModel.populate().sort).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedSortError }));
+    })
 })
