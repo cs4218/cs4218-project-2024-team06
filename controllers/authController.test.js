@@ -364,6 +364,8 @@ const mockOrder5 = {
 
 const sameUserOrderArray = [mockOrder1, mockOrder3];
 const emptyOrderArray = [];
+const firstPopulateParams = ["products", "-photo"];
+const secondPopulateParams = ["buyer", "name"];
 
 // Tests for getOrdersController
 describe("getOrdersController", () => {
@@ -378,8 +380,8 @@ describe("getOrdersController", () => {
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
         expect(orderModel.populate).toHaveBeenCalledTimes(2);
-        expect(orderModel.populate).toHaveBeenNthCalledWith(1, "products", "-photo");
-        expect(orderModel.populate).toHaveBeenNthCalledWith(2, "buyer", "name");
+        expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
         expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith(sameUserOrderArray);
     });
@@ -391,8 +393,8 @@ describe("getOrdersController", () => {
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
         expect(orderModel.populate).toHaveBeenCalledTimes(2);
-        expect(orderModel.populate).toHaveBeenNthCalledWith(1, "products", "-photo");
-        expect(orderModel.populate).toHaveBeenNthCalledWith(2, "buyer", "name");
+        expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
         expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith(emptyOrderArray);
     });
@@ -423,7 +425,7 @@ describe("getOrdersController", () => {
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
         expect(orderModel.populate).toHaveBeenCalledTimes(1);
-        expect(orderModel.populate).toHaveBeenCalledWith("products", "-photo");
+        expect(orderModel.populate).toHaveBeenCalledWith(firstPopulateParams[0], firstPopulateParams[1]);
         expect(res.json).toHaveBeenCalledTimes(0);
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
@@ -443,8 +445,8 @@ describe("getOrdersController", () => {
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
         expect(orderModel.populate).toHaveBeenCalledTimes(2);
-        expect(orderModel.populate).toHaveBeenNthCalledWith(1, "products", "-photo");
-        expect(orderModel.populate).toHaveBeenNthCalledWith(2, "buyer", "name");
+        expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
         expect(res.json).toHaveBeenCalledTimes(0);
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
@@ -454,24 +456,30 @@ describe("getOrdersController", () => {
 });
 
 const allOrdersArray = [mockOrder1, mockOrder2, mockOrder3, mockOrder4, mockOrder5];
+const sortParams = { createdAt: "-1" };
 
 // Tests for orderStatusController
-describe("getAllOrdersController", () => {    
+describe("getAllOrdersController", () => {
+    beforeAll(() => {
+        orderModel.find.mockReturnValue(orderModel);
+    })
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     it("should respond with all orders from all buyers", async () => {
-        orderModel.find.mockReturnValue({
-            populate: jest.fn(() => ({
-                populate: jest.fn(() => ({
-                    sort: jest.fn(() => allOrdersArray)
-                }))
-            }))
-        });
+        orderModel.populate
+            .mockReturnValueOnce(orderModel)
+            .mockReturnValue({ sort: jest.fn().mockReturnValue(allOrdersArray) });
         await getAllOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({});
+        expect(orderModel.populate).toHaveBeenCalledTimes(2);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
+        expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
+        expect(orderModel.populate().sort).toHaveBeenCalledTimes(1);
+        expect(orderModel.populate().sort).toHaveBeenCalledWith(sortParams);
         expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith(allOrdersArray);
     });
