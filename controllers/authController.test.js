@@ -82,7 +82,7 @@ describe("updateProfileController", () => {
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, newProfileUpdate, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser: newProfileUpdate }));
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser: newProfileUpdate }));
     });
 
     it("should update user's profile with new password of length 6", async () => {
@@ -99,7 +99,7 @@ describe("updateProfileController", () => {
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
     });
 
     it("should not update user's profile with new password of less than length 6", async () => {
@@ -126,7 +126,7 @@ describe("updateProfileController", () => {
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
     });
 
     it("should keep old password if hashpassword fails", async () => {
@@ -143,7 +143,7 @@ describe("updateProfileController", () => {
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
     });
 
     it("should not update empty password and empty phone fields", async () => {
@@ -166,7 +166,7 @@ describe("updateProfileController", () => {
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
     })
 
     it("should not update empty name and empty address fields", async () => {
@@ -188,7 +188,7 @@ describe("updateProfileController", () => {
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
     })
 
     it("should keep old profile if new profile is empty", async () => {
@@ -201,12 +201,14 @@ describe("updateProfileController", () => {
         };
 
         let updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
+        userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
 
         await updateProfileController(req, res);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
     });
 
     it("should keep old profile if new profile has null fields", async () => {
@@ -226,7 +228,7 @@ describe("updateProfileController", () => {
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ updatedUser }));
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
     });
 
     /**
