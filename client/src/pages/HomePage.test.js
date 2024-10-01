@@ -6,6 +6,7 @@ import { useCart } from "../context/cart";
 import '@testing-library/jest-dom/extend-expect';
 import HomePage from "./HomePage";
 import axios from "axios";
+import { AiOutlineReload } from "react-icons/ai";
 import { Checkbox, Radio } from "antd";
 
 
@@ -88,7 +89,6 @@ describe('HomePage component', () => {
                     data: { total: 2 }
                 })
             }
-            // return Promise.reject(new Error("Not Found"));
         });
         axios.post.mockResolvedValueOnce({
             data: {
@@ -168,4 +168,53 @@ describe('HomePage component', () => {
             expect(screen.queryByText('Product 2')).not.toBeInTheDocument();
         });
     })
+
+    test('should render loadmore button when current products length lesser than total', async () => {
+        axios.get.mockImplementation((url) => {
+            if (url === "/api/v1/product/product-count") {
+                return Promise.resolve({
+                    data: { total: 3 }
+                })
+            }
+        });
+
+        renderComponent();
+
+        expect(await screen.findByText('Loadmore')).toBeInTheDocument();
+    });
+
+    test('should go to next page when click loadmore button', async () => {
+        axios.get.mockImplementation((url) => {
+            if (url === "/api/v1/product/product-count") {
+                return Promise.resolve({
+                    data: { total: 3 }
+                })
+            }
+            if (url === "/api/v1/product/product-list/2") {
+                return Promise.resolve({
+                    data: {
+                        success: true,
+                        products:
+                            [
+                                {
+                                    _id: '3',
+                                    name: 'Product 3',
+                                    price: 20,
+                                    description: 'Product on page 2',
+                                    category: '1'
+                                },
+                            ]
+                    }
+                });
+            }
+        });
+
+        renderComponent();
+        const loadmore = await screen.findByText('Loadmore');
+        fireEvent.click(loadmore);
+
+        expect(await screen.findByText('Product 3')).toBeInTheDocument();
+        expect(await screen.findByText(/Product on page 2/)).toBeInTheDocument();
+        expect(screen.queryByText('Loadmore')).not.toBeInTheDocument();
+    });
 });
