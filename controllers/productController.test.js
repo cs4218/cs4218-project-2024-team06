@@ -143,7 +143,7 @@ describe('productController', () => {
             expect(res.json).toHaveBeenCalledWith({ ok: true });
         });
 
-        test('should handle error when perfoming transaction sale', async () => {
+        test('should handle error when performing transaction sale', async () => {
             const error = new Error('Transaction sale error');
             const gateway = new braintree.BraintreeGateway();
             gateway.transaction.sale.mockImplementation((_, callback) => {
@@ -165,7 +165,7 @@ describe('productController', () => {
                 throw error;
             });
 
-            await braintreeTokenController(req, res);
+            await brainTreePaymentController(req, res);
 
             expect(res.status).toHaveBeenCalledWith(500);
             expect(consoleLogSpy).toHaveBeenCalledWith(error);
