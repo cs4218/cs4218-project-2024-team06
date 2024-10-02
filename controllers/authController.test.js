@@ -106,7 +106,7 @@ describe("updateProfileController", () => {
 
         await updateProfileController(req, res);
 
-        expect(hashPassword).toHaveBeenCalledTimes(0);
+        expect(hashPassword).not.toHaveBeenCalled();
         expect(res.json).toHaveBeenCalledTimes(1);
     });
 
@@ -120,7 +120,7 @@ describe("updateProfileController", () => {
         
         await updateProfileController(req, res);
         
-        expect(hashPassword).toHaveBeenCalledTimes(0);
+        expect(hashPassword).not.toHaveBeenCalled();
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
         expect(res.status).toHaveBeenCalledWith(200);
@@ -250,7 +250,7 @@ describe("updateProfileController", () => {
     it("should catch error if findById fails", async () => {
         userModel.findById.mockRejectedValueOnce(new Error("findById failed"));
         await updateProfileController(req, res);
-        expect(hashPassword).toHaveBeenCalledTimes(0);
+        expect(hashPassword).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledWith(400);
     });
 
@@ -406,8 +406,8 @@ describe("getOrdersController", () => {
         await getOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
-        expect(orderModel.populate).toHaveBeenCalledTimes(0);
-        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(orderModel.populate).not.toHaveBeenCalled();
+        expect(res.json).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
@@ -425,7 +425,7 @@ describe("getOrdersController", () => {
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
         expect(orderModel.populate).toHaveBeenCalledTimes(1);
         expect(orderModel.populate).toHaveBeenCalledWith(firstPopulateParams[0], firstPopulateParams[1]);
-        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.json).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
@@ -446,7 +446,7 @@ describe("getOrdersController", () => {
         expect(orderModel.populate).toHaveBeenCalledTimes(2);
         expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
         expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
-        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.json).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
@@ -504,8 +504,8 @@ describe("getAllOrdersController", () => {
         await getAllOrdersController(req, res);
         expect(orderModel.find).toHaveBeenCalledTimes(1);
         expect(orderModel.find).toHaveBeenCalledWith({});
-        expect(orderModel.populate).toHaveBeenCalledTimes(0);
-        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(orderModel.populate).not.toHaveBeenCalled();
+        expect(res.json).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
@@ -522,7 +522,7 @@ describe("getAllOrdersController", () => {
         expect(orderModel.find).toHaveBeenCalledWith({});
         expect(orderModel.populate).toHaveBeenCalledTimes(1);
         expect(orderModel.populate).toHaveBeenCalledWith(firstPopulateParams[0], firstPopulateParams[1]);
-        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.json).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
@@ -542,7 +542,7 @@ describe("getAllOrdersController", () => {
         expect(orderModel.populate).toHaveBeenCalledTimes(2);
         expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
         expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
-        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.json).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
@@ -561,7 +561,7 @@ describe("getAllOrdersController", () => {
         expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
         expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
         expect(orderModel.populate().sort).toHaveBeenCalledTimes(1);
-        expect(res.json).toHaveBeenCalledTimes(0);
+        expect(res.json).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
@@ -600,7 +600,7 @@ describe("orderStatusController", () => {
     it("should handle null req.params", async () => {
         req.params = null;
         await orderStatusController(req, res);
-        expect(orderModel.findByIdAndUpdate).toHaveBeenCalledTimes(0);
+        expect(orderModel.findByIdAndUpdate).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
@@ -620,7 +620,7 @@ describe("orderStatusController", () => {
     it("should handle null req.body", async () => {
         req.body = null;
         await orderStatusController(req, res);
-        expect(orderModel.findByIdAndUpdate).toHaveBeenCalledTimes(0);
+        expect(orderModel.findByIdAndUpdate).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
