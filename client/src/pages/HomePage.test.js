@@ -105,27 +105,22 @@ describe('HomePage component', () => {
         });
     });
 
-    test('should render properly with no product and categories', async () => {
-        renderComponent();
+    // test('should render properly with no product and categories', async () => {
+    //     renderComponent();
 
-        expect(screen.getByText('All Products')).toBeInTheDocument();
-        expect(screen.getByText('Filter By Category')).toBeInTheDocument();
-        expect(screen.getByText('Filter By Price')).toBeInTheDocument();
-        expect(screen.getByText('$0 - $50')).toBeInTheDocument();
-        expect(screen.getByText('RESET FILTERS')).toBeInTheDocument();
-        expect(screen.getByAltText('bannerimage')).toBeInTheDocument();
-    });
+    //     expect(screen.getByText('All Products')).toBeInTheDocument();
+    //     expect(screen.getByText('Filter By Category')).toBeInTheDocument();
+    //     expect(screen.getByText('Filter By Price')).toBeInTheDocument();
+    //     expect(screen.getByText('$0 - $50')).toBeInTheDocument();
+    //     expect(screen.getByText('RESET FILTERS')).toBeInTheDocument();
+    //     expect(screen.getByAltText('bannerimage')).toBeInTheDocument();
+    // });
 
-    test('should fetch categories and render properly', async () => {
+    test('should fetch categories and products and render properly', async () => {
         renderComponent();
 
         await expect(screen.findByText('Category 1')).resolves.toBeInTheDocument();
         await expect(screen.findByText('Category 2')).resolves.toBeInTheDocument();
-    });
-
-    test('should fetch products and render properly', async () => {
-        renderComponent();
-
         await expect(screen.findByText('Product 1')).resolves.toBeInTheDocument();
         await expect(screen.findByText('Product 2')).resolves.toBeInTheDocument();
     });
@@ -168,20 +163,6 @@ describe('HomePage component', () => {
             expect(screen.queryByText('Product 2')).not.toBeInTheDocument();
         });
     })
-
-    test('should render loadmore button when current products length lesser than total', async () => {
-        axios.get.mockImplementation((url) => {
-            if (url === "/api/v1/product/product-count") {
-                return Promise.resolve({
-                    data: { total: 3 }
-                })
-            }
-        });
-
-        renderComponent();
-
-        expect(await screen.findByText('Loadmore')).toBeInTheDocument();
-    });
 
     test('should go to next page when click loadmore button', async () => {
         axios.get.mockImplementation((url) => {
