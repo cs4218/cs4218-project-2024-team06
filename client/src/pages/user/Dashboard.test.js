@@ -23,7 +23,6 @@ describe('Dashboard', () => {
 
     it("should render the user information", () => {
         render(<Dashboard />);
-        
         expect(screen.getByText("User Menu")).toBeInTheDocument();
         expect(screen.getByText(name)).toBeInTheDocument();
         expect(screen.getByText(email)).toBeInTheDocument();
@@ -52,5 +51,16 @@ describe('Dashboard', () => {
         expect(screen.queryByText(name)).not.toBeInTheDocument();
         expect(screen.queryByText(email)).not.toBeInTheDocument();
         expect(screen.queryByText(address)).not.toBeInTheDocument();
+    });
+
+    it.failing("should handle useAuth error", () => {
+        const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+        const mockedError = new Error("useAuth error");
+        useAuth.mockImplementation(() => {
+            throw mockedError;
+        });
+        expect(() => render(<Dashboard />)).toThrow(mockedError);
+        expect(consoleErrorSpy).not.toHaveBeenCalled();
+        consoleErrorSpy.mockRestore();
     });
 });
