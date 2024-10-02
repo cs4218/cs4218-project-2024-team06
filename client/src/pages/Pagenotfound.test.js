@@ -33,11 +33,6 @@ describe('Pagenotfound component', () => {
         expect(screen.getByText('404')).toBeInTheDocument();
         expect(screen.getByText('Oops ! Page Not Found')).toBeInTheDocument();
         expect(screen.getByText('Go Back')).toBeInTheDocument();
-    });
-
-    test('renders links correctly', () => {
-        renderComponent();
-
         expect(screen.getByText('Go Back')).toHaveAttribute('href', '/');
-    })
+    });
 });
