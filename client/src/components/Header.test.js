@@ -56,23 +56,12 @@ describe('Header component', () => {
     });
 
     describe('when user is not logged in', () => {
-        test('renders correctly', () => {
+        test('renders correctly with no item in cart', () => {
             renderComponent();
             const badge = screen.getByTestId('mock-badge');
 
-            expect(screen.getByText('🛒 Virtual Vault')).toBeInTheDocument();
             expect(screen.getByTestId('mock-search-input')).toBeInTheDocument();
-            expect(screen.getByText('Home')).toBeInTheDocument();
-            expect(screen.getByText('Register')).toBeInTheDocument();
-            expect(screen.getByText('Login')).toBeInTheDocument();
-            expect(screen.getByText('Cart')).toBeInTheDocument();
             expect(badge).toHaveAttribute('data-count', '0');
-        });
-
-        test('links are rendered properly', () => {
-            renderComponent();
-            const categoriesButton = screen.getByText('Categories');
-            fireEvent.click(categoriesButton);
 
             expect(screen.getByText('🛒 Virtual Vault')).toHaveAttribute('href', '/');
             expect(screen.getByText('Home')).toHaveAttribute('href', '/');
@@ -87,6 +76,7 @@ describe('Header component', () => {
                 { name: 'test-cat-2', slug: 'test-cat-2-slug' },
             ]
             useCategory.mockReturnValue(categories);
+            
             renderComponent();
             const categoriesButton = screen.getByText('Categories');
             fireEvent.click(categoriesButton);
@@ -98,38 +88,23 @@ describe('Header component', () => {
             expect(screen.getByText('test-cat-1')).toHaveAttribute('href', '/category/test-cat-1-slug');
             expect(screen.getByText('test-cat-2')).toHaveAttribute('href', '/category/test-cat-2-slug');
         });
-
-        test('displays number of cart items correctly', () => {
-            useCart.mockReturnValue([[{ id: 1 }, { id: 2 }]]);
-            renderComponent();
-            const badge = screen.getByTestId('mock-badge');
-
-            expect(screen.getByText('Cart')).toBeInTheDocument();
-            expect(badge).toHaveAttribute('data-count', '2');
-        })
     })
 
     describe('when user is logged in', () => {
-        test('renders user specific elements', () => {
+        test('renders user specific elements with item in cart', () => {
             useAuth.mockReturnValue([{
                 user: { name: 'test-user', role: 0 },
                 token: 'test-token',
                 setAuthMock
             }]);
+            useCart.mockReturnValue([[{ id: 1 }, { id: 2 }]]);
+            
             renderComponent();
+            const badge = screen.getByTestId('mock-badge');
 
             expect(screen.getByText('test-user')).toBeInTheDocument();
-            expect(screen.getByText('Logout')).toBeInTheDocument();
-            expect(screen.getByText('Dashboard')).toBeInTheDocument();
-        });
-
-        test('links are rendered properly', () => {
-            useAuth.mockReturnValue([{
-                user: { name: 'test-user', role: 0 },
-                token: 'test-token',
-                setAuthMock
-            }]);
-            renderComponent();
+            expect(screen.getByText('Cart')).toBeInTheDocument();
+            expect(badge).toHaveAttribute('data-count', '2');
 
             expect(screen.getByText('Logout')).toHaveAttribute('href', '/login');
             expect(screen.getByText('Dashboard')).toBeInTheDocument('href', '/dashboard/user');
