@@ -588,6 +588,15 @@ describe("orderStatusController", () => {
         expect(res.json).toHaveBeenCalledWith(updatedOrder);
     });
 
+    it("should should handle orderId not found", async () => {
+        orderModel.findByIdAndUpdate.mockReturnValue(null);
+        await orderStatusController(req, res);
+        expect(orderModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
+        expect(orderModel.findByIdAndUpdate).toHaveBeenCalledWith(req.params.orderId, { status: req.body.status }, { new: true });
+        expect(res.json).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith(null);
+    })
+
     it("should handle null req.params", async () => {
         req.params = null;
         await orderStatusController(req, res);
