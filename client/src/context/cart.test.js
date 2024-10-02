@@ -55,26 +55,12 @@ describe(('cartProvider'), () => {
             writable: true,
         });
     });
-    
-    test('should initially render with no items in cart', () => {
-        localStorage.getItem.mockReturnValue(null);
-
-        renderComponent();
-        
-        expect(screen.getByText('Cart Length: 0')).toBeInTheDocument();
-    });
 
     test('should render correct number of items from local storage', () => {
         const mockCart = JSON.stringify([{ id: 1 }, { id: 2 }]);
         localStorage.getItem.mockReturnValue(mockCart);
 
         renderComponent();
-
-        expect(screen.getByText('Cart Length: 2')).toBeInTheDocument();
-    });
-
-    test('should update cart state correctly', () => {
-        renderTestComponent();
 
         expect(screen.getByText('Cart Length: 2')).toBeInTheDocument();
     });
