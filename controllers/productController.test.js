@@ -93,7 +93,7 @@ describe('productController', () => {
             jest.clearAllMocks();
         });
 
-        test.failing('should successfully order ', async () => {
+        test.failing('should successfully order', async () => {
             const gateway = new braintree.BraintreeGateway();
             gateway.transaction.sale.mockImplementation((_, callback) => {
                 callback(null, {})
