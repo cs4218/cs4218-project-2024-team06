@@ -62,7 +62,6 @@ jest.mock("./../helpers/authHelper.js", () => ({
 }));
 
 
-// Tests for updateProfileController
 describe("updateProfileController", () => {
     beforeAll(() => {
         hashPassword.mockReturnValue(passwordHash);
@@ -367,7 +366,7 @@ const emptyOrderArray = [];
 const firstPopulateParams = ["products", "-photo"];
 const secondPopulateParams = ["buyer", "name"];
 
-// Tests for getOrdersController
+
 describe("getOrdersController", () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -458,7 +457,7 @@ describe("getOrdersController", () => {
 const allOrdersArray = [mockOrder1, mockOrder2, mockOrder3, mockOrder4, mockOrder5];
 const sortParams = { createdAt: "-1" };
 
-// Tests for orderStatusController
+
 describe("getAllOrdersController", () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -569,6 +568,7 @@ describe("getAllOrdersController", () => {
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedSortError }));
     });
 });
+
 
 describe("orderStatusController", () => {
     beforeEach(() => {
