@@ -1,4 +1,4 @@
-import { getAllOrdersController, getOrdersController, updateProfileController } from "./authController.js";
+import { getAllOrdersController, getOrdersController, updateProfileController, orderStatusController } from "./authController.js";
 import { hashPassword } from "../helpers/authHelper.js";
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
@@ -48,7 +48,7 @@ const newProfileUpdate = {
 const req = {
     body: {}, 
     user: { _id: "123" }, 
-    params: "mockParams"
+    params: { orderId: "mockedOrderId" }
 }
 
 const res = {
@@ -567,5 +567,23 @@ describe("getAllOrdersController", () => {
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledTimes(1);
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedSortError }));
-    })
-})
+    });
+});
+
+describe("orderStatusController", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it("should update order status", async () => {
+        req.body = { status: "Processing" };
+        let updatedOrder = JSON.parse(JSON.stringify(mockOrder1));
+        updatedOrder.status = "Processing";
+        orderModel.findByIdAndUpdate.mockReturnValue(updatedOrder);
+        await orderStatusController(req, res);
+        expect(orderModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
+        expect(orderModel.findByIdAndUpdate).toHaveBeenCalledWith(req.params.orderId, { status: req.body.status }, { new: true });
+        expect(res.json).toHaveBeenCalledTimes(1);
+        expect(res.json).toHaveBeenCalledWith(updatedOrder);
+    });
+});
