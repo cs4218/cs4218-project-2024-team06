@@ -6,7 +6,6 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Spinner from "../Spinner";
 import { useAuth } from '../../context/auth';
-import exp from 'constants';
 
 jest.mock('../../context/auth', () => ({
     useAuth: jest.fn()
