@@ -627,15 +627,30 @@ describe("orderStatusController", () => {
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
     });
 
-    // it("should handle null order status", async () => {
-    //     req.body = { status: null };
-    //     await orderStatusController(req, res);
-    //     expect(orderModel.findByIdAndUpdate).toHaveBeenCalledTimes(0);
-    //     expect(res.status).toHaveBeenCalledTimes(1);
-    //     expect(res.status).toHaveBeenCalledWith(500);
-    //     expect(res.send).toHaveBeenCalledTimes(1);
-    //     expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false }));
-    // });
+    it("should handle null order status", async () => {
+        req.body = { status: null };
+        const mockedValidationError = new Error("\"null\" not valid enum value for \"status\"");
+        orderModel.findByIdAndUpdate.mockRejectedValueOnce(mockedValidationError);
+        await orderStatusController(req, res);
+        expect(orderModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
+        expect(orderModel.findByIdAndUpdate).toHaveBeenCalledWith(req.params.orderId, { status: null }, { new: true });
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedValidationError }));
+    });
+
+    it("should handle findByIdAndUpdate error", async () => {
+        const mockedError = new Error("findByIdAndUpdate failed");
+        orderModel.findByIdAndUpdate.mockRejectedValueOnce(mockedError);
+        await orderStatusController(req, res);
+        expect(orderModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
+        expect(orderModel.findByIdAndUpdate).toHaveBeenCalledWith(req.params.orderId, { status: req.body.status }, { new: true });
+        expect(res.status).toHaveBeenCalledTimes(1);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledTimes(1);
+        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedError }));
+    });
 
     afterAll(() => {
         req.params = { orderId: "mockedOrderId" };
