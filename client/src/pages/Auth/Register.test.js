@@ -233,31 +233,10 @@ describe('Register Component', () => {
         });
 
 
-        it('where it displays an error message if axios.post returns a null value', async () => {
-            //ARRANGE
-            axios.post.mockResolvedValueOnce(null);
-
-            //ACTION
-            renderRegisterComponent();
-            fillInFieldsAndRegister();
-
-            //ASSERT
-            await waitFor(() =>  {
-                expect(axios.post).toHaveBeenCalledTimes(1)
-                expect(axios.post).toHaveBeenCalledWith("/api/v1/auth/register", sampleInput);
-                expect(toast.error).toHaveBeenCalledTimes(1);
-                //When res is null, trying to read res.data.message leads to an exception
-                expect(toast.error).toHaveBeenCalledWith("Something went wrong");
-                expect(consoleLogSpy).toHaveBeenCalledWith(new Error("Cannot read properties of null (reading 'data')"));
-            });
-        });
-
-
-        // it('where it displays an error message if register POST request did not return any value for the success attribute', async () => {
+        //REMOVE AS IT DOES NOT TEST THE TOAST.ERROR IN THE ELSE BRANCH
+        // it('where it displays an error message if axios.post returns a null value', async () => {
         //     //ARRANGE
-        //     axios.post.mockResolvedValueOnce({
-        //         data: { message: 'Name is required' },
-        //     });
+        //     axios.post.mockResolvedValueOnce(null);
 
         //     //ACTION
         //     renderRegisterComponent();
@@ -268,9 +247,31 @@ describe('Register Component', () => {
         //         expect(axios.post).toHaveBeenCalledTimes(1)
         //         expect(axios.post).toHaveBeenCalledWith("/api/v1/auth/register", sampleInput);
         //         expect(toast.error).toHaveBeenCalledTimes(1);
-        //         expect(toast.error).toHaveBeenCalledWith('Name is required');
+        //         //When res is null, trying to read res.data.message leads to an exception
+        //         expect(toast.error).toHaveBeenCalledWith("Something went wrong");
+        //         expect(consoleLogSpy).toHaveBeenCalledWith(new Error("Cannot read properties of null (reading 'data')"));
         //     });
         // });
+
+
+        it('where it displays an error message if register POST request did not return any value for the success attribute', async () => {
+            //ARRANGE
+            axios.post.mockResolvedValueOnce({
+                data: { message: 'Name is required' },
+            });
+
+            //ACTION
+            renderRegisterComponent();
+            fillInFieldsAndRegister();
+
+            //ASSERT
+            await waitFor(() =>  {
+                expect(axios.post).toHaveBeenCalledTimes(1)
+                expect(axios.post).toHaveBeenCalledWith("/api/v1/auth/register", sampleInput);
+                expect(toast.error).toHaveBeenCalledTimes(1);
+                expect(toast.error).toHaveBeenCalledWith('Name is required');
+            });
+        });
 
  
         // it('where it displays an error message if register POST request indicates false for success attribute', async () => {

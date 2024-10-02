@@ -49,7 +49,7 @@ describe('Login Component should minimally work where it', () => {
     });
 
     describe('should be correctly rendered', () => {
-        it('with the correct titles', () => {
+        it('with the correct titles and two buttons, LOGIN and Forgot Password', () => {
             //ARRANGE
 
             //ACTION
@@ -64,6 +64,8 @@ describe('Login Component should minimally work where it', () => {
             //ASSERT
             expect(screen.getByText("Mocked Login - Ecommerce App")).toBeInTheDocument();
             expect(screen.getByText("LOGIN FORM")).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'LOGIN' })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Forgot Password' })).toBeInTheDocument();
         });
 
 
@@ -122,25 +124,26 @@ describe('Login Component should minimally work where it', () => {
             });
 
 
-            it('where the input fields should allow typing', () => {
-                //ARRANGE
+            //REMOVED AS LOGIC WILL BE REPEATED WHEN TESTING FOR FUNCTIONALITY
+            // it('where the input fields should allow typing', () => {
+            //     //ARRANGE
 
-                //ACTION
-                render(
-                    <MemoryRouter initialEntries={['/login']}>
-                        <Routes>
-                            <Route path="/login" element={<Login />} />
-                        </Routes>
-                    </MemoryRouter>
-                );
-                fireEvent.change(screen.getByPlaceholderText('Enter Your Email'), { target: { value: sampleInput.email } });
-                fireEvent.change(screen.getByPlaceholderText('Enter Your Password'), { target: { value: sampleInput.password } });
+            //     //ACTION
+            //     render(
+            //         <MemoryRouter initialEntries={['/login']}>
+            //             <Routes>
+            //                 <Route path="/login" element={<Login />} />
+            //             </Routes>
+            //         </MemoryRouter>
+            //     );
+            //     fireEvent.change(screen.getByPlaceholderText('Enter Your Email'), { target: { value: sampleInput.email } });
+            //     fireEvent.change(screen.getByPlaceholderText('Enter Your Password'), { target: { value: sampleInput.password } });
                 
 
-                //ASSERT
-                expect(screen.getByPlaceholderText('Enter Your Email').value).toBe(sampleInput.email);
-                expect(screen.getByPlaceholderText('Enter Your Password').value).toBe(sampleInput.password);
-            });
+            //     //ASSERT
+            //     expect(screen.getByPlaceholderText('Enter Your Email').value).toBe(sampleInput.email);
+            //     expect(screen.getByPlaceholderText('Enter Your Password').value).toBe(sampleInput.password);
+            // });
 
 
             it('where the input fields are all required', () => {
@@ -163,23 +166,6 @@ describe('Login Component should minimally work where it', () => {
         });
 
 
-        it('with two buttons, LOGIN and Forgot Password', () => {
-            //ARRANGE
-
-            //ACTION
-            render(
-                <MemoryRouter initialEntries={['/login']}>
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                    </Routes>
-                </MemoryRouter>
-            );
-
-
-            //ASSERT
-            expect(screen.getByRole('button', { name: 'LOGIN' })).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: 'Forgot Password' })).toBeInTheDocument();
-        });
     });
 
     it('should correctly navigate to the forgot password page when clicking on the forgot password button', () => {  
@@ -312,7 +298,7 @@ describe('Login Component should allow user to log in', () => {
 });
 
 
-//Test suite for unsuccessul login
+//Test suite for unsuccessful login
 describe('Login Component should not allow user to log in', () => {
     let consoleLogSpy;
     const mockSetAuth = jest.fn();
@@ -397,7 +383,4 @@ describe('Login Component should not allow user to log in', () => {
             expect(consoleLogSpy).toHaveBeenCalledWith(error);
         });
     });
-
-
-
 });
