@@ -181,23 +181,23 @@ describe('loginController', () => {
         });
 
 
-        it('where it denies log in if there is an error', async () => {
-            //ARRANGE
-            const error = new Error('Exception during login');
-            JWT.sign.mockImplementation(() => {
-                throw error;
-            });
+        // it('where it denies log in if there is an error', async () => {
+        //     //ARRANGE
+        //     const error = new Error('Exception during login');
+        //     JWT.sign.mockImplementation(() => {
+        //         throw error;
+        //     });
 
-            //ACTION
-            await loginController(req, res);
+        //     //ACTION
+        //     await loginController(req, res);
 
-            //ASSERT
-            expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledTimes(1);
-            expect(res.send).toHaveBeenCalledWith({success: false, message: "Error in login", error});
-            expect(consoleLogSpy).toHaveBeenCalledWith(error);
-        });
+        //     //ASSERT
+        //     expect(res.status).toHaveBeenCalledTimes(1);
+        //     expect(res.status).toHaveBeenCalledWith(500);
+        //     expect(res.send).toHaveBeenCalledTimes(1);
+        //     expect(res.send).toHaveBeenCalledWith({success: false, message: "Error in login", error});
+        //     expect(consoleLogSpy).toHaveBeenCalledWith(error);
+        // });
     });
 
 

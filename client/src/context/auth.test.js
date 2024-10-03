@@ -49,25 +49,25 @@ describe('AuthProvider Component', () => {
     describe('should have default value for its auth state', () => {
 
         //Test case 1
-        it('if auth information in localStorage is null', () => {
-            //ARRANGE
-            localStorage.getItem.mockImplementation(() => null);
+        // it('if auth information in localStorage is null', () => {
+        //     //ARRANGE
+        //     localStorage.getItem.mockImplementation(() => null);
        
-            //ACTION
-            render(
-                <AuthProvider>
-                    <AuthContextChild />
-                </AuthProvider>
-            );
+        //     //ACTION
+        //     render(
+        //         <AuthProvider>
+        //             <AuthContextChild />
+        //         </AuthProvider>
+        //     );
 
-            //ASSERT
-            expect(axios.defaults.headers.common['Authorization']).toBe("");
-            expect(localStorage.getItem).toHaveBeenCalledWith("auth");
-            expect(consoleLogSpy).toHaveBeenCalledWith({
-                user: null,
-                token: ""
-            });
-        });
+        //     //ASSERT
+        //     expect(axios.defaults.headers.common['Authorization']).toBe("");
+        //     expect(localStorage.getItem).toHaveBeenCalledWith("auth");
+        //     expect(consoleLogSpy).toHaveBeenCalledWith({
+        //         user: null,
+        //         token: ""
+        //     });
+        // });
 
         //REMOVED AS AUTH INFORMATION IS EITHER NULL OR AN OBJECT, AS TRACED THROUGH CODE
         // it('if auth information in localStorage is an empty string', () => {

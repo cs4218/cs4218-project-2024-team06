@@ -34,22 +34,23 @@ describe('Hash Password Method', () => {
         expect(result).toBe(hashedPassword);
     });
 
-    it('should log error if bcrypt hash throws an error', async () => {
-        //ARRANGE
-        const password = 'password';
-        const error = new Error('Exception for hashing');
-        // Mock bcrypt.hash to throw an exception
-        bcrypt.hash.mockRejectedValueOnce(error);
-        //Spy on console.log
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    //REMOVED AS NOW, ERROR FLOW IS NOT HAVING ANY SPECIFIC LOGIC
+    // it('should log error if bcrypt hash throws an error', async () => {
+    //     //ARRANGE
+    //     const password = 'password';
+    //     const error = new Error('Exception for hashing');
+    //     // Mock bcrypt.hash to throw an exception
+    //     bcrypt.hash.mockRejectedValueOnce(error);
+    //     //Spy on console.log
+    //     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
-        //ACTION
-        const result = await hashPassword(password, numberOfSaltRounds);
+    //     //ACTION
+    //     const result = await hashPassword(password, numberOfSaltRounds);
 
-        //ASSERT
-        expect(result).toBe(undefined);
-        expect(consoleLogSpy).toHaveBeenCalledWith(error);
-    });
+    //     //ASSERT
+    //     expect(result).toBe(undefined);
+    //     expect(consoleLogSpy).toHaveBeenCalledWith(error);
+    // });
 });
 
 
