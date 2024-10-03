@@ -57,30 +57,22 @@ describe('Header component', () => {
 
     describe('when user is not logged in', () => {
         test('renders correctly with no item in cart', () => {
-            renderComponent();
-            const badge = screen.getByTestId('mock-badge');
-
-            expect(screen.getByTestId('mock-search-input')).toBeInTheDocument();
-            expect(badge).toHaveAttribute('data-count', '0');
-
-            expect(screen.getByText('🛒 Virtual Vault')).toHaveAttribute('href', '/');
-            expect(screen.getByText('Home')).toHaveAttribute('href', '/');
-            expect(screen.getByText('Register')).toHaveAttribute('href', '/register');
-            expect(screen.getByText('Login')).toHaveAttribute('href', '/login');
-            expect(screen.getByText('Cart')).toHaveAttribute('href', '/cart');
-        });
-
-        test('displays categories and renders link properly', () => {
             const categories = [
                 { name: 'test-cat-1', slug: 'test-cat-1-slug' },
                 { name: 'test-cat-2', slug: 'test-cat-2-slug' },
             ]
             useCategory.mockReturnValue(categories);
-            
-            renderComponent();
-            const categoriesButton = screen.getByText('Categories');
-            fireEvent.click(categoriesButton);
 
+            renderComponent();
+            const badge = screen.getByTestId('mock-badge');
+
+            expect(screen.getByTestId('mock-search-input')).toBeInTheDocument();
+            expect(badge).toHaveAttribute('data-count', '0');
+            expect(screen.getByText('🛒 Virtual Vault')).toHaveAttribute('href', '/');
+            expect(screen.getByText('Home')).toHaveAttribute('href', '/');
+            expect(screen.getByText('Register')).toHaveAttribute('href', '/register');
+            expect(screen.getByText('Login')).toHaveAttribute('href', '/login');
+            expect(screen.getByText('Cart')).toHaveAttribute('href', '/cart');
             expect(screen.getByText('Categories')).toBeInTheDocument();
             expect(screen.getByText('All Categories')).toBeInTheDocument();
             expect(screen.getByText('test-cat-1')).toBeInTheDocument();
