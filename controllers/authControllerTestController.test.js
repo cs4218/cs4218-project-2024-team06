@@ -33,24 +33,4 @@ describe('testController', () => {
         expect(res.send).toHaveBeenCalledTimes(1);
         expect(res.send).toHaveBeenCalledWith("Protected Routes");
     });
-
-
-    // it('should return error if there is an error', () => {
-    //     //ARRANGE
-    //     const error = new Error('Exception during login');
-    //     const res = {
-    //         send: jest.fn(() => { throw error; }), //Mock error being thrown
-    //     };
-    
-    //     //ACTION
-    //     try {
-    //         testController(req, res);
-    //     } catch (error) {
-    //         //ASSERT
-    //         expect(res.send).toHaveBeenCalledTimes(2);
-    //         expect(res.send).toHaveBeenNthCalledWith(1, "Protected Routes");
-    //         expect(res.send).toHaveBeenNthCalledWith(2, { error });
-    //         expect(consoleLogSpy).toHaveBeenCalledWith(error);
-    //     }
-    // });
 });
