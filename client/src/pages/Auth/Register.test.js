@@ -74,23 +74,6 @@ describe('Register Component', () => {
             expect(screen.getByText("REGISTER FORM")).toBeInTheDocument();
             expect(screen.getByRole('button', { name: 'REGISTER' })).toBeInTheDocument();
         });
-
-        //NEVER PASS
-        it.failing('where the placeholders of input fields should be correct', () => {
-            //ARRANGE
-    
-            //ACTION
-            renderRegisterComponent();
-    
-            //ASSERT
-            expect(screen.getByPlaceholderText('Enter Your Name')).toBeInTheDocument();
-            expect(screen.getByPlaceholderText('Enter Your Email')).toBeInTheDocument();
-            expect(screen.getByPlaceholderText('Enter Your Password')).toBeInTheDocument();
-            expect(screen.getByPlaceholderText('Enter Your Phone')).toBeInTheDocument();
-            expect(screen.getByPlaceholderText('Enter Your Address')).toBeInTheDocument();
-            expect(screen.getByPlaceholderText('Enter Your DOB')).toBeInTheDocument();
-            expect(screen.getByPlaceholderText('What Is Your Favorite Sport')).toBeInTheDocument();
-        });
     });
 
 

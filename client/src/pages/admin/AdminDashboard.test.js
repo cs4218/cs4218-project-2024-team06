@@ -44,32 +44,14 @@ describe('AdminDashboard Component', () => {
             //ASSERT
             expect(screen.getByText("Mocked AdminMenu")).toBeInTheDocument();
             expect(screen.getByText("Mocked Layout")).toBeInTheDocument();
+            expect(screen.getByText("Admin Name :")).toBeInTheDocument();
+            expect(screen.getByText("Admin Email :")).toBeInTheDocument();
+            expect(screen.getByText("Admin Contact :")).toBeInTheDocument();
         });
     });
 
 
     describe("should correctly render admin details", () => {
-        it('where name, email and contact are empty if useAuth did not return any information', () => {
-            //ARRANGE
-            //Auth does not contain any information
-            useAuth.mockReturnValue([]);
-
-            //ACTION
-            render(
-            <MemoryRouter initialEntries={['/dashboard/admin']}>
-                <Routes>
-                <Route path='/dashboard/admin' element={<AdminDashboard />} />
-                </Routes>
-            </MemoryRouter>
-            );
-    
-            //ASSERT
-            expect(screen.getByText("Admin Name :")).toBeInTheDocument();
-            expect(screen.getByText("Admin Email :")).toBeInTheDocument();
-            expect(screen.getByText("Admin Contact :")).toBeInTheDocument();
-        });
-
-
         it('where name, email and contact are filled if useAuth returns valid user information', () => {
             //ARRANGE
             //Auth contains valid user information

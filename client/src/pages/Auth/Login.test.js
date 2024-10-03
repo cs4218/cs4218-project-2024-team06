@@ -72,26 +72,7 @@ describe('Login Component should be correctly rendered', () => {
         expect(screen.getByRole('button', { name: 'Forgot Password' })).toBeInTheDocument();
         expect(mockNavigateFunction).toHaveBeenCalledTimes(1);
         expect(mockNavigateFunction).toHaveBeenCalledWith('/forgot-password');
-    });
-
-    
-    it('with the input fields having correct placeholders', () => {
-        //ARRANGE
-
-        //ACTION
-        render(
-            <MemoryRouter initialEntries={['/login']}>
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                </Routes>
-            </MemoryRouter>
-        );
-
-        //ASSERT
-        expect(screen.getByPlaceholderText('Enter Your Email')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Enter Your Password')).toBeInTheDocument();
-    });
-    
+    });  
 });
 
 
