@@ -29,7 +29,7 @@ describe('AdminDashboard Component', () => {
             useAuth.mockReturnValue([]);
         });
 
-        it('AdminMenu', () => {
+        it('AdminMenu and Layout', () => {
             //ARRANGE
 
             //ACTION
@@ -43,22 +43,6 @@ describe('AdminDashboard Component', () => {
     
             //ASSERT
             expect(screen.getByText("Mocked AdminMenu")).toBeInTheDocument();
-        });
-
-
-        it('Layout', () => {
-            //ARRANGE
-
-            //ACTION
-            render(
-            <MemoryRouter initialEntries={['/dashboard/admin']}>
-                <Routes>
-                <Route path='/dashboard/admin' element={<AdminDashboard />} />
-                </Routes>
-            </MemoryRouter>
-            );
-    
-            //ASSERT
             expect(screen.getByText("Mocked Layout")).toBeInTheDocument();
         });
     });
@@ -69,29 +53,6 @@ describe('AdminDashboard Component', () => {
             //ARRANGE
             //Auth does not contain any information
             useAuth.mockReturnValue([]);
-
-            //ACTION
-            render(
-            <MemoryRouter initialEntries={['/dashboard/admin']}>
-                <Routes>
-                <Route path='/dashboard/admin' element={<AdminDashboard />} />
-                </Routes>
-            </MemoryRouter>
-            );
-    
-            //ASSERT
-            expect(screen.getByText("Admin Name :")).toBeInTheDocument();
-            expect(screen.getByText("Admin Email :")).toBeInTheDocument();
-            expect(screen.getByText("Admin Contact :")).toBeInTheDocument();
-        });
-
-
-        it('where name, email and contact are empty if useAuth did not return any user information', () => {
-            //ARRANGE
-            //Auth does not contain user information
-            useAuth.mockReturnValue([{
-                noUser: {}
-            }]);
 
             //ACTION
             render(

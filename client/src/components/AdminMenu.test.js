@@ -14,30 +14,6 @@ describe('AdminMenu Component', () => {
     });
 
     
-    //Rendering
-    describe('should render correctly', () => {
-
-        it('where it should have a total of 1 title and 4 links', () => {
-            //ARRANGE
-            
-            //ACTION
-            render(
-                <MemoryRouter>
-                    <AdminMenu />
-                </MemoryRouter>
-            );
-
-            //ASSERT
-            expect(screen.getByText("Admin Panel")).toBeInTheDocument();
-            expect(screen.getByText("Create Category")).toBeInTheDocument();
-            expect(screen.getByText("Create Product")).toBeInTheDocument();
-            expect(screen.getByText("Products")).toBeInTheDocument();
-            expect(screen.getByText("Orders")).toBeInTheDocument();
-            // expect(screen.getByText("Users")).toBeInTheDocument(); //Assume that this was not intended to included
-        });
-    });
-
-
     //Links
     describe('should have links correctly placed with the labels', () => {
 
