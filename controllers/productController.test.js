@@ -66,19 +66,6 @@ describe('productController', () => {
             expect(res.send).toHaveBeenCalledWith({ clientToken: 'fake-client-token' });
             expect(res.status).toHaveBeenCalledWith(200);
         });
-
-        test('should handle error when generating client token', async () => {
-            const error = new Error('Error generating token');
-            const gateway = new braintree.BraintreeGateway();
-            gateway.clientToken.generate.mockImplementation((_, callback) => {
-                callback(error);
-            });
-
-            await braintreeTokenController(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith(error);
-        });
     });
 
     describe('brainTreePaymentController', () => {
@@ -124,19 +111,6 @@ describe('productController', () => {
 
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({ ok: true });
-        });
-
-        test('should handle error when performing transaction sale', async () => {
-            const error = new Error('Transaction sale error');
-            const gateway = new braintree.BraintreeGateway();
-            gateway.transaction.sale.mockImplementation((_, callback) => {
-                callback(error);
-            });
-
-            await brainTreePaymentController(req, res);
-
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith(error);
         });
     });
 

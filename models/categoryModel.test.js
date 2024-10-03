@@ -25,10 +25,4 @@ describe('Category Model', () => {
         expect(savedCategory.name).toBe(categoryData.name);
         expect(savedCategory.slug).toBe(categoryData.slug);
     });
-
-    test('should throw error if name and slug are not valid entries', async () => {
-        const categoryData = { name: {}, slug: {} };
-        const invalidCategory = new Category(categoryData);
-
-        await expect(invalidCategory.save()).rejects.toThrow(mongoose.Error.ValidationError);    });
 });

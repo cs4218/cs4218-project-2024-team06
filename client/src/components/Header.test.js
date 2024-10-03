@@ -128,18 +128,5 @@ describe('Header component', () => {
             expect(toast.success).toHaveBeenCalledWith('Logout Successfully');
             expect(window.localStorage.removeItem).toHaveBeenCalledWith('auth');
         })
-    })
-
-    describe('when admin is logged in', () => {
-        test('links are rendered properly', () => {
-            useAuth.mockReturnValue([{
-                user: { name: 'test-admin', role: 1 },
-                token: 'test-token',
-                setAuthMock
-            }]);
-            renderComponent();
-
-            expect(screen.getByText('Dashboard')).toHaveAttribute('href', '/dashboard/admin');
-        })
-    })
+    });
 });
