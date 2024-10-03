@@ -148,39 +148,6 @@ describe('Login Component should allow user to log in', () => {
             expect(mockNavigateFunction).toHaveBeenCalledWith('/categories');
         });
     });
-
-    // it('and navigate to root if location state is absent', async () => {
-    //     //ARRANGE
-    //     const mockLocationValue = {};
-    //     useLocation.mockReturnValue(mockLocationValue);
-
-    //     //ACTION
-    //     const { getByPlaceholderText, getByText } = render(
-    //         <MemoryRouter initialEntries={['/login']}>
-    //             <Routes>
-    //                 <Route path="/login" element={<Login />} />
-    //             </Routes>
-    //         </MemoryRouter>
-    //     );
-
-    //     fireEvent.change(getByPlaceholderText('Enter Your Email'), { target: { value: sampleInput.email } });
-    //     fireEvent.change(getByPlaceholderText('Enter Your Password'), { target: { value: sampleInput.password } });
-    //     fireEvent.click(getByText('LOGIN'));
-
-
-    //     //ASSERT
-    //     await waitFor(() => {
-    //         expect(axios.post).toHaveBeenCalledTimes(1);
-    //         expect(axios.post).toHaveBeenCalledWith("/api/v1/auth/login", sampleInput);
-    //         expect(toast.success).toHaveBeenCalledTimes(1);
-    //         expect(toast.success).toHaveBeenCalledWith('Login successfully', sampleToastOptions);
-    //         expect(mockSetAuth).toHaveBeenCalledTimes(1);
-    //         expect(mockSetAuth).toHaveBeenCalledWith({user: userData, token: "mockToken" });
-    //         expect(localStorage.setItem).toHaveBeenCalledWith('auth', JSON.stringify(data));
-    //         expect(mockNavigateFunction).toHaveBeenCalledTimes(1);
-    //         expect(mockNavigateFunction).toHaveBeenCalledWith('/');
-    //     });
-    // });
 });
 
 
@@ -241,32 +208,4 @@ describe('Login Component should not allow user to log in', () => {
             expect(toast.error).toHaveBeenCalledWith('Cannot login');
         });
     });
-
-
-    // it('if an exception occurs during logging in', async () => {
-    //     //ARRANGE
-    //     const error = new Error('Exception during login')
-    //     axios.post.mockRejectedValueOnce(error);
-
-    //     //ACTION
-    //     const { getByPlaceholderText, getByText } = render(
-    //         <MemoryRouter initialEntries={['/login']}>
-    //             <Routes>
-    //                 <Route path="/login" element={<Login />} />
-    //             </Routes>
-    //         </MemoryRouter>
-    //     );
-    //     fireEvent.change(getByPlaceholderText('Enter Your Email'), { target: { value: sampleInput.email } });
-    //     fireEvent.change(getByPlaceholderText('Enter Your Password'), { target: { value: sampleInput.password } });
-    //     fireEvent.click(getByText('LOGIN'));
-
-    //     //ASSERT
-    //     await waitFor(() => {
-    //         expect(axios.post).toHaveBeenCalledTimes(1);
-    //         expect(axios.post).toHaveBeenCalledWith("/api/v1/auth/login", sampleInput);
-    //         expect(toast.error).toHaveBeenCalledTimes(1);
-    //         expect(toast.error).toHaveBeenCalledWith('Something went wrong');
-    //         expect(consoleLogSpy).toHaveBeenCalledWith(error);
-    //     });
-    // });
 });
