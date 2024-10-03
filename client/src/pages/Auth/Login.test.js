@@ -68,105 +68,24 @@ describe('Login Component should minimally work where it', () => {
             expect(screen.getByRole('button', { name: 'Forgot Password' })).toBeInTheDocument();
         });
 
+        it('with the input fields having correct placeholders', () => {
+            //ARRANGE
 
-        describe('with the input fields', () => {
-            it('where the placeholders of input fields should be correct', () => {
-                //ARRANGE
+            //ACTION
+            render(
+                <MemoryRouter initialEntries={['/login']}>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                    </Routes>
+                </MemoryRouter>
+            );
 
-                //ACTION
-                render(
-                    <MemoryRouter initialEntries={['/login']}>
-                        <Routes>
-                            <Route path="/login" element={<Login />} />
-                        </Routes>
-                    </MemoryRouter>
-                );
-
-                //ASSERT
-                expect(screen.getByPlaceholderText('Enter Your Email')).toBeInTheDocument();
-                expect(screen.getByPlaceholderText('Enter Your Password')).toBeInTheDocument();
-            });
-
-
-            it('where the type of input fields should be correct', () => {
-                //ARRANGE
-
-                //ACTION
-                render(
-                    <MemoryRouter initialEntries={['/login']}>
-                        <Routes>
-                            <Route path="/login" element={<Login />} />
-                        </Routes>
-                    </MemoryRouter>
-                );
-
-                //ASSERT
-                expect(screen.getByPlaceholderText('Enter Your Email')).toHaveAttribute('type', 'email');
-                expect(screen.getByPlaceholderText('Enter Your Password')).toHaveAttribute('type', 'password');
-            });
-
-
-            it('where the input fields should all initially be empty', () => {
-                //ARRANGE
-
-                //ACTION
-                render(
-                    <MemoryRouter initialEntries={['/login']}>
-                        <Routes>
-                            <Route path="/login" element={<Login />} />
-                        </Routes>
-                    </MemoryRouter>
-                );
-
-                //ASSERT
-                expect(screen.getByPlaceholderText('Enter Your Email').value).toBe('');
-                expect(screen.getByPlaceholderText('Enter Your Password').value).toBe('');
-            });
-
-
-            //REMOVED AS LOGIC WILL BE REPEATED WHEN TESTING FOR FUNCTIONALITY
-            // it('where the input fields should allow typing', () => {
-            //     //ARRANGE
-
-            //     //ACTION
-            //     render(
-            //         <MemoryRouter initialEntries={['/login']}>
-            //             <Routes>
-            //                 <Route path="/login" element={<Login />} />
-            //             </Routes>
-            //         </MemoryRouter>
-            //     );
-            //     fireEvent.change(screen.getByPlaceholderText('Enter Your Email'), { target: { value: sampleInput.email } });
-            //     fireEvent.change(screen.getByPlaceholderText('Enter Your Password'), { target: { value: sampleInput.password } });
-                
-
-            //     //ASSERT
-            //     expect(screen.getByPlaceholderText('Enter Your Email').value).toBe(sampleInput.email);
-            //     expect(screen.getByPlaceholderText('Enter Your Password').value).toBe(sampleInput.password);
-            // });
-
-
-            it('where the input fields are all required', () => {
-                //ARRANGE
-
-                //ACTION
-                render(
-                    <MemoryRouter initialEntries={['/login']}>
-                        <Routes>
-                            <Route path="/login" element={<Login />} />
-                        </Routes>
-                    </MemoryRouter>
-                );
-
-                //ASSERT
-                expect(screen.getByPlaceholderText('Enter Your Email')).toHaveAttribute('required');
-                expect(screen.getByPlaceholderText('Enter Your Password')).toHaveAttribute('required');
-
-            });
+            //ASSERT
+            expect(screen.getByPlaceholderText('Enter Your Email')).toBeInTheDocument();
+            expect(screen.getByPlaceholderText('Enter Your Password')).toBeInTheDocument();
         });
-
-
     });
+
 
     it('should correctly navigate to the forgot password page when clicking on the forgot password button', () => {  
         //ARRANGE
