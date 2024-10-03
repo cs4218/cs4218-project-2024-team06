@@ -33,24 +33,6 @@ describe('Hash Password Method', () => {
         //ASSERT
         expect(result).toBe(hashedPassword);
     });
-
-    //REMOVED AS NOW, ERROR FLOW IS NOT HAVING ANY SPECIFIC LOGIC
-    // it('should log error if bcrypt hash throws an error', async () => {
-    //     //ARRANGE
-    //     const password = 'password';
-    //     const error = new Error('Exception for hashing');
-    //     // Mock bcrypt.hash to throw an exception
-    //     bcrypt.hash.mockRejectedValueOnce(error);
-    //     //Spy on console.log
-    //     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-
-    //     //ACTION
-    //     const result = await hashPassword(password, numberOfSaltRounds);
-
-    //     //ASSERT
-    //     expect(result).toBe(undefined);
-    //     expect(consoleLogSpy).toHaveBeenCalledWith(error);
-    // });
 });
 
 
@@ -75,21 +57,4 @@ describe('Compare Password Method', () => {
         //ASSERT
         expect(result).toBe(true);
     });
-
-
-    //REMOVED AS WE KNOW IT WOULD NOT PASS AS SEEN FROM WHITE BOX TESTING
-    //HOWEVER, IF I COULD IMPLEMENT MORE TESTS, I WOULD CHECK THIS
-    //NEVER PASS
-    // it.failing('should not crash even if bcrypt.compare() throws an error', async () => {
-    //     //ARRANGE
-    //     const error = new Error('Exception for comparing');
-    //     // Mock bcrypt.hash to throw an exception
-    //     bcrypt.compare.mockRejectedValueOnce(error);
-
-    //     //ACTION
-    //     const result = await comparePassword(password, hashedPassword);
-
-    //     //ASSERT
-    //     expect(result).toBe(undefined);
-    // });
 });
