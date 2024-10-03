@@ -76,19 +76,6 @@ describe('Compare Password Method', () => {
     });
 
 
-    //REMOVED AS IT DOES NOT TEST ANY NEW CONTROL FLOW
-    // it('should return false if the unhashed version of hashed password is not password', async () => {
-    //     //ARRANGE
-    //     bcrypt.compare.mockResolvedValueOnce(false);
-
-    //     //ACTION
-    //     const result = await comparePassword(password, incorrectHashedPassword);
-
-    //     //ASSERT
-    //     expect(result).toBe(false);
-    // });
-
-
     //NEVER PASS
     it.failing('should not crash even if bcrypt.compare() throws an error', async () => {
         //ARRANGE

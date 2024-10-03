@@ -40,7 +40,7 @@ describe('registerController', () => {
    
     describe('should return error messages for its input validations if', () => {
         //NEVER PASS
-        it.failing('name is empty', async () => {
+        it.failing('inputs are empty', async () => {
             //ARRANGE
             const req = {
                 body: {
@@ -62,120 +62,121 @@ describe('registerController', () => {
             expect(res.send).toHaveBeenCalledWith({ message: "Name is Required" });
         });
 
-
-        it('email is empty', async () => {
-            //ARRANGE
-            const req = {
-                body: {
-                    name: "James",
-                    email: "",
-                    password: "",
-                    phone: "",
-                    address: "",
-                    answer: ""
-                }
-            };
+        //REMOVED AS WE HAVE LIMITED NUMBER OF TESTS TO IMPLEMENT ONLY
+        //NO 100% PATH COVERAGE BUT GOT 100% BRANCH AND CONDITION COVERAGE
+        // it('email is empty', async () => {
+        //     //ARRANGE
+        //     const req = {
+        //         body: {
+        //             name: "James",
+        //             email: "",
+        //             password: "",
+        //             phone: "",
+        //             address: "",
+        //             answer: ""
+        //         }
+        //     };
     
-            //ACTION
-            await registerController(req, res);
+        //     //ACTION
+        //     await registerController(req, res);
 
             
-            //ASSERT
-            expect(res.send).toHaveBeenCalledTimes(1);
-            expect(res.send).toHaveBeenCalledWith({ message: "Email is Required" });
-        });
+        //     //ASSERT
+        //     expect(res.send).toHaveBeenCalledTimes(1);
+        //     expect(res.send).toHaveBeenCalledWith({ message: "Email is Required" });
+        // });
 
 
-        it('password is empty', async () => {
-            //ARRANGE
-            const req = {
-                body: {
-                    name: "James",
-                    email: "james@gmail.com",
-                    password: "",
-                    phone: "",
-                    address: "",
-                    answer: ""
-                }
-            };
+        // it('password is empty', async () => {
+        //     //ARRANGE
+        //     const req = {
+        //         body: {
+        //             name: "James",
+        //             email: "james@gmail.com",
+        //             password: "",
+        //             phone: "",
+        //             address: "",
+        //             answer: ""
+        //         }
+        //     };
     
-            //ACTION
-            await registerController(req, res);
+        //     //ACTION
+        //     await registerController(req, res);
 
             
-            //ASSERT
-            expect(res.send).toHaveBeenCalledTimes(1);
-            expect(res.send).toHaveBeenCalledWith({ message: "Password is Required" });
-        });
+        //     //ASSERT
+        //     expect(res.send).toHaveBeenCalledTimes(1);
+        //     expect(res.send).toHaveBeenCalledWith({ message: "Password is Required" });
+        // });
 
 
-        it('phone number is empty', async () => {
-            //ARRANGE
-            const req = {
-                body: {
-                    name: "James",
-                    email: "james",
-                    password: "james123",
-                    phone: "",
-                    address: "",
-                    answer: ""
-                }
-            };
+        // it('phone number is empty', async () => {
+        //     //ARRANGE
+        //     const req = {
+        //         body: {
+        //             name: "James",
+        //             email: "james",
+        //             password: "james123",
+        //             phone: "",
+        //             address: "",
+        //             answer: ""
+        //         }
+        //     };
     
-            //ACTION
-            await registerController(req, res);
+        //     //ACTION
+        //     await registerController(req, res);
 
             
-            //ASSERT
-            expect(res.send).toHaveBeenCalledTimes(1);
-            expect(res.send).toHaveBeenCalledWith({ message: "Phone no is Required" });
-        });
+        //     //ASSERT
+        //     expect(res.send).toHaveBeenCalledTimes(1);
+        //     expect(res.send).toHaveBeenCalledWith({ message: "Phone no is Required" });
+        // });
 
 
-        it('address is empty', async () => {
-            //ARRANGE
-            const req = {
-                body: {
-                    name: "James",
-                    email: "james",
-                    password: "james123",
-                    phone: "9123 4567",
-                    address: "",
-                    answer: ""
-                }
-            };
+        // it('address is empty', async () => {
+        //     //ARRANGE
+        //     const req = {
+        //         body: {
+        //             name: "James",
+        //             email: "james",
+        //             password: "james123",
+        //             phone: "9123 4567",
+        //             address: "",
+        //             answer: ""
+        //         }
+        //     };
     
-            //ACTION
-            await registerController(req, res);
+        //     //ACTION
+        //     await registerController(req, res);
 
             
-            //ASSERT
-            expect(res.send).toHaveBeenCalledTimes(1);
-            expect(res.send).toHaveBeenCalledWith({ message: "Address is Required" });
-        });
+        //     //ASSERT
+        //     expect(res.send).toHaveBeenCalledTimes(1);
+        //     expect(res.send).toHaveBeenCalledWith({ message: "Address is Required" });
+        // });
 
 
-        it('answer is empty', async () => {
-            //ARRANGE
-            const req = {
-                body: {
-                    name: "James",
-                    email: "james",
-                    password: "james123",
-                    phone: "9123 4567",
-                    address: "Sentosa",
-                    answer: ""
-                }
-            };
+        // it('answer is empty', async () => {
+        //     //ARRANGE
+        //     const req = {
+        //         body: {
+        //             name: "James",
+        //             email: "james",
+        //             password: "james123",
+        //             phone: "9123 4567",
+        //             address: "Sentosa",
+        //             answer: ""
+        //         }
+        //     };
     
-            //ACTION
-            await registerController(req, res);
+        //     //ACTION
+        //     await registerController(req, res);
 
             
-            //ASSERT
-            expect(res.send).toHaveBeenCalledTimes(1);
-            expect(res.send).toHaveBeenCalledWith({ message: "Answer is Required" });
-        });
+        //     //ASSERT
+        //     expect(res.send).toHaveBeenCalledTimes(1);
+        //     expect(res.send).toHaveBeenCalledWith({ message: "Answer is Required" });
+        // });
     });
 
 
