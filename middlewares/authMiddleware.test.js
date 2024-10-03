@@ -44,23 +44,6 @@ describe('requireSignIn Middleware', () => {
         expect(req.user).toEqual(({ name: 'Valid' }));
         expect(next).toHaveBeenCalledTimes(1);
     });
-
-
-    //REMOVED AS NOW, ERROR IS JUST BEING LOGGED WITH NO EXTRA LOGIC
-    // it('should log error once if verification throws an error', async () => {
-    //     //ARRANGE
-    //     const error = new Error('Exception for verifying');
-    //     JWT.verify.mockImplementationOnce(() => { throw error; });
-    //     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        
-    //     //ACTION
-    //     await requireSignIn(req, res, next);
-
-    //     //ASSERT
-    //     expect(req.user).toEqual(({ name: 'Invalid' }));
-    //     expect(next).toHaveBeenCalledTimes(0);
-    //     expect(consoleLogSpy).toHaveBeenCalledWith(error);
-    // });
 });
 
 
@@ -101,6 +84,7 @@ describe('isAdmin Middleware', () => {
         //ASSERT
         expect(next).toHaveBeenCalledTimes(1);
         expect(result).toBe(undefined);
+        expect(res.status).toHaveBeenCalledTimes(0); //If user is admin, we do not even call res.status
     });
 
 
@@ -122,26 +106,4 @@ describe('isAdmin Middleware', () => {
             message: 'Unauthorized Access'
         }));
     });
-
-
-    // it('should log error and return error message if there is an error in processing user status', async () => {
-    //     //ARRANGE
-    //     const error = new Error('Exception in finding user id');
-    //     userModel.findById.mockImplementation(() => {
-    //         throw error;
-    //     });
-    //     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-
-    //     //ACTION
-    //     await isAdmin(req, res, next);
-        
-    //     //ASSERT
-    //     expect(next).toHaveBeenCalledTimes(0);
-    //     expect(res.status).toHaveBeenCalledWith(401);
-    //     expect(res.send).toHaveBeenCalledWith(({
-    //         success: false,
-    //         error: error,
-    //         message: 'Error in admin middleware'
-    //     }));
-    // });
 });
