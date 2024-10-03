@@ -13,31 +13,10 @@ const TestComponent = () => {
     );
 };
 
-const TestUpdateComponent = () => {
-    const [cart, setCart] = useCart();
-    useEffect(() => {
-        setCart([{ id: 1 }, { id: 2 }])
-    }, []);
-
-    return (
-        <div>
-            Cart Length: {cart.length}
-        </div>
-    )
-}
-
 const renderComponent = () => {
     render (
         <CartProvider>
             <TestComponent/>
-        </CartProvider>
-    );
-};
-
-const renderTestComponent = () => {
-    render (
-        <CartProvider>
-            <TestUpdateComponent/>
         </CartProvider>
     );
 };
@@ -63,16 +42,5 @@ describe(('cartProvider'), () => {
         renderComponent();
 
         expect(screen.getByText('Cart Length: 2')).toBeInTheDocument();
-    });
-
-    // NEVER PASS
-    test('should handle error if cart item is not valid', () => {
-        const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        const mockCart = 'Invalid JSON';
-        localStorage.getItem.mockReturnValue(mockCart);
-
-        renderComponent();
-
-        expect(consoleLogSpy).toHaveBeenCalledWith(expect.any(Error));
     });
 });

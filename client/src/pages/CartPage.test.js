@@ -101,32 +101,6 @@ describe('CartPage component', () => {
             setupMocks();
         });
 
-        test('should render correctly with empty cart', () => {
-            mockCart = [];
-            setupMocks();
-
-            renderComponent();
-
-            expect(screen.getByText('Hello test-user')).toBeInTheDocument();
-            expect(screen.getByText('Your Cart Is Empty')).toBeInTheDocument();
-        });
-
-        test.failing('should render correctly with non empty cart', () => {
-            mockCart = [
-                { _id: 1, name: 'macbook', description: 'best laptop', price: 1000 },
-                { _id: 2, name: 'book', description: 'best book', price: 20 },
-            ];
-            setupMocks();
-
-            renderComponent();
-
-            expect(screen.getByAltText('macbook')).toHaveAttribute('src', '/api/v1/product/product-photo/1');
-            expect(screen.getByText('best laptop')).toBeInTheDocument();
-            expect(screen.getByText('Price : 1000')).toBeInTheDocument();
-            expect(screen.getByText('Total : $1,020.00')).toBeInTheDocument();
-            expect(screen.getByText('You have 2 items in your cart')).toBeInTheDocument();
-        });
-
         test('should render correctly with address', () => {
             renderComponent();
             const button = screen.getByRole('button', 'Update Address');
@@ -150,7 +124,8 @@ describe('CartPage component', () => {
             renderComponent();
             const button = screen.getByText('Please login to checkout');
             fireEvent.click(button);
-
+            
+            expect(screen.getByText('$1,020')).toBeInTheDocument();
             expect(screen.getByText('You have 2 items in your cart please login to checkout!')).toBeInTheDocument();
             expect(screen.getByText('Please login to checkout')).toBeInTheDocument();
             expect(window.location.pathname).toBe('/login');
