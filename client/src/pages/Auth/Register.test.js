@@ -131,25 +131,5 @@ describe('Register Component', () => {
                 expect(toast.error).toHaveBeenCalledWith('Name is required');
             });
         });
-
-
-        // it('where it displays an error message if an exception occurs during the registration process', async () => {
-        //     //ARRANGE
-        //     const error = new Error('Exception during registration')
-        //     axios.post.mockRejectedValueOnce(error);
-
-        //     //ACTION
-        //     renderRegisterComponent();
-        //     fillInFieldsAndRegister();
-
-        //     //ASSERT
-        //     await waitFor(() =>  {
-        //         expect(axios.post).toHaveBeenCalledTimes(1)
-        //         expect(axios.post).toHaveBeenCalledWith("/api/v1/auth/register", sampleInput);
-        //         expect(consoleLogSpy).toHaveBeenCalledWith(error);
-        //         expect(toast.error).toHaveBeenCalledTimes(1);
-        //         expect(toast.error).toHaveBeenCalledWith('Something went wrong');
-        //     });
-        // });
     });
 });
