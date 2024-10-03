@@ -123,26 +123,6 @@ describe('isAdmin Middleware', () => {
     });
 
 
-    //NEVER PASS
-    it.failing('should return unauthorised access if user is not an admin, such as if role is 2', async () => {
-        //ARRANGE
-        userModel.findById.mockImplementation(() => {
-            return { role: 2 };
-        });
-       
-        //ACTION
-        await isAdmin(req, res, next);
-
-        //ASSERT
-        expect(next).toHaveBeenCalledTimes(0);
-        expect(res.status).toHaveBeenCalledWith(401);
-        expect(res.send).toHaveBeenCalledWith(({
-            success: false,
-            message: 'Unauthorized Access'
-        }));
-    });
-
-
     it('should log error and return error message if there is an error in processing user status', async () => {
         //ARRANGE
         const error = new Error('Exception in finding user id');

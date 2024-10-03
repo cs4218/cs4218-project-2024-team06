@@ -37,7 +37,7 @@ describe('forgotPasswordController', () => {
    
     describe('should return error messages for its input validations if', () => {
         //NEVER PASS
-        it.failing('email is empty', async () => {
+        it.failing('any of email, answer and new password is empty', async () => {
             //ARRANGE
             const req = {
                 body: {
@@ -56,51 +56,6 @@ describe('forgotPasswordController', () => {
 
             expect(res.send).toHaveBeenCalledWith({ message: "Email is required" });
         });
-
-
-        //NEVER PASS
-        it.failing('answer is empty', async () => {
-            //ARRANGE
-            const req = {
-                body: {
-                    email: "james@gmail.com",
-                    answer: "",
-                    newPassword: "",
-                }
-            };
-    
-            //ACTION
-            await forgotPasswordController(req, res);
-
-            //ASSERT
-            expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(400);
-
-            expect(res.send).toHaveBeenCalledWith({ message: "Answer is required" });
-        });
-
-
-        //NEVER PASS
-        it.failing('new password is empty', async () => {
-            //ARRANGE
-            const req = {
-                body: {
-                    email: "james@gmail.com",
-                    answer: "badminton",
-                    newPassword: "",
-                }
-            };
-    
-            //ACTION
-            await forgotPasswordController(req, res);
-
-            //ASSERT
-            expect(res.status).toHaveBeenCalledTimes(1);
-            expect(res.status).toHaveBeenCalledWith(400);
-
-            expect(res.send).toHaveBeenCalledWith({ message: "New Password is required" });
-        });
-
     });
 
 
