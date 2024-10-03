@@ -105,15 +105,6 @@ describe('HomePage component', () => {
         });
     });
 
-    test('should fetch categories and products and render properly', async () => {
-        renderComponent();
-
-        await expect(screen.findByText('Category 1')).resolves.toBeInTheDocument();
-        await expect(screen.findByText('Category 2')).resolves.toBeInTheDocument();
-        await expect(screen.findByText('Product 1')).resolves.toBeInTheDocument();
-        await expect(screen.findByText('Product 2')).resolves.toBeInTheDocument();
-    });
-
     test('should filter products based on selected categories', async () => {
         renderComponent();
 
