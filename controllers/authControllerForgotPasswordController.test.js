@@ -97,25 +97,6 @@ describe('forgotPasswordController', () => {
             expect(res.status).toHaveBeenCalledWith(404);
             expect(res.send).toHaveBeenCalledWith({ success: false, message: "Wrong Email Or Answer" });
         });
-
-
-        // it('there was an exception raised during the password reset process', async() => {
-        //     //ARRANGE
-        //     const error = new Error('Exception during password reset');
-        //     userModel.findOne.mockImplementation(() => {
-        //         throw error;
-        //     });
-
-        //     //ACTION
-        //     await forgotPasswordController(req, res);
-
-        //     //ASSERT
-        //     expect(res.status).toHaveBeenCalledTimes(1);
-        //     expect(res.status).toHaveBeenCalledWith(500);
-        //     expect(res.send).toHaveBeenCalledTimes(1);
-        //     expect(res.send).toHaveBeenCalledWith({success: false, message: "Something went wrong", error});
-        //     expect(consoleLogSpy).toHaveBeenCalledWith(error);
-        // });
     });
 
 
