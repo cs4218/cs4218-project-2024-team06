@@ -61,7 +61,6 @@ describe('forgotPasswordController', () => {
 
     describe('should prevent password reset if', () => {
         let req;
-        let consoleLogSpy;
 
         beforeEach(() => {
             req = {
@@ -71,14 +70,6 @@ describe('forgotPasswordController', () => {
                     newPassword: "password",
                 }
             };
-
-            //Reinitialise console log spy
-            consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        });
-
-        afterEach(() => {
-            //Restore original functionality of console.log
-            consoleLogSpy.mockRestore();
         });
 
 
@@ -87,7 +78,6 @@ describe('forgotPasswordController', () => {
             userModel.findOne.mockImplementation(() => {
                 return Promise.resolve(null); //Cannot find a user
             });
-
 
             //ACTION
             await forgotPasswordController(req, res);
@@ -102,7 +92,6 @@ describe('forgotPasswordController', () => {
 
     describe('should allow password reset', () => {
         let req;
-
 
         beforeEach(() => {
             req = {

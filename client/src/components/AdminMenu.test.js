@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen} from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import AdminMenu  from './AdminMenu.js';
 import React from "react";
@@ -12,9 +12,8 @@ describe('AdminMenu Component', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
-
-    
-    //Links
+  
+    //Check links and labels
     describe('should have links correctly placed with the labels', () => {
 
         it('where the links are present and the routes should be correct', () => {

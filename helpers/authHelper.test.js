@@ -7,18 +7,12 @@ jest.mock('bcrypt');
 // Test suite for hashPassword method
 describe('Hash Password Method', () => {
     const numberOfSaltRounds = 10;
-    let consoleLogSpy;
 
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    //Reset logic for all tests
-    afterEach(() => {
-        //Restore original functionality of console.log
-        consoleLogSpy?.mockRestore();
-    });
 
     it('should return hashed password if bcrypt hash does not throw an error', async () => {
         //ARRANGE
@@ -40,7 +34,6 @@ describe('Hash Password Method', () => {
 describe('Compare Password Method', () => {
     const password = "password";
     const hashedPassword = 'p1s2w3r4';
-    // const incorrectHashedPassword = 'p1';
 
     beforeEach(() => {
         jest.clearAllMocks();

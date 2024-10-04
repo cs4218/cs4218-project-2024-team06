@@ -1,7 +1,6 @@
 import { loginController } from './authController.js';
 import userModel from '../models/userModel.js';
 import authHelper from './../helpers/authHelper.js';
-import JWT from "jsonwebtoken";
 
 // Mock functions
 jest.mock('./../helpers/authHelper', () => ({
@@ -119,7 +118,6 @@ describe('loginController', () => {
 
     describe('should work correctly', () => {
         let req;
-        let consoleLogSpy;
         
         beforeEach(() => {
             req = {
@@ -151,12 +149,6 @@ describe('loginController', () => {
         });
 
 
-        afterEach(() => {
-            //Restore original functionality of console.log
-            consoleLogSpy.mockRestore();
-        });
-
-
         //NEVER PASS
         it.failing('where it allows log in if there is no error', async () => {
             //ARRANGE
@@ -180,6 +172,4 @@ describe('loginController', () => {
             });
         });
     });
-
-
 });

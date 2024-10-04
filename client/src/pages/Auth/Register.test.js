@@ -23,7 +23,7 @@ const renderRegisterComponent = () => {
     render(
         <MemoryRouter initialEntries={['/register']}>
             <Routes>
-            <Route path="/register" element={<Register />} />
+            <Route path="/register" element={ <Register /> } />
             </Routes>
         </MemoryRouter>
   );
@@ -40,7 +40,6 @@ const fillInFieldsAndRegister = () => {
     fireEvent.change(screen.getByPlaceholderText('What is Your Favorite sports'), { target: { value: sampleInput.answer } });
     fireEvent.click(screen.getByRole('button', { name: 'REGISTER' }));
 }
-
 
 // Mock modules
 jest.mock('axios');
@@ -78,19 +77,6 @@ describe('Register Component', () => {
 
 
     describe ('should correctly offer the register functionality', () => {
-        let consoleLogSpy;
-
-        beforeEach(() => {
-            //Reinitialise console log spy
-            consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        });
-
-        afterEach(() => {
-            //Restore original functionality of console.log
-            consoleLogSpy?.mockRestore();
-        });
-
-
         it('where it provides a success message and navigates to /login upon successful registration', async () => {
             //ARRANGE
             axios.post.mockResolvedValueOnce({

@@ -12,7 +12,7 @@ jest.mock('../models/userModel.js', () => ({
 
 
 describe('requireSignIn Middleware', () => {
-    let req, res, next, consoleLogSpy;
+    let req, res, next;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -25,12 +25,6 @@ describe('requireSignIn Middleware', () => {
         res = {};
         next = jest.fn();
     });
-
-
-    afterEach(() => {
-        //Restore original functionality of console.log
-        consoleLogSpy?.mockRestore();
-    })
 
 
     it('should set user attribute of request and call next() once if verification is successful', async () => {
@@ -48,7 +42,7 @@ describe('requireSignIn Middleware', () => {
 
 
 describe('isAdmin Middleware', () => {
-    let req, res, next, consoleLogSpy;
+    let req, res, next;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -64,12 +58,6 @@ describe('isAdmin Middleware', () => {
 
         next = jest.fn();
     });
-
-
-    afterEach(() => {
-        //Restore original functionality of console.log
-        consoleLogSpy?.mockRestore();
-    })
 
 
     it('should not return any response if user is an admin, where role is 1', async () => {
