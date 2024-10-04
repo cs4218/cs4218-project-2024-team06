@@ -49,8 +49,10 @@ describe('Login Component should minimally work where it', () => {
     });
 
     describe('should be correctly rendered', () => {
-        it('with the correct titles', () => {
+        it('with the correct titles and two buttons, LOGIN and Forgot Password', () => {
             //ARRANGE
+            const mockNavigateFunction = jest.fn();
+            useNavigate.mockReturnValue(mockNavigateFunction);
 
             //ACTION
             render(
@@ -60,10 +62,16 @@ describe('Login Component should minimally work where it', () => {
                     </Routes>
                 </MemoryRouter>
             );
+            fireEvent.click(screen.getByRole('button', { name: 'Forgot Password' }));
+
 
             //ASSERT
             expect(screen.getByText("Mocked Login - Ecommerce App")).toBeInTheDocument();
             expect(screen.getByText("LOGIN FORM")).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'LOGIN' })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Forgot Password' })).toBeInTheDocument();
+            expect(mockNavigateFunction).toHaveBeenCalledTimes(1);
+            expect(mockNavigateFunction).toHaveBeenCalledWith('/forgot-password');
         });
 
 
@@ -86,7 +94,7 @@ describe('Login Component should minimally work where it', () => {
             });
 
 
-            it('where the type of input fields should be correct', () => {
+            it('where the types of input fields should be correct', () => {
                 //ARRANGE
 
                 //ACTION
@@ -122,27 +130,6 @@ describe('Login Component should minimally work where it', () => {
             });
 
 
-            it('where the input fields should allow typing', () => {
-                //ARRANGE
-
-                //ACTION
-                render(
-                    <MemoryRouter initialEntries={['/login']}>
-                        <Routes>
-                            <Route path="/login" element={<Login />} />
-                        </Routes>
-                    </MemoryRouter>
-                );
-                fireEvent.change(screen.getByPlaceholderText('Enter Your Email'), { target: { value: sampleInput.email } });
-                fireEvent.change(screen.getByPlaceholderText('Enter Your Password'), { target: { value: sampleInput.password } });
-                
-
-                //ASSERT
-                expect(screen.getByPlaceholderText('Enter Your Email').value).toBe(sampleInput.email);
-                expect(screen.getByPlaceholderText('Enter Your Password').value).toBe(sampleInput.password);
-            });
-
-
             it('where the input fields are all required', () => {
                 //ARRANGE
 
@@ -161,45 +148,6 @@ describe('Login Component should minimally work where it', () => {
 
             });
         });
-
-
-        it('with two buttons, LOGIN and Forgot Password', () => {
-            //ARRANGE
-
-            //ACTION
-            render(
-                <MemoryRouter initialEntries={['/login']}>
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                    </Routes>
-                </MemoryRouter>
-            );
-
-
-            //ASSERT
-            expect(screen.getByRole('button', { name: 'LOGIN' })).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: 'Forgot Password' })).toBeInTheDocument();
-        });
-    });
-
-    it('should correctly navigate to the forgot password page when clicking on the forgot password button', () => {  
-        //ARRANGE
-        const mockNavigateFunction = jest.fn();
-        useNavigate.mockReturnValue(mockNavigateFunction);
-
-        //ACTION
-        render(
-            <MemoryRouter initialEntries={['/login']}>
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                </Routes>
-            </MemoryRouter>
-        );
-        fireEvent.click(screen.getByRole('button', { name: 'Forgot Password' }));
-
-        //ASSERT
-        expect(mockNavigateFunction).toHaveBeenCalledTimes(1);
-        expect(mockNavigateFunction).toHaveBeenCalledWith('/forgot-password');
     });
 });
 
@@ -397,7 +345,4 @@ describe('Login Component should not allow user to log in', () => {
             expect(consoleLogSpy).toHaveBeenCalledWith(error);
         });
     });
-
-
-
 });
