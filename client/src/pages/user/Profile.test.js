@@ -46,6 +46,12 @@ const updatedUserProfile = {
 };
 
 const emptyString = "";
+const nameInputPlaceholderText = "Enter Your Name";
+const emailInputPlaceholderText = "Enter Your Email";
+const passwordInputPlaceholderText = "Enter Your Password";
+const phoneInputPlaceholderText = "Enter Your Phone";
+const addressInputPlaceholderText = "Enter Your Address";
+const updateButtonString = "UPDATE";
 
 Object.defineProperty(window, "localStorage", {
     value: {
@@ -61,9 +67,11 @@ describe("Profile", () => {
         useAuth.mockReturnValue([originalUserProfile, jest.fn()]);
     });
 
-    it("should initially render the user's information except for password", () => {
+    it("should render and work properly", () => {
         const { name, email, password, phone, address } = originalUserProfile.user;
         render(<Profile />);
+
+        // Check initial render
         expect(screen.getByText(userMenuString)).toBeInTheDocument();
         expect(screen.getByDisplayValue(name)).toBeInTheDocument();
         expect(screen.getByDisplayValue(email)).toBeInTheDocument();
@@ -71,16 +79,14 @@ describe("Profile", () => {
         expect(screen.queryByDisplayValue(password)).not.toBeInTheDocument(); // Password is not displayed
         expect(screen.getByDisplayValue(phone)).toBeInTheDocument();
         expect(screen.getByDisplayValue(address)).toBeInTheDocument();
-    });
+        expect(screen.getByText(updateButtonString)).toBeInTheDocument();
 
-    it('should allow updating the name, phone, and address', () => {
-        render(<Profile />);
-
-        const nameInput = screen.getByPlaceholderText('Enter Your Name');
-        const emailInput = screen.getByPlaceholderText('Enter Your Email');
-        const passwordInput = screen.getByPlaceholderText('Enter Your Password');
-        const phoneInput = screen.getByPlaceholderText('Enter Your Phone');
-        const addressInput = screen.getByPlaceholderText('Enter Your Address');
+        // Check update of inputs
+        const nameInput = screen.getByPlaceholderText(nameInputPlaceholderText);
+        const emailInput = screen.getByPlaceholderText(emailInputPlaceholderText);
+        const passwordInput = screen.getByPlaceholderText(passwordInputPlaceholderText);
+        const phoneInput = screen.getByPlaceholderText(phoneInputPlaceholderText);
+        const addressInput = screen.getByPlaceholderText(addressInputPlaceholderText);
 
         fireEvent.change(nameInput, { target: { value: updatedUserProfile.user.name } });
         fireEvent.change(passwordInput, { target: { value: updatedUserProfile.user.password } });
