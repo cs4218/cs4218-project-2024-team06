@@ -18,8 +18,10 @@ jest.mock("react-hot-toast", () => ({
     success: jest.fn(),
 }));
 
+const userMenuString = "User Menu";
+
 jest.mock('../../components/Layout', () => ({ children }) => <div>{children}</div>);
-jest.mock('../../components/UserMenu', () => () => <div>User Menu</div>);
+jest.mock('../../components/UserMenu', () => () => <div>{userMenuString}</div>);
 
 const mockUser = {
     user: {
@@ -51,6 +53,7 @@ describe("Profile", () => {
     it("should initially render the user's information except for password", () => {
         const { name, email, password, phone, address } = mockUser.user;
         render(<Profile />);
+        expect(screen.getByText(userMenuString)).toBeInTheDocument();
         expect(screen.getByDisplayValue(name)).toBeInTheDocument();
         expect(screen.getByDisplayValue(email)).toBeInTheDocument();
         expect(screen.getByDisplayValue(emptyString)).toBeInTheDocument(); // Password is not displayed
