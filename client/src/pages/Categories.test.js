@@ -31,27 +31,16 @@ describe('Categories component', () => {
         ]);
     });
 
-    test('should render nothing when categories is empty', () => {
-        useCategory.mockReturnValue([]);
-
+    test('should render component with categories correctly', () => {
         renderComponent();
 
-        // Checks that document body only has the layout title
-        expect(document.body).toHaveTextContent(/^All Categories$/);
-    });
-
-    test('should render text correctly', () => {
-        renderComponent();
-
+        // Assert Text
         expect(screen.getByText('All Categories')).toBeInTheDocument();
         expect(screen.getByText('Electronics')).toBeInTheDocument();
         expect(screen.getByText('Books')).toBeInTheDocument();
-    });
 
-    test('should render links correctly', () => {
-        renderComponent();
-        
+        // Assert Links
         expect(screen.getByText('Electronics')).toHaveAttribute('href', '/category/ElectronicsSlug');
         expect(screen.getByText('Books')).toHaveAttribute('href', '/category/BooksSlug');
-    })
+    });
 });

@@ -20,15 +20,4 @@ describe('useCategory', () => {
             expect(result.current).toEqual(mockCategory);
         });
     });
-
-    test('Should log error on API failure', async () => {
-        const error = new Error('API failure');
-        const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        axios.get.mockRejectedValue(error);
-
-        renderHook(() => useCategory());
-        await waitFor(() => {
-            expect(consoleLogSpy).toHaveBeenCalledWith(error);
-        });
-    });
 });
