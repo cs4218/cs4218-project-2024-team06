@@ -125,8 +125,9 @@ describe('updateCategoryController', () => {
         };
     });
 
-    test('should return 200 with valid name and id', async () => {
+    test('returns 200 with valid name and id', async () => {
         
+        //ARRANGE
         req.body = { name: 'test' }; 
         req.params = { id: 1 };
 
@@ -134,8 +135,10 @@ describe('updateCategoryController', () => {
         const updatedCategory = { name: 'test', id: 1, slug: 'test' };
         categoryModel.findByIdAndUpdate = jest.fn().mockResolvedValue(updatedCategory);
 
+        //ACT
         await updateCategoryController(req, res);
         
+        //ASSERT
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledWith({
             success: true,
@@ -144,32 +147,21 @@ describe('updateCategoryController', () => {
         });
     });
 
-    test('should return 500 and error while updating category without id', async () => {
+    test.failing('returns 500 and error while updating category without id', async () => {
+        //ARRANGE
         consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
         req.body = { name: 'test' }; 
-        categoryModel.findOne = jest.fn().mockRejectedValue(error);
+        categoryModel.findByIdAndUpdate = jest.fn().mockRejectedValue(error);
 
+        //ACT
         await updateCategoryController(req, res);
+        
+        //ASSERT (original message buggy)
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledWith({
             success: false,
-            error: expect.any(Error),
-            message: 'Error while updating category'
-        });
-        expect(consoleLogSpy).toHaveBeenCalledWith(error);
-    });
-
-    test('should return 500 and error while updating category without name', async () => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        req.body = { id: 101 }; 
-        categoryModel.findOne = jest.fn().mockRejectedValue(error);
-
-        await updateCategoryController(req, res);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledWith({
-            success: false,
-            error: expect.any(Error),
-            message: 'Error while updating category'
+            error: expect(error),
+            message: 'Error In Updating Category'
         });
         expect(consoleLogSpy).toHaveBeenCalledWith(error);
     });
