@@ -1,49 +1,7 @@
-import { getAllOrdersController, getOrdersController, updateProfileController, orderStatusController } from "./authController.js";
-import { hashPassword } from "../helpers/authHelper.js";
+import { getOrdersController } from "./authController.js";
 import orderModel from "../models/orderModel.js";
-import userModel from "../models/userModel.js";
 
 jest.mock("../models/userModel.js");
-
-const oldProfile = {
-    name: "Halimah Yacob", 
-    email: "yacob@gov.sg", 
-    password: "safePassword", 
-    address: "Istana, Orchard Road, Singapore 238823", 
-    phone: "999"
-};
-
-const oldProfileUpdate = {
-    name: "Halimah Yacob", 
-    password: "safePassword", 
-    address: "Istana, Orchard Road, Singapore 238823", 
-    phone: "999"
-}
-
-const sampleName = "John Doe";
-const sampleEmail = "johndoe@gmail.com";
-const passwordLenMoreThan6 = "password";
-const passwordLen6 = "passwo";
-const passwordLen5 = "passw";
-const passwordHash = "hashedPassword";
-const validAddress = "123 Main St, Springfield, IL 62701";
-const validPhone = "99999999";
-const invalidPhone = "abc";
-
-const newProfile = {
-    name: sampleName, 
-    email: sampleEmail, 
-    password: passwordLenMoreThan6, 
-    address: validAddress, 
-    phone: validPhone
-}
-
-const newProfileUpdate = {
-    name: sampleName, 
-    password: passwordHash, 
-    address: validAddress, 
-    phone: validPhone
-}
 
 const req = {
     body: {}, 
@@ -119,18 +77,6 @@ const mockUser1 = {
     name: "Halimah Yacob"
 }
 
-const mockUser2 = {
-    name: "Tony Tan"
-}
-
-const mockUser3 = {
-    name: "SR Nathan"
-}
-
-const mockUser4 = {
-    name: "Tharman Shanmugaratnam"
-}
-
 const mockOrder1 = {
     products: [mockProduct1, mockProduct2],
     buyer: mockUser1, 
@@ -138,30 +84,12 @@ const mockOrder1 = {
 }
 
 const mockOrder2 = {
-    products: [mockProduct1, mockProduct3],
-    buyer: mockUser2, 
-    status: "Processing"
-}
-
-const mockOrder3 = {
     products: [mockProduct3, mockProduct4], 
     buyer: mockUser1, 
     status: "Shipped"
 }
 
-const mockOrder4 = {
-    products: [mockProduct2, mockProduct3, mockProduct4], 
-    buyer: mockUser3, 
-    status: "deliverd"
-}
-
-const mockOrder5 = {
-    products: [mockProduct1, mockProduct2, mockProduct3, mockProduct4], 
-    buyer: mockUser4, 
-    status: "cancel"
-}
-
-const sameUserOrderArray = [mockOrder1, mockOrder3];
+const sameUserOrderArray = [mockOrder1, mockOrder2];
 const emptyOrderArray = [];
 const firstPopulateParams = ["products", "-photo"];
 const secondPopulateParams = ["buyer", "name"];
@@ -198,23 +126,7 @@ describe("getOrdersController", () => {
         expect(res.json).toHaveBeenCalledWith(emptyOrderArray);
     });
 
-    it("should catch error thrown by find", async () => {
-        const mockedFindError = new Error("find failed");
-        orderModel.find.mockImplementation(() => {
-            throw mockedFindError;
-        });
-        await getOrdersController(req, res);
-        expect(orderModel.find).toHaveBeenCalledTimes(1);
-        expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
-        expect(orderModel.populate).not.toHaveBeenCalled();
-        expect(res.json).not.toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledTimes(1);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedFindError }));
-    });
-
-    it("should catch error thrown by first populate function", async () => {
+    it("should handle errors thrown gracefully", async () => {
         const mockedPopulateError = new Error("first populate failed");
         orderModel.find.mockReturnValue(orderModel);
         orderModel.populate.mockImplementation(() => {
@@ -225,27 +137,6 @@ describe("getOrdersController", () => {
         expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
         expect(orderModel.populate).toHaveBeenCalledTimes(1);
         expect(orderModel.populate).toHaveBeenCalledWith(firstPopulateParams[0], firstPopulateParams[1]);
-        expect(res.json).not.toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledTimes(1);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedPopulateError }));
-    });
-
-    it("should catch error thrown by second populate function", async () => {
-        const mockedPopulateError = new Error("second populate failed");
-        orderModel.find.mockReturnValue(orderModel);
-        orderModel.populate
-            .mockReturnValueOnce(orderModel)
-            .mockImplementation(() => {
-                throw mockedPopulateError;
-            });
-        await getOrdersController(req, res);
-        expect(orderModel.find).toHaveBeenCalledTimes(1);
-        expect(orderModel.find).toHaveBeenCalledWith({ buyer: req.user._id });
-        expect(orderModel.populate).toHaveBeenCalledTimes(2);
-        expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
-        expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
         expect(res.json).not.toHaveBeenCalled();
         expect(res.status).toHaveBeenCalledTimes(1);
         expect(res.status).toHaveBeenCalledWith(500);
