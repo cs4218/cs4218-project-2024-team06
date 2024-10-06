@@ -18,7 +18,7 @@ const invalidStatus = "Teleporting";
 
 describe("Order Model Test", () => {
     beforeAll(async () => {
-        await mongoose.connect(process.env.MONGO_URL);
+        await mongoose.connect(process.env.MONGO_URL + "_test");
     });
 
     const testCollectionName = "testOrders";
@@ -32,6 +32,7 @@ describe("Order Model Test", () => {
     });
 
     afterAll(async () => {
+        await mongoose.connection.dropDatabase();
         await mongoose.connection.close();
     });
 
