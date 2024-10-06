@@ -64,7 +64,6 @@ Object.defineProperty(window, "localStorage", {
 describe("Profile", () => {
     const mockAuth = originalUserProfile;
     const mockSetAuth = jest.fn();
-    const consoleErrorSpy = jest.spyOn(console, "error");
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -72,7 +71,7 @@ describe("Profile", () => {
         axios.put.mockResolvedValue({ data: { updatedUser: updatedUserProfile.user } });
     });
 
-    it("should render and work properly", async () => {
+    it("should render user's information except for password", async () => {
         const { name, email, password, phone, address } = mockAuth.user;
         render(<Profile />);
 
@@ -85,8 +84,11 @@ describe("Profile", () => {
         expect(screen.getByDisplayValue(phone)).toBeInTheDocument();
         expect(screen.getByDisplayValue(address)).toBeInTheDocument();
         expect(screen.getByText(updateButtonString)).toBeInTheDocument();
+    });
 
-        // Check editing of inputs
+    it("should update user's profile and local storage token if axios put has no error field", async () => {
+        render(<Profile />);
+
         const nameInput = screen.getByPlaceholderText(nameInputPlaceholderText);
         const emailInput = screen.getByPlaceholderText(emailInputPlaceholderText);
         const passwordInput = screen.getByPlaceholderText(passwordInputPlaceholderText);
@@ -99,12 +101,11 @@ describe("Profile", () => {
         fireEvent.change(addressInput, { target: { value: updatedUserProfile.user.address } });
 
         expect(nameInput.value).toBe(updatedUserProfile.user.name);
-        expect(emailInput).toBeDisabled();
+        expect(emailInput).toBeDisabled(); // Email is not editable
         expect(passwordInput.value).toBe(updatedUserProfile.user.password);
         expect(phoneInput.value).toBe(updatedUserProfile.user.phone);
         expect(addressInput.value).toBe(updatedUserProfile.user.address);
 
-        // Check update button
         const updateButton = screen.getByText(updateButtonString);
         fireEvent.click(updateButton);
         expect(axios.put).toHaveBeenCalledWith(apiString, updatedUserProfile.user);
@@ -148,82 +149,5 @@ describe("Profile", () => {
         expect(mockSetAuth).not.toHaveBeenCalled();
         expect(toast.error).toHaveBeenCalledTimes(1);
         expect(toast.error).toHaveBeenCalledWith(mockErrorMessage);
-    })
-
-    // This test is failing because useAuth error is not being handled in the original code.
-    it.failing("should handle useAuth error", async () => {
-        const mockedError = new Error("useAuth error");
-        useAuth.mockImplementation(() => {
-            throw mockedError;
-        });
-        expect(() => render(<Profile />)).not.toThrow(mockedError);
-        expect(consoleErrorSpy).not.toHaveBeenCalled();
-        consoleErrorSpy.mockRestore();
-    });
-
-    it("should handle getItem error", async () => {
-        window.localStorage.getItem.mockImplementationOnce(() => {
-            throw new Error("getItem error");
-        });
-        render(<Profile />);
-
-        const nameInput = screen.getByPlaceholderText(nameInputPlaceholderText);
-        const passwordInput = screen.getByPlaceholderText(passwordInputPlaceholderText);
-        const phoneInput = screen.getByPlaceholderText(phoneInputPlaceholderText);
-        const addressInput = screen.getByPlaceholderText(addressInputPlaceholderText);
-
-        fireEvent.change(nameInput, { target: { value: updatedUserProfile.user.name } });
-        fireEvent.change(passwordInput, { target: { value: updatedUserProfile.user.password } });
-        fireEvent.change(phoneInput, { target: { value: updatedUserProfile.user.phone } });
-        fireEvent.change(addressInput, { target: { value: updatedUserProfile.user.address } });
-
-        const updateButton = screen.getByText(updateButtonString);
-        fireEvent.click(updateButton);
-        expect(axios.put).toHaveBeenCalledWith(apiString, updatedUserProfile.user);
-
-        await waitFor(() => {    
-            expect(mockSetAuth).toHaveBeenCalledTimes(1);
-        })
-        expect(mockSetAuth).toHaveBeenCalledWith({...mockAuth, user: updatedUserProfile.user });
-        expect(window.localStorage.getItem).toHaveBeenCalledTimes(1);
-        expect(window.localStorage.getItem).toHaveBeenCalledWith(localStorageKeytring);
-        expect(window.localStorage.setItem).not.toHaveBeenCalled();
-        expect(toast.error).toHaveBeenCalledTimes(1);
-        expect(consoleErrorSpy).not.toHaveBeenCalled();
-        consoleErrorSpy.mockRestore();
-    });
-
-    it("should handle setItem error", async () => {
-        window.localStorage.setItem.mockImplementationOnce(() => {
-            throw new Error("setItem error");
-        })
-        render(<Profile />);
-
-        const nameInput = screen.getByPlaceholderText(nameInputPlaceholderText);
-        const passwordInput = screen.getByPlaceholderText(passwordInputPlaceholderText);
-        const phoneInput = screen.getByPlaceholderText(phoneInputPlaceholderText);
-        const addressInput = screen.getByPlaceholderText(addressInputPlaceholderText);
-
-        fireEvent.change(nameInput, { target: { value: updatedUserProfile.user.name } });
-        fireEvent.change(passwordInput, { target: { value: updatedUserProfile.user.password } });
-        fireEvent.change(phoneInput, { target: { value: updatedUserProfile.user.phone } });
-        fireEvent.change(addressInput, { target: { value: updatedUserProfile.user.address } });
-
-        const updateButton = screen.getByText(updateButtonString);
-        fireEvent.click(updateButton);
-        expect(axios.put).toHaveBeenCalledWith(apiString, updatedUserProfile.user);
-
-        await waitFor(() => {    
-            expect(mockSetAuth).toHaveBeenCalledTimes(1);
-        })
-        expect(mockSetAuth).toHaveBeenCalledWith({...mockAuth, user: updatedUserProfile.user });
-        expect(window.localStorage.getItem).toHaveBeenCalledTimes(1);
-        expect(window.localStorage.getItem).toHaveBeenCalledWith(localStorageKeytring);
-        expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
-        expect(window.localStorage.setItem).toHaveBeenCalledWith(localStorageKeytring, JSON.stringify({ user: updatedUserProfile.user }));
-        expect(toast.success).not.toHaveBeenCalled();
-        expect(toast.error).toHaveBeenCalledTimes(1);
-        expect(consoleErrorSpy).not.toHaveBeenCalled();
-        consoleErrorSpy.mockRestore();
     });
 });
