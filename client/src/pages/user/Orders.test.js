@@ -72,7 +72,7 @@ describe("Orders", () => {
         }
     };
 
-    it("should render orders", async () => {
+    it("should render orders and products", async () => {
         render(<Orders />);
         expect(await screen.findByText("User Menu")).toBeInTheDocument();
         expect(screen.getByText("All Orders")).toBeInTheDocument();
