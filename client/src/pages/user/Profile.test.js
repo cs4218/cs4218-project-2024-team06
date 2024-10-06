@@ -225,5 +225,5 @@ describe("Profile", () => {
         expect(toast.error).toHaveBeenCalledTimes(1);
         expect(consoleErrorSpy).not.toHaveBeenCalled();
         consoleErrorSpy.mockRestore();
-    })
+    });
 });
