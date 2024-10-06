@@ -145,38 +145,18 @@ describe("updateProfileController", () => {
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
     });
 
-    it("should keep old profile if new profile is empty", async () => {
+    it("should keep old profile if new profile fields are empty or null", async () => {
         req.body = {
             name: "",
-            email: "",
+            email: null,
             password: "",
-            address: "",
+            address: null,
             phone: ""
         };
 
         let updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
         userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
 
-        await updateProfileController(req, res);
-        expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
-        expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
-    });
-
-    it("should keep old profile if new profile has null fields", async () => {
-        req.body = {
-            name: null,
-            email: null,
-            password: null,
-            address: null,
-            phone: null
-        };
-
-        const updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
-        userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
-        
         await updateProfileController(req, res);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
         expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
