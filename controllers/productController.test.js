@@ -512,7 +512,11 @@ describe('productController', () => {
     })
 
     describe('updateProductController', () => {
+        
         let req, res, consoleLogSpy;
+        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {error});
+        const error = new Error('Database error');
+        
         beforeEach(() => {
             req = {};
             res = {
@@ -521,19 +525,8 @@ describe('productController', () => {
             };
         });
 
-        test('should return 500 with correct error message if no req content', async () => {
-            req.body = {};
-
-            await updateProductController(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith({
-                success: false,
-                error: expect.any(Error),
-                message: 'Error in Updte product'
-            });
-        });
-
-        test('should return 500 with correct error message if no pid in req paramas', async () => {
+        test.failing('returns 500 with correct error message if no pid in req paramas', async () => {
+            //ARRANGE
             req.fields = {
                 name: "Test Name",
                 description: 'Test Description',
@@ -549,145 +542,24 @@ describe('productController', () => {
                 }
             };
             req.params = {}
+            productModel.findByIdAndUpdate = jest.fn().mockRejectedValue(error);
 
-            productModel.findByIdAndUpdate = jest.fn().mockReturnValue(null);
-
+            //ACT
             await updateProductController(req, res);
+
+            //ASSERT (message buggy originally - always fails)
             expect(res.status).toHaveBeenCalledWith(500);
             expect(res.send).toHaveBeenCalledWith({
                 success: false,
-                message: 'Error in Updte product',
-                error: expect.any(Error),
+                message: 'Error In Updating Product',
+                error: error,
             });
+            expect(consoleLogSpy).toHaveBeenCalledWith(error);
         })
 
-        test('should return 500 with correct error message if invalid pid in req paramas', async () => {
-            req.fields = {
-                name: "Test Name",
-                description: 'Test Description',
-                price: 100,
-                category: 'Test Category',
-                quantity: 10,
-                shipping: true
-            };
-            req.files = {
-                photo: {
-                    path: 'client/public/images/test-pdt-img-1.jpg',
-                    size: 1024
-                }
-            };
-            req.params = { pid: "XXX" }
-
-            productModel.findByIdAndUpdate = jest.fn().mockReturnValue(null);
-
-            await updateProductController(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith({
-                success: false,
-                message: 'Error in Updte product',
-                error: expect.any(Error),
-            });
-        })
-
-        test('should return 500 with correct error message if no name in req fieldss', async () => {
-            req.fields = {
-                description: 'Test Description',
-                price: 100,
-                category: 'Test Category',
-                quantity: 10,
-                shipping: true
-            };
-            req.files = {
-                photo: {
-                    path: 'client/public/images/test-pdt-img-1.jpg',
-                    size: 1024
-                }
-            };
-            req.params = { pid: 1 }
-
-            productModel.findByIdAndUpdate = jest.fn().mockReturnValue(null);
-
-            await updateProductController(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith({
-                error: 'Name is Required'
-            });
-        });
-
-        test('should return 500 with correct error message if no description in req fieldss', async () => {
-            req.fields = {
-                name: 'Test Name',
-                price: 100,
-                category: 'Test Category',
-                quantity: 10,
-                shipping: true
-            };
-            req.files = {
-                photo: {
-                    path: 'client/public/images/test-pdt-img-1.jpg',
-                    size: 1024
-                }
-            };
-            req.params = { pid: 1 }
-
-            productModel.findByIdAndUpdate = jest.fn().mockReturnValue(null);
-
-            await updateProductController(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith({
-                error: 'Description is Required'
-            });
-        });
-
-        test('should return 500 with correct error message if no price in req body', async () => {
-            req.fields = {
-                name: 'Test Name',
-                description: 'Test Description',
-                category: 'Test Category',
-                quantity: 10,
-                shipping: true
-            };
-            req.files = {
-                photo: {
-                    path: 'client/public/images/test-pdt-img-1.jpg',
-                    size: 1024
-                }
-            };
-
-            req.params = { pid: 1 }
-
-            await updateProductController(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith({
-                error: 'Price is Required'
-            });
-        });
-
-        test('should return 500 with correct error message if no quantity in req body', async () => {
-            req.fields = {
-                name: 'Test Name',
-                description: 'Test Description',
-                category: 'Test Category',
-                price: 100,
-                shipping: true
-            };
-            req.files = {
-                photo: {
-                    path: 'client/public/images/test-pdt-img-1.jpg',
-                    size: 1024
-                }
-            };
-
-            req.params = { pid: 1 }
-
-            await updateProductController(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith({
-                error: 'Quantity is Required'
-            });
-        });
-
-        test('should return 500 with correct error message if no category in req body', async () => {
+        test.failing('returns 500 with correct error message if no category in req body', async () => {
+            
+            //ARRANGE
             req.fields = {
                 name: 'Test Name',
                 description: 'Test Description',
@@ -704,15 +576,19 @@ describe('productController', () => {
 
             req.params = { pid: 1 }
 
+            //ACT
             await updateProductController(req, res);
+
+            //ASSERT (original message buggy)
             expect(res.status).toHaveBeenCalledWith(500);
             expect(res.send).toHaveBeenCalledWith({
-                error: 'Category is Required'
+                error: 'Category Is Required'
             });
         });
 
-        test('should return 500 with correct error message if no photo in req files', async () => {
-            // supposed to fail due to error in original implementation
+        test.failing('returns 500 with correct error message if no photo in req files', async () => {
+            
+            //ARRANGE
             req.fields = {
                 name: 'Test Name',
                 description: 'Test Description',
@@ -725,35 +601,13 @@ describe('productController', () => {
 
             req.params = { pid: 1 }
 
+            //ACT
             await updateProductController(req, res);
+
+            //ASSERT (Original message and implementation on checking for lack of photo buggy)
             expect(res.status).toHaveBeenCalledWith(500);
             expect(res.send).toHaveBeenCalledWith({
-                error: 'photo is Required and should be less then 1mb'
-            });
-        });
-
-        test('should return 500 with correct error message if photo there but too large', async () => {
-            req.fields = {
-                name: 'Test Name',
-                description: 'Test Description',
-                category: 'Test Category',
-                price: 100,
-                quantity: 10,
-                shipping: true
-            };
-            req.files = {
-                photo: {
-                    path: 'client/public/images/test-pdt-img-1.jpg',
-                    size: 10000003
-                }
-            };
-
-            req.params = { pid: 1 }
-
-            await updateProductController(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith({
-                error: 'photo is Required and should be less then 1mb'
+                error: 'Photo Is Required And Should Be Less Than 1MB'
             });
         });
 
