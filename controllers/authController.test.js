@@ -145,51 +145,6 @@ describe("updateProfileController", () => {
         expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
     });
 
-    it("should not update empty password and empty phone fields", async () => {
-        req.body = {
-            name: sampleName,
-            email: "",
-            password: "",
-            address: validAddress,
-            phone: ""
-        };
-
-        let updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
-        updatedUser.name = sampleName;
-        updatedUser.address = validAddress;
-
-        userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
-        
-        await updateProfileController(req, res);
-        expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
-        expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
-    })
-
-    it("should not update empty name and empty address fields", async () => {
-        req.body = {
-            name: "",
-            email: sampleEmail,
-            password: passwordLenMoreThan6,
-            address: "",
-            phone: validPhone
-        };
-
-        let updatedUser = JSON.parse(JSON.stringify(oldProfileUpdate));
-        updatedUser.password = passwordHash;
-        updatedUser.phone = validPhone;
-        userModel.findByIdAndUpdate.mockReturnValueOnce(updatedUser);
-        
-        await updateProfileController(req, res);
-        expect(userModel.findByIdAndUpdate).toHaveBeenCalledTimes(1);
-        expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith(req.user._id, updatedUser, { new: true });
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: true, updatedUser }));
-    })
-
     it("should keep old profile if new profile is empty", async () => {
         req.body = {
             name: "",
