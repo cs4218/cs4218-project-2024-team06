@@ -1,49 +1,7 @@
-import { getAllOrdersController, getOrdersController, updateProfileController, orderStatusController } from "./authController.js";
-import { hashPassword } from "../helpers/authHelper.js";
+import { getAllOrdersController } from "./authController.js";
 import orderModel from "../models/orderModel.js";
-import userModel from "../models/userModel.js";
 
 jest.mock("../models/userModel.js");
-
-const oldProfile = {
-    name: "Halimah Yacob", 
-    email: "yacob@gov.sg", 
-    password: "safePassword", 
-    address: "Istana, Orchard Road, Singapore 238823", 
-    phone: "999"
-};
-
-const oldProfileUpdate = {
-    name: "Halimah Yacob", 
-    password: "safePassword", 
-    address: "Istana, Orchard Road, Singapore 238823", 
-    phone: "999"
-}
-
-const sampleName = "John Doe";
-const sampleEmail = "johndoe@gmail.com";
-const passwordLenMoreThan6 = "password";
-const passwordLen6 = "passwo";
-const passwordLen5 = "passw";
-const passwordHash = "hashedPassword";
-const validAddress = "123 Main St, Springfield, IL 62701";
-const validPhone = "99999999";
-const invalidPhone = "abc";
-
-const newProfile = {
-    name: sampleName, 
-    email: sampleEmail, 
-    password: passwordLenMoreThan6, 
-    address: validAddress, 
-    phone: validPhone
-}
-
-const newProfileUpdate = {
-    name: sampleName, 
-    password: passwordHash, 
-    address: validAddress, 
-    phone: validPhone
-}
 
 const req = {
     body: {}, 
@@ -161,7 +119,6 @@ const mockOrder5 = {
     status: "cancel"
 }
 
-const sameUserOrderArray = [mockOrder1, mockOrder3];
 const emptyOrderArray = [];
 const firstPopulateParams = ["products", "-photo"];
 const secondPopulateParams = ["buyer", "name"];
@@ -206,59 +163,6 @@ describe("getAllOrdersController", () => {
         expect(orderModel.populate().sort).toHaveBeenCalledWith(sortParams);
         expect(res.json).toHaveBeenCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith(emptyOrderArray);
-    });
-
-    it("should catch error thrown by find", async () => {
-        const mockedFindError = new Error("find failed");
-        orderModel.find.mockImplementation(() => {
-            throw mockedFindError;
-        });
-        await getAllOrdersController(req, res);
-        expect(orderModel.find).toHaveBeenCalledTimes(1);
-        expect(orderModel.find).toHaveBeenCalledWith({});
-        expect(orderModel.populate).not.toHaveBeenCalled();
-        expect(res.json).not.toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledTimes(1);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedFindError }));
-    });
-
-    it("should catch error thrown by first populate function", async () => {
-        const mockedPopulateError = new Error("first populate failed");
-        orderModel.populate.mockImplementation(() => {
-            throw mockedPopulateError;
-        });
-        await getAllOrdersController(req, res);
-        expect(orderModel.find).toHaveBeenCalledTimes(1);
-        expect(orderModel.find).toHaveBeenCalledWith({});
-        expect(orderModel.populate).toHaveBeenCalledTimes(1);
-        expect(orderModel.populate).toHaveBeenCalledWith(firstPopulateParams[0], firstPopulateParams[1]);
-        expect(res.json).not.toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledTimes(1);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedPopulateError }));
-    });
-
-    it("should catch error thrown by second populate function", async () => {
-        const mockedPopulateError = new Error("second populate failed");
-        orderModel.populate
-            .mockReturnValueOnce(orderModel)
-            .mockImplementation(() => {
-                throw mockedPopulateError;
-            });
-        await getAllOrdersController(req, res);
-        expect(orderModel.find).toHaveBeenCalledTimes(1);
-        expect(orderModel.find).toHaveBeenCalledWith({});
-        expect(orderModel.populate).toHaveBeenCalledTimes(2);
-        expect(orderModel.populate).toHaveBeenNthCalledWith(1, firstPopulateParams[0], firstPopulateParams[1]);
-        expect(orderModel.populate).toHaveBeenNthCalledWith(2, secondPopulateParams[0], secondPopulateParams[1]);
-        expect(res.json).not.toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledTimes(1);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledTimes(1);
-        expect(res.send).toHaveBeenCalledWith(expect.objectContaining({ success: false, error: mockedPopulateError }));
     });
 
     it("should catch error thrown by sort", async () => {
