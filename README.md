@@ -1,14 +1,60 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Lq2be5ao)
-# Instructions on creating team repository using GitHub Classroom
-## Step 1. Ensure that your team formation through Canvas has been confirmed.
-Do not proceed to step 2 otherwise!
+## Virtual Vault
+Virtual Vault is a full stack e-commerce website, built using MERN stack (MongoDB, Express.js, React.js and Node.js). Features include user authentication, payment gateway integration, search and filters for products, and product set. 🛒
 
-## Step 2. Visit the assignment link at https://classroom.github.com/a/Lq2be5ao
-The first member of the team to access this link will be prompted to accept the assignment that gives your team access to the new repository.
-Create a new team by typing 2024-TeamXX , where XX is the Team number as noted in Step 1 above. 
-(Note that the naming convention must be followed strictly, e.g. capitalisation, dash, and spacing. 
-If your group number is a single digit, i.e 2024-Team1 is fine as well.)
+The focus of this repository is to provide **comprehensive testing** for Virtual Vault in order to identify issues and bugs.
 
-The other members in the team will be able to see an existing team with your team number in the “Join an existing team” section. Click Join.
+- [x] Unit Testing
+- [x] Continous Integration with build and unit testing
+- [ ] Integration Testing
+- [ ] UI Testing
+- [ ] Code Coverage
+- [ ] Performance Testing
 
-## Step 3. All of you should be able to see the acceptance page. Click on the assignment link to see the project on GitHub.
+
+### How to Run the Application
+To run Virtual Vault, follow these steps.
+
+1. Clone the repository to your local directory.
+```
+git clone https://github.com/cs4218/cs4218-project-2024-team06.git
+```
+
+2. Open the repository in a code editor of your choice, such as Visual Studio Code.
+
+3. In the root directory, install the server-side dependencies.
+```
+npm install
+```
+
+4. Change directory to the client directory and install the client-side dependencies.
+```
+cd client
+npm install
+```
+5. Return to the root directory and create a .env file. The .env file should have the following fields.
+```
+PORT = 6060
+DEV_MODE = development
+MONGO_URL = <Insert your MongoDB database URL>
+JWT_SECRET = <Insert your JWT secret key>
+BRAINTREE_MERCHANT_ID = <Insert your BrainTree merchant ID>
+BRAINTREE_PUBLIC_KEY = <Insert your BrainTree public key>
+BRAINTREE_PRIVATE_KEY = <Insert your Braintree private key>
+```
+
+6. Run the following command to start the application
+```
+npm run dev
+```
+
+### How to Run Unit Tests
+To run an individual unit test, run the following command in the root directory.
+```
+npm test -- <Name of Unit Test File>
+#e.g. npm test -- AdminDashboard.test.js
+```
+
+To run all unit tests at once, run the following command in the root directory.
+```
+npm test
+```

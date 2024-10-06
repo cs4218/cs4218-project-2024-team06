@@ -15,7 +15,7 @@ jobs:
     steps:
       # Step 1: Checkout the code
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       # Step 2: Set up Node.js
       - name: Setup Node.js
@@ -23,11 +23,16 @@ jobs:
         with:
           node-version: "21"
 
-      # Step 3: Install dependencies
+      # Step 3: Install server-side dependencies
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Build the project
+      # Step 4: Install client-side dependencies
+      - name: Install client dependencies
+        working-directory: ./client
+        run: npm install
+
+      # Step 5: Build the project
       - name: Build project
         run: echo "Build project"
 
@@ -48,8 +53,13 @@ jobs:
         with:
           node-version: "21"
 
-      # Step 3: Install dependencies
+      # Step 3: Install server-side dependencies
       - name: Install dependencies
+        run: npm install
+
+      # Step 4: Install client-side dependencies
+      - name: Install client dependencies
+        working-directory: ./client
         run: npm install
 
       # Step 4: Run tests
