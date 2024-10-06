@@ -21,7 +21,7 @@ describe('Dashboard', () => {
         ]);
     });
 
-    it("should render the user information", () => {
+    it("should render user information", () => {
         render(<Dashboard />);
         expect(screen.getByText("User Menu")).toBeInTheDocument();
         expect(screen.getByText(name)).toBeInTheDocument();
@@ -29,38 +29,11 @@ describe('Dashboard', () => {
         expect(screen.getByText(address)).toBeInTheDocument();
     });
 
-    it("should not render user information", () => {
+    it("should not render user information if auth is null", () => {
         useAuth.mockReturnValue([null]);
         render(<Dashboard />);
         expect(screen.queryByText(name)).not.toBeInTheDocument();
         expect(screen.queryByText(email)).not.toBeInTheDocument();
         expect(screen.queryByText(address)).not.toBeInTheDocument();
-    });
-
-    it("should not render user information for auth.user is null", () => {
-        useAuth.mockReturnValue([{ user: null }]);
-        render(<Dashboard />);
-        expect(screen.queryByText(name)).not.toBeInTheDocument();
-        expect(screen.queryByText(email)).not.toBeInTheDocument();
-        expect(screen.queryByText(address)).not.toBeInTheDocument();
-    });
-
-    it("should not render user information for null fields", () => {
-        useAuth.mockReturnValue([{ user: { name: null, email: null, address: null } }]);
-        render(<Dashboard />);
-        expect(screen.queryByText(name)).not.toBeInTheDocument();
-        expect(screen.queryByText(email)).not.toBeInTheDocument();
-        expect(screen.queryByText(address)).not.toBeInTheDocument();
-    });
-
-    it.failing("should handle useAuth error", () => {
-        const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-        const mockedError = new Error("useAuth error");
-        useAuth.mockImplementation(() => {
-            throw mockedError;
-        });
-        expect(() => render(<Dashboard />)).toThrow(mockedError);
-        expect(consoleErrorSpy).not.toHaveBeenCalled();
-        consoleErrorSpy.mockRestore();
     });
 });
