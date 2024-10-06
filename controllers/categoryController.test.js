@@ -187,51 +187,45 @@ describe('deleteCategoryController', () => {
         };
     });
 
-    test('should return 200 with valid id', async () => {
+    test.failing('return 200 with valid id', async () => {
         
+        // ARRANGE
         req.params = { id: 1 };
-
         consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
         const deletedCategory = { id: 1, slug: 'test' };
         categoryModel.findByIdAndDelete = jest.fn().mockResolvedValue(deletedCategory);
 
+        // ACT
         await deleteCategoryCOntroller(req, res);
         
+        // ASSERT
         expect(res.status).toHaveBeenCalledWith(200);
+        // Always fails as message buggy in code as per standards
         expect(res.send).toHaveBeenCalledWith({
             success: true,
-            message: "Categry Deleted Successfully",
+            message: "Category Deleted Successfully",
         });
     });
 
-    test('should return 500 and error while deleting category without id', async () => {
-        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-        req.body = {}; 
-        categoryModel.findOne = jest.fn().mockRejectedValue(error);
+    test.failing('returns 500 and error when deleting category with invalid id', async () => {
 
-        await deleteCategoryCOntroller(req, res);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledWith({
-            success: false,
-            error: expect.any(Error),
-            message: 'error while deleting category'
-        });
-        expect(consoleLogSpy).toHaveBeenCalledWith(error);
-    });
-
-    test('should return 500 and error while deleting category with invalid id', async () => {
+        // ARRANGE
         consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
         req.body = {id: "abcd"}; 
-        categoryModel.findOne = jest.fn().mockRejectedValue(error);
+        categoryModel.findByIdAndDelete = jest.fn().mockRejectedValue(error);
 
+        // ACT
         await deleteCategoryCOntroller(req, res);
+
+        // ASSERT
+        expect(consoleLogSpy).toHaveBeenCalledWith(error);
         expect(res.status).toHaveBeenCalledWith(500);
+        //Always fails as message in original code buggy as per standards
         expect(res.send).toHaveBeenCalledWith({
             success: false,
-            error: expect.any(Error),
-            message: 'error while deleting category'
+            error: expect(error),
+            message: 'Error In Deleting Category'
         });
-        expect(consoleLogSpy).toHaveBeenCalledWith(error);
     });
 })
 

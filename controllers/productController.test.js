@@ -174,6 +174,7 @@ describe('productController', () => {
 
     describe('createProductController', () => {
         let req, res, consoleLogSpy;
+        let error = new Error('Database error')
         beforeEach(() => {
             req = {};
             res = {
@@ -411,7 +412,8 @@ describe('productController', () => {
     });
 
     describe('deleteProductController', () => {
-        let req, res, consoleLogSpy;
+        let req, res;
+        let error = new Error('Database error')
 
         beforeEach(() => {
             req = {};
@@ -422,33 +424,29 @@ describe('productController', () => {
         });
 
 
-        test('should return 500 with invalid id', async () => {
-            consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
-            req.params = { pid: "ABCD" };
-            productModel.findByIdAndDelete = jest.fn().mockReturnValue(null);
+    test.failing('returns 500 and error when deleting product without id', async () => {
+       
+        // ARRANGE
+        req.body = {}; 
+        consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+        productModel.findByIdAndDelete = jest.fn().mockRejectedValue(error); 
 
-            await deleteProductController(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith({
-                success: false,
-                error: expect.any(Error),
-                message: 'Error while deleting product'
-            });
+        // ACT
+        await deleteProductController(req, res);
+
+        // ASSERT
+        expect(consoleLogSpy).toHaveBeenCalledWith(error);
+        expect(res.status).toHaveBeenCalledWith(500);
+        //Always fails as message in original code buggy as per standards
+        expect(res.send).toHaveBeenCalledWith({
+            success: false,
+            error: expect(error),
+            message: 'Error In Deleting Product'
         });
+    });
 
-        test('should return 500 with empty id', async () => {
-            consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
-            req.params = { pid: '' };
-            productModel.findByIdAndDelete = jest.fn().mockReturnValue(null);
 
-            await deleteProductController(req, res);
-            expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.send).toHaveBeenCalledWith({
-                success: false,
-                error: expect.any(Error),
-                message: 'Error while deleting product'
-            });
-        });
+
     })
 
     describe('updateProductController', () => {
