@@ -64,10 +64,12 @@ Object.defineProperty(window, "localStorage", {
 describe("Profile", () => {
     const mockAuth = originalUserProfile;
     const mockSetAuth = jest.fn();
+    const consoleErrorSpy = jest.spyOn(console, "error");
 
     beforeEach(() => {
         jest.clearAllMocks();
         useAuth.mockReturnValue([mockAuth, mockSetAuth]);
+        axios.put.mockResolvedValue({ data: { updatedUser: updatedUserProfile.user } });
     });
 
     it("should render and work properly", async () => {
@@ -104,7 +106,6 @@ describe("Profile", () => {
 
         // Check update button
         const updateButton = screen.getByText(updateButtonString);
-        axios.put.mockResolvedValue({ data: { updatedUser: updatedUserProfile.user } });
         fireEvent.click(updateButton);
         expect(axios.put).toHaveBeenCalledWith(apiString, updatedUserProfile.user);
         
@@ -139,8 +140,8 @@ describe("Profile", () => {
         fireEvent.change(addressInput, { target: { value: updatedUserProfile.user.address } });
 
         const updateButton = screen.getByText(updateButtonString);
-        const mockErrorMessage = "Mocked Error message";
-        axios.put.mockResolvedValue({ data: { updatedUser: updatedUserProfile.user, error: mockErrorMessage } });
+        const mockErrorMessage = "axios put error field";
+        axios.put.mockResolvedValueOnce({ data: { updatedUser: updatedUserProfile.user, error: mockErrorMessage } });
         fireEvent.click(updateButton);
         expect(axios.put).toHaveBeenCalledWith(apiString, updatedUserProfile.user);
         
@@ -150,12 +151,40 @@ describe("Profile", () => {
     })
 
     it.failing("should handle useAuth error", async () => {
-        const consoleErrorSpy = jest.spyOn(console, "error");
         const mockedError = new Error("useAuth error");
         useAuth.mockImplementation(() => {
             throw mockedError;
         });
         expect(() => render(<Profile />)).toThrow(mockedError);
+        expect(consoleErrorSpy).not.toHaveBeenCalled();
+        consoleErrorSpy.mockRestore();
+    });
+
+    it("should handle getItem error", async () => {
+        window.localStorage.getItem = jest.fn(() => { throw new Error("getItem error"); });
+        render(<Profile />);
+
+        const nameInput = screen.getByPlaceholderText(nameInputPlaceholderText);
+        const passwordInput = screen.getByPlaceholderText(passwordInputPlaceholderText);
+        const phoneInput = screen.getByPlaceholderText(phoneInputPlaceholderText);
+        const addressInput = screen.getByPlaceholderText(addressInputPlaceholderText);
+
+        fireEvent.change(nameInput, { target: { value: updatedUserProfile.user.name } });
+        fireEvent.change(passwordInput, { target: { value: updatedUserProfile.user.password } });
+        fireEvent.change(phoneInput, { target: { value: updatedUserProfile.user.phone } });
+        fireEvent.change(addressInput, { target: { value: updatedUserProfile.user.address } });
+
+        const updateButton = screen.getByText(updateButtonString);
+        fireEvent.click(updateButton);
+        expect(axios.put).toHaveBeenCalledWith(apiString, updatedUserProfile.user);
+
+        await waitFor(() => {    
+            expect(mockSetAuth).toHaveBeenCalledTimes(1);
+        })
+        expect(mockSetAuth).toHaveBeenCalledWith({...mockAuth, user: updatedUserProfile.user });
+        expect(window.localStorage.getItem).toHaveBeenCalledTimes(1);
+        expect(window.localStorage.getItem).toHaveBeenCalledWith(localStorageKeytring);
+        expect(window.localStorage.setItem).not.toHaveBeenCalled();
         expect(consoleErrorSpy).not.toHaveBeenCalled();
         consoleErrorSpy.mockRestore();
     });
