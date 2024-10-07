@@ -26,7 +26,7 @@ describe('category controller', () => {
     test('should return 200 and get all categories', async () => {
         categoryModel.find = jest.fn().mockResolvedValue({});
 
-        await categoryControlller(req, res);
+        await categoryController(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledWith({
             success: true,
@@ -39,7 +39,7 @@ describe('category controller', () => {
         consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {error});
         categoryModel.find = jest.fn().mockRejectedValue(error);
 
-        await categoryControlller(req, res);
+        await categoryController(req, res);
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.send).toHaveBeenCalledWith({
             success: false,
