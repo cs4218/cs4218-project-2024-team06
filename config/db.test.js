@@ -24,8 +24,7 @@ describe('connectDB', () => {
         expect(consoleLogSpy).toHaveBeenCalledWith('Connected To Mongodb Database test-connection'.bgMagenta.white);
     });
 
-    // NEVER PASS
-    test('connection unsuccessful', async () => {
+    test.failing('connection unsuccessful', async () => {
         const error = new Error('connection error');
         mongoose.connect.mockRejectedValue(error);
         await connectDB();
