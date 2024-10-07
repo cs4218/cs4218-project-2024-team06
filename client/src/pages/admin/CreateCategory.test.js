@@ -21,7 +21,7 @@ describe("Create Category Component", () => {
 
     describe("When the component is rendered", () => {
         
-        test("The different components are rendered with successfull fetching of categories", async () => {
+        test("The different components are rendered with successful fetching of categories", async () => {
 
             //ARRANGE
             // Mock data
@@ -45,7 +45,7 @@ describe("Create Category Component", () => {
                 </MemoryRouter>
                 );
 
-            // ASSERT (always fails due to inconsistent capitalisation in original code)
+            //ASSERT
             await waitFor(() => {
                 expect(screen.getByText(/Dashboard Mock/)).toBeInTheDocument(); 
                 expect(screen.getByText(/Admin Menu Mock/)).toBeInTheDocument();
