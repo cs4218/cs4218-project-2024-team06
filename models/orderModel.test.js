@@ -1,8 +1,6 @@
-import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import Order from "./orderModel.js";
-
-require("dotenv").config();
 
 const validProductId1 = new mongoose.Types.ObjectId();
 const validProductId2 = new mongoose.Types.ObjectId();
@@ -11,9 +9,13 @@ const validUserId1 = new mongoose.Types.ObjectId();
 const mockValidPayment1 = { "transaction": 1 };
 const validStatus = ["Not Process", "Processing", "Shipped", "deliverd", "cancel"];
 
+let mongoServer;
+
 describe("Order Model Test", () => {
     beforeAll(async () => {
-        await mongoose.connect(process.env.MONGO_URL + "_test");
+        mongoServer = await MongoMemoryServer.create();
+        const uri = mongoServer.getUri();
+        await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     });
 
     const testCollectionName = "testOrders";
@@ -28,7 +30,8 @@ describe("Order Model Test", () => {
 
     afterAll(async () => {
         await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+        await mongoose.disconnect();
+        await mongoServer.stop();
     });
 
     it("should save an order with default status and valid ObjectId references", async () => {
