@@ -1,8 +1,8 @@
-import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import User from "./userModel";
 
-require("dotenv").config();
+let mongoServer;
 
 const mockUser = new User ({
     name: "John Doe", 
@@ -16,7 +16,9 @@ const mockUser = new User ({
 
 describe("User Model", () => {
     beforeAll(async () => {
-        await mongoose.connect(process.env.MONGO_URL + "_test");
+        mongoServer = await MongoMemoryServer.create();
+        const uri = mongoServer.getUri();
+        await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     });
 
     const testCollectionName = "testUsers";
@@ -31,7 +33,8 @@ describe("User Model", () => {
 
     afterAll(async () => {
         await mongoose.connection.dropDatabase();
-        await mongoose.connection.close();
+        await mongoose.disconnect();
+        await mongoServer.stop();
     });
 
     it("should save a user with correct information and default role", async () => {
