@@ -1,7 +1,7 @@
-import { comparePassword } from './../../../helpers/authHelper'
+import { comparePassword } from './authHelper'
 
 /**
- * Test whether compare password can integrate with third-party bcrypt library
+Objective: Test whether compare password can integrate with third-party bcrypt library
 */
 describe('Compare Password Method', () => {
 
