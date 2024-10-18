@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import categoryModel from "../models/categoryModel";
-import { categoryControlller } from "./categoryController";
+import { categoryControlller, singleCategoryController } from "./categoryController";
 
 let mongoServer;
 
@@ -13,13 +13,8 @@ describe('category controller integration tests', () => {
         const uri = mongoServer.getUri();
         await mongoose.connect(uri);
 
-        const categoryData = { name: "Electronics", slug: "electronics" };
-        const category = new categoryModel(categoryData);
-        const savedCategory = await category.save();
-        
-        const categoryTwoData = { name: "Books", slug: "books" };
-        const categoryTwo = new categoryModel(categoryTwoData);
-        const savedCategoryTwo = await categoryTwo.save();
+        await new categoryModel({ name: "Electronics", slug: "electronics" }).save();
+        await new categoryModel({ name: "Books", slug: "books" }).save();
     });
 
     beforeEach(() => {
@@ -47,6 +42,24 @@ describe('category controller integration tests', () => {
                     expect.objectContaining({ name: "Electronics", slug: "electronics" }),
                     expect.objectContaining({ name: "Books", slug: "books" })
                 ])
+            })
+        );
+    });
+
+    test.failing('should get a single category in the database', async () => {
+        req = { params: { slug: 'books' } };
+
+        await singleCategoryController(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.send).toHaveBeenCalledWith(
+            expect.objectContaining({
+                category: expect.objectContaining({
+                    name: "Books",
+                    slug: "books"
+                }),
+                message: "Get single category successfully",
+                success: true
             })
         );
     });
