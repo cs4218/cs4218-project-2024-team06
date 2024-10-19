@@ -24,7 +24,7 @@ describe('forgotPasswordController should integrate with userModel', () => {
         //Reset all mocks
         jest.clearAllMocks();
 
-        //Create the in-memory MongoDb server and connect to it
+        //Create the in-memory MongoDB server and connect to it
         mongodbServer = await MongoMemoryServer.create();
         const mongodbUri = mongodbServer.getUri();
         await mongoose.connect(mongodbUri);
