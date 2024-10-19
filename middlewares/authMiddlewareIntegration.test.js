@@ -31,7 +31,7 @@ describe('isAdmin Middleware should successfully integrate with user model in th
         //Reset all mocks
         jest.clearAllMocks();
 
-        //Set up default values for req and res
+        //Set up default values for req, res and next
         req = {
             headers: { authorization: 'token' },
             user: { _id: user_id }
@@ -46,7 +46,7 @@ describe('isAdmin Middleware should successfully integrate with user model in th
         //Create the in-memory MongoDB server and connect to it
         mongodbServer = await MongoMemoryServer.create();
         const mongodbUri = mongodbServer.getUri();
-        await mongoose.connect(mongodbUri)
+        await mongoose.connect(mongodbUri);
 
         //Create a user collection to work with
         await mongoose.connection.createCollection(userCollectionName);
@@ -83,7 +83,7 @@ describe('isAdmin Middleware should successfully integrate with user model in th
 
         const result = await isAdmin(req, res, next);
 
-        //ASSERT
+        //Assert
         expect(result).toBe(undefined);
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.send).toHaveBeenCalledWith(({
