@@ -11,6 +11,9 @@ the helper function hashPassword from authHelper.
 Purpose of this integration test is to test the integration of forgotPassword controller with:
 - userModel (represents the backend database)
 - hashPassword()
+
+In particular, we want to see if forgotPasswordController can successfully retrieve and update user's
+password in the database.
 */
 describe('forgotPasswordController should integrate with userModel', () => {
     let mongodbServer;
