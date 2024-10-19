@@ -2,9 +2,9 @@ import React from 'react';
 import AdminDashboard from './AdminDashboard';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AuthProvider } from '../../context/auth'
-import { CartProvider } from '../../context/cart'
-import { SearchProvider } from '../../context/search'
+import { AuthProvider } from '../../context/auth';
+import { CartProvider } from '../../context/cart';
+import { SearchProvider } from '../../context/search';
 import '@testing-library/jest-dom/extend-expect';
 
 /**

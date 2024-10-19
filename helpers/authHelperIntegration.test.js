@@ -1,4 +1,4 @@
-import { comparePassword } from './authHelper'
+import { comparePassword } from './authHelper';
 
 /**
 Objective: Test whether compare password can integrate with third-party bcrypt library

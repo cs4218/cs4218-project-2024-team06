@@ -5,10 +5,10 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Register from './Register';
 import mongoose from "mongoose";
-import { MongoMemoryServer } from 'mongodb-memory-server'
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import { spawn } from 'child_process';
 import path from 'path';
-import userModel from '../../../../models/userModel'
+import userModel from '../../../../models/userModel';
 import '@testing-library/jest-dom/extend-expect';
 
 /**

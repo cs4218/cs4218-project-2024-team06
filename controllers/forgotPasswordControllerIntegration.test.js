@@ -1,7 +1,7 @@
 import { forgotPasswordController } from './authController.js';
 import userModel from '../models/userModel.js';
 import mongoose from "mongoose";
-import { MongoMemoryServer } from 'mongodb-memory-server'
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import bcrypt from "bcrypt";
 
 /**
