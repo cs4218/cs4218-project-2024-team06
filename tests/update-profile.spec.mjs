@@ -21,7 +21,7 @@ const PRODUCTS_COLLECTION = "products"
 //Variables for logging in
 const ORIGINAL_PASSWORD_UNHASHED = "password";
 const ORIGINAL_PASSWORD_HASHED = "$2b$10$WAPTi0bcYFfJkncMUjER5eS8.xo3WNYHaorAx9LPXvbsmmBH3x6tS";
-const NEW_PASSWORD_UNHASHED = "newPassword";
+const NEW_PASSWORD_UNHASHED = "new_password";
 
 
 //Variables for original and updated user data
@@ -55,7 +55,6 @@ test.beforeEach(async () => {
 
     //Create user account to log in with
     const newUser = new userModel(USER_ORIGINAL_DATA)
-    
     await newUser.save();
 });
 
@@ -118,23 +117,37 @@ test.describe('User should be able to update his profile', () => {
         await page.getByPlaceholder('Enter Your Address').click();
         await page.getByPlaceholder('Enter Your Address').fill(USER_NEW_DATA.address);
 
+        //Submit updated user information
+        await page.getByRole('button', { name: 'Update' }).click();
+        await expect(page.getByText('Profile Updated Successfully')).toBeVisible();
 
+        //Log out
+        await page.getByRole('button', { name: 'James Tan' }).click(); //Name should be updated
+        await page.getByRole('link', { name: 'Logout' }).click(); //Name should be updated
 
+        //Log back in with new password
+        await page.getByPlaceholder('Enter Your Email').fill(USER_ORIGINAL_DATA.email); //Email should not have changed
+        await page.getByPlaceholder('Enter Your Password').click();
+        await page.getByPlaceholder('Enter Your Password').fill(USER_NEW_DATA.password);
+        await page.getByRole('button', { name: 'LOGIN' }).click();
 
-
-        // await page.getByPlaceholder('Enter new category').fill('Shoes');
-        // await page.getByRole('button', { name: 'Submit' }).click();
-
-        // //Check if category is successfully created
-        // await expect(page.getByText('Shoes is created')).toBeVisible();
-        // await expect(page.getByRole('cell', { name: 'Shoes' })).toBeVisible(); //Should appear in current page
-        // await page.getByRole('link', { name: 'Categories' }).click();
-        // await page.getByRole('link', { name: 'All Categories' }).click();
-        // await page.getByRole('link', { name: 'Shoes' }).click(); //Should appear in All Categories page
+        //Verify that user can log in
+        await expect(page.getByText('🙏login successfully')).toBeVisible();
+        await page.getByRole('button', { name: 'James Tan' }).click();
         
-        // //Check that no products are created under this new category yet
-        // await expect(page.getByRole('heading', { name: 'Category - Shoes' })).toBeVisible();
-        // await expect(page.getByRole('heading', { name: 'Category - Shoes' })).toBeVisible();
-        // await expect(page.getByRole('heading', { name: '0 result found' })).toBeVisible();
+        //Navigate to dashboard and check that user's updated information is present
+        await page.getByRole('link', { name: 'Dashboard' }).click();
+        await expect(page.getByRole('heading', { name: USER_NEW_DATA.name, exact: true })).toBeVisible();
+        await expect(page.getByRole('heading', { name: USER_NEW_DATA.email })).toBeVisible();
+        await expect(page.getByRole('heading', { name: USER_NEW_DATA.address })).toBeVisible();
+
+        //Verify that original user information is populated in Profile page
+        await page.getByRole('link', { name: 'Profile' }).click();
+        await expect(page.getByRole('heading', { name: 'USER PROFILE' })).toBeVisible();
+        expect(await page.getByPlaceholder('Enter Your Name').inputValue()).toBe(USER_NEW_DATA.name);
+        expect(await page.getByPlaceholder('Enter Your Email').inputValue()).toBe(USER_ORIGINAL_DATA.email);
+        expect(await page.getByPlaceholder('Enter Your Password').inputValue()).toBe('');
+        expect(await page.getByPlaceholder('Enter Your Phone').inputValue()).toBe(USER_NEW_DATA.phone);
+        expect(await page.getByPlaceholder('Enter Your Address').inputValue()).toBe(USER_NEW_DATA.address);
     });
 });
