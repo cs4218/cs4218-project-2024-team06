@@ -43,21 +43,25 @@ test.beforeAll(async () => {
 test.afterAll(async () => {
     await productModel.deleteOne({ slug: 'book-slug' });
     await productModel.deleteOne({ slug: 'laptop-slug' });
-    await mongoose.connection.close();
+    await mongoose.disconnect();
 });
 
 test('filter by price', async ({ page }) => {
     await page.goto('http://localhost:3000/');
+    await page.waitForLoadState('networkidle');
 
     await page.click('text=$0 to 19');
+    await page.waitForLoadState('networkidle');
     await expect(page.locator('text=best-book')).toBeVisible();
     await expect(page.locator('text=best-laptop')).not.toBeVisible();
 
     await page.click('text=$100 or more');
+    await page.waitForLoadState('networkidle');
     await expect(page.locator('text=best-laptop')).toBeVisible();
     await expect(page.locator('text=best-book')).not.toBeVisible();
 
     await page.click('text=RESET FILTERS');
+    await page.waitForLoadState('networkidle');
     await expect(page.locator('text=best-laptop')).toBeVisible();
     await expect(page.locator('text=best-book')).toBeVisible();
 });
