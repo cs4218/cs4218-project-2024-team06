@@ -13,8 +13,6 @@ This UI test aims to test the E2E flow of an admin creating a category.
 
 //Variables for setting up mongodb collections
 const USER_COLLECTION = "users"
-const CATEGORIES_COLLECTION = "categories"
-const PRODUCTS_COLLECTION = "products"
 
 
 //Variables for logging in
@@ -47,8 +45,6 @@ test.beforeEach(async () => {
 test.afterEach(async () => {
     //Reset the collections
     await mongoose.connection.collection(USER_COLLECTION).deleteMany({});
-    await mongoose.connection.collection(CATEGORIES_COLLECTION).deleteMany({});
-    await mongoose.connection.collection(PRODUCTS_COLLECTION).deleteMany({});
 
     //Disconnect from the database
     await mongoose.disconnect();

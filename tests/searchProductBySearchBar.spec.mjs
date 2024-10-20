@@ -1,31 +1,28 @@
 import { test, expect } from '@playwright/test';
-import userModel from '../models/userModel.js';
 import categoryModel from "../models/categoryModel.js";
 import productModel from "../models/productModel.js";
 import mongoose from "mongoose";
-import { CATEGORY_DATA, PRODUCT_DATA } from "../data/index.js";
+import { FASHION_CATEGORY_DATA, FASHION_PRODUCT_DATA } from "../data/index.js";
 
 /**
-This UI test aims to test the E2E flow of a user searching a product using the search bar and viewing information about
-the product that is found.
+This UI test aims to test the E2E flow of a user searching a product using the search bar, viewing information about
+the product that is found and adding it to cart, just like the consumer pattern of window shopping.
 
-1. User logins.
-2. User enters a search term in the search bar.
-3. User views more details about a result from the search.
-4. User decides to add the result to his cart after viewing details.
+1. User enters a search term in the search bar.
+2. User views more details about a result from the search.
+3. User decides to add the result to his cart after viewing details.
 */
 
 //Variables for setting up mongodb collections
-const USER_COLLECTION = "users"
 const CATEGORIES_COLLECTION = "categories"
 const PRODUCTS_COLLECTION = "products"
 
-//Variables for logging in
-const PASSWORD_UNHASHED = "password"
-const PASSWORD_HASHED = "$2b$10$WAPTi0bcYFfJkncMUjER5eS8.xo3WNYHaorAx9LPXvbsmmBH3x6tS"
 
-//Variable for keeping track of category IDs
-const CATEGORY_IDS = {};
+//VariableS for keeping track of products
+const FASHION_CATEGORY_IDS = {};
+let numberOfShirtProducts = 0;
+let numberOfBlouseProducts = 0;
+let firstShirtProduct;
 
 
 test.beforeEach(async () => {
@@ -33,33 +30,29 @@ test.beforeEach(async () => {
     await mongoose.connect(process.env.MONGO_URL);
 
     //Create the collections
-    await mongoose.connection.createCollection(USER_COLLECTION);
     await mongoose.connection.createCollection(CATEGORIES_COLLECTION);
     await mongoose.connection.createCollection(PRODUCTS_COLLECTION);
 
-    //Create account to log in with
-    const adminUser = new userModel({
-        name: 'James',
-        email: 'james@gmail.com',
-        password: PASSWORD_HASHED,
-        phone: '91234567',
-        address: 'Sentosa',
-        answer: 'Badminton',
-        role: 0,
-    })
-    await adminUser.save();
-
     //Create categories to work with
-    for (const categoryData of CATEGORY_DATA) {
+    for (const categoryData of FASHION_CATEGORY_DATA) {
         const category = new categoryModel(categoryData);
         const savedCategory = await category.save();
 
-        CATEGORY_IDS[categoryData.name] = savedCategory._id;
+        FASHION_CATEGORY_IDS[categoryData.name] = savedCategory._id;
     }
 
     //Create products to work with
-    for (const productData of PRODUCT_DATA) {
-        productData['category'] = CATEGORY_IDS[productData['category']];
+    for (const productData of FASHION_PRODUCT_DATA) {
+        if (productData['category'] == "Shirts") {
+            numberOfShirtProducts += 1;
+            if (firstShirtProduct == undefined) {
+                //Track the first shirt product that was created, as we need it in the test later on
+                firstShirtProduct = { ...productData }
+            }
+        } else if (productData['category'] == "Blouses") {
+            numberOfBlouseProducts += 1;
+        }
+        productData['category'] = FASHION_CATEGORY_IDS[productData['category']];
         const product = new productModel(productData);
         await product.save();
     }
@@ -68,7 +61,6 @@ test.beforeEach(async () => {
 
 test.afterEach(async () => {
     //Reset the collections
-    await mongoose.connection.collection(USER_COLLECTION).deleteMany({});
     await mongoose.connection.collection(CATEGORIES_COLLECTION).deleteMany({});
     await mongoose.connection.collection(PRODUCTS_COLLECTION).deleteMany({});
 
@@ -77,43 +69,60 @@ test.afterEach(async () => {
 });
 
 
-test.describe('Admin should be able to create a category', () => {
-    test('where the category should be initialised with no products', async ({ page }) => {
+test.describe('User should be able to search products using the search bar and view details about the search results', () => {
+
+    //NEVER PASS
+    //THE MORE DETAILS BUTTON IN PRODUCTS FOUND IN SEARCH RESULTS APPEARS TO BE BROKEN
+    test.fail('by entering a search keyword', async ({ page }) => {
         //Give more time to run as there are 3 browsers for a test
-        // test.slow();
+        test.slow();
+
 
         //Visit website
         await page.goto('http://localhost:3000/');
 
-        // //Login to admin account
-        // await page.getByRole('link', { name: 'Login'}).click();
-        // await page.getByPlaceholder('Enter Your Email').fill('james@gmail.com');
-        // await page.getByPlaceholder('Enter Your Password').click();
-        // await page.getByPlaceholder('Enter Your Password').fill(PASSWORD_UNHASHED);
-        // await page.getByRole('button', { name: 'LOGIN' }).click();
 
-        //Verify that user has logged in
-        await expect(page.getByText('🙏login successfully')).toBeVisible();
-        // await page.getByRole('button', { name: 'James' }).click();
-        
-        // //Navigate to admin dashboard
-        // await page.getByRole('link', { name: 'Dashboard' }).click();
+        //Verify that all products are initially displayed
+        let numberOfProductsDisplayed = 0;
+        for (const productData of FASHION_PRODUCT_DATA) {
+            await expect(page.getByRole('heading', { name: productData.name })).toBeVisible();
+            numberOfProductsDisplayed += 1;
+        }
+        expect(numberOfProductsDisplayed).toBe(FASHION_PRODUCT_DATA.length);
 
-        // //Create new category
-        // await page.getByRole('link', { name: 'Create Category' }).click();
-        // await page.getByPlaceholder('Enter new category').fill('Shoes');
-        // await page.getByRole('button', { name: 'Submit' }).click();
 
-        // //Check if category is successfully created
-        // await expect(page.getByText('Shoes is created')).toBeVisible();
-        // await expect(page.getByRole('cell', { name: 'Shoes' })).toBeVisible(); //Should appear in current page
-        // await page.getByRole('link', { name: 'Categories' }).click();
-        // await page.getByRole('link', { name: 'All Categories' }).click();
-        // await page.getByRole('link', { name: 'Shoes' }).click(); //Should appear in All Categories page
-        
-        // //Check that no products are created under this new category yet
-        // await expect(page.getByRole('heading', { name: 'Category - Shoes' })).toBeVisible();
-        // await expect(page.getByRole('heading', { name: 'Category - Shoes' })).toBeVisible();
-        // await expect(page.getByRole('heading', { name: '0 result found' })).toBeVisible();
+        // Search in the search bar
+        await page.getByPlaceholder('Search').click();
+        await page.getByPlaceholder('Search').fill('Shirt');
+        await page.getByRole('button', { name: 'Search' }).click();
+
+
+        //Check that the number of search results for 'Shirt' is correct according to input data
+        await expect(page.getByRole('heading', { name: 'Found' })).toHaveText('Found ' + numberOfShirtProducts.toString());
+
+
+        //Click to view details about the first shirt product
+        let firstMoreDetailsButton = page.getByRole('heading', { name: firstShirtProduct.name }).locator('..').locator('button', { hasText: 'More Details' });
+        await firstMoreDetailsButton.click();
+
+
+        //Expect to view product details of the first shirt product
+        await expect(page.getByRole('heading', { name: 'Name : ' + firstShirtProduct.name })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Description : ' + firstShirtProduct.description })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Price : $' + firstShirtProduct.price })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Category : ' + firstShirtProduct.category })).toBeVisible();
+
+
+        //Expect to view other shirts as similar products
+        const similarProductsHeading = page.getByRole('heading', { name: 'Similar Products ➡️' });
+        const similarProductsContainer = similarProductsHeading.locator('xpath=following-sibling::div[1]');
+        await similarProductsContainer.waitFor({ state: 'visible' });
+        const numberOfSimilarProducts = await similarProductsContainer.locator('.card').count();
+        expect(numberOfSimilarProducts).toBe(numberOfShirtProducts - 1); // Excluding the current selected product
+ 
+
+        //Expect to be able to add the first shirt product to cart
+        await (page.getByRole('button', { name: 'ADD TO CART' })).click();
+        await expect(page.getByText('Item Added to cart')).toBeVisible();
     });
 });
