@@ -7,12 +7,13 @@ const { defineConfig, devices } = require('@playwright/test');
 // require('dotenv').config({ path: './.env.test' });
 
 // Use test database
-process.env.MONGO_URL = "mongodb+srv://testuser:ilovecs4218@ecommerce-test.y5xja.mongodb.net/ecommerce-test"
+// process.env.MONGO_URL = process.env.MONGO_URL_TEST
 
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
 module.exports = defineConfig({
+  globalSetup: require.resolve('./global-playwright-setup.js'),
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -21,7 +22,7 @@ module.exports = defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1, //Prevent race condition in test database
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -72,10 +73,12 @@ module.exports = defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-  },
+  // webServer: [
+  //   {
+  //     command: 'npm start',
+  //     url: 'http://localhost:6060',
+  //     reuseExistingServer: !process.env.CI,
+  //   },
+  // ],
 });
 

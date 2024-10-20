@@ -1,12 +1,6 @@
 import { test, expect } from '@playwright/test';
-import mongoose from "mongoose";
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import userModel from '../models/userModel.js';
-
-//Variables for setting up mongodb collections
-const USER_COLLECTION = "users"
-const CATEGORIES_COLLECTION = "categories"
-const PRODUCTS_COLLECTION = "products"
+import mongoose from "mongoose";
 
 /**
 This UI test aims to test the E2E flow of an admin creating a category.
@@ -17,54 +11,55 @@ This UI test aims to test the E2E flow of an admin creating a category.
 5. User sees that no products are found within that category yet.
 */
 
-
-//Set up a test database for UI testing
-test.beforeAll(async () => {
-    // //Create the in-memory MongoDB server and connect to it
-    // mongodbServer = await MongoMemoryServer.create();
-    // const mongodbUri = mongodbServer.getUri();
-    // process.env.MONGO_URL = mongodbUri;
-    // await mongoose.connect(mongodbUri);
+//Variables for setting up mongodb collections
+const USER_COLLECTION = "users"
+const CATEGORIES_COLLECTION = "categories"
+const PRODUCTS_COLLECTION = "products"
 
 
-    // //Create the collections to work with
-    // await mongoose.connection.createCollection(USER_COLLECTION);
-    // await mongoose.connection.createCollection(CATEGORIES_COLLECTION);
-    // await mongoose.connection.createCollection(PRODUCTS_COLLECTION);
+//Variables for logging in
+const PASSWORD_UNHASHED = "password"
+const PASSWORD_HASHED = "$2b$10$WAPTi0bcYFfJkncMUjER5eS8.xo3WNYHaorAx9LPXvbsmmBH3x6tS"
 
 
-    // //Create admin account to log in with
-    // const adminUser = new userModel({
-    //     name: 'James',
-    //     email: 'james@gmail.com',
-    //     password: 'password',
-    //     phone: '91234567',
-    //     address: 'Sentosa',
-    //     answer: 'Badminton',
-    //     role: 1,
-    // })
-    // await adminUser.save();
-});
+test.beforeEach(async () => {
+    //Connect to the database
+    await mongoose.connect(process.env.MONGO_URL);
+
+    //Create users collection
+    await mongoose.connection.createCollection(USER_COLLECTION);
+
+    //Create admin account to log in with
+    const adminUser = new userModel({
+        name: 'James',
+        email: 'james@gmail.com',
+        password: PASSWORD_HASHED,
+        phone: '91234567',
+        address: 'Sentosa',
+        answer: 'Badminton',
+        role: 1,
+    })
+    
+    await adminUser.save();
+})
 
 
-test.afterAll(async () => {
-    // //Reset the collections
-    // await mongoose.connection.dropCollection(USER_COLLECTION);
-    // await mongoose.connection.dropCollection(CATEGORIES_COLLECTION);
-    // await mongoose.connection.dropCollection(PRODUCTS_COLLECTION);
+test.afterEach(async () => {
+    //Reset the collections
+    await mongoose.connection.collection(USER_COLLECTION).deleteMany({});
+    await mongoose.connection.collection(CATEGORIES_COLLECTION).deleteMany({});
+    await mongoose.connection.collection(PRODUCTS_COLLECTION).deleteMany({});
 
-    // //Reset the database
-    // await mongoose.connection.dropDatabase();
-
-    // //Disconnect from the in-memory MongoDB server
-    // await mongoose.disconnect();
-    // await mongodbServer.stop();
-});
+    //Disconnect from the database
+    await mongoose.disconnect();
+})
 
 
 test.describe('User should be able to create a category', () => {
     test('where the category should be initialised with no products', async ({ page }) => {
-        
+        //Give more time to run as there are 3 browsers for a test
+        test.slow();
+
         //Visit website
         await page.goto('http://localhost:3000/');
 
@@ -72,10 +67,31 @@ test.describe('User should be able to create a category', () => {
         await page.getByRole('link', { name: 'Login'}).click();
         await page.getByPlaceholder('Enter Your Email').fill('james@gmail.com');
         await page.getByPlaceholder('Enter Your Password').click();
-        await page.getByPlaceholder('Enter Your Password').fill('password');
+        await page.getByPlaceholder('Enter Your Password').fill(PASSWORD_UNHASHED);
         await page.getByRole('button', { name: 'LOGIN' }).click();
 
         //Verify that user has logged in
-        // await page.getByRole('button', { name: 'James' }).click();
+        await expect(page.getByText('🙏login successfully')).toBeVisible();
+        await page.getByRole('button', { name: 'James' }).click();
+        
+        //Navigate to admin dashboard
+        await page.getByRole('link', { name: 'Dashboard' }).click();
+
+        //Create new category
+        await page.getByRole('link', { name: 'Create Category' }).click();
+        await page.getByPlaceholder('Enter new category').fill('Shoes');
+        await page.getByRole('button', { name: 'Submit' }).click();
+
+        //Check if category is successfully created
+        await expect(page.getByText('Shoes is created')).toBeVisible();
+        await expect(page.getByRole('cell', { name: 'Shoes' })).toBeVisible(); //Should appear in current page
+        await page.getByRole('link', { name: 'Categories' }).click();
+        await page.getByRole('link', { name: 'All Categories' }).click();
+        await page.getByRole('link', { name: 'Shoes' }).click(); //Should appear in All Categories page
+        
+        //Check that no products are created under this new category yet
+        await expect(page.getByRole('heading', { name: 'Category - Shoes' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: 'Category - Shoes' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: '0 result found' })).toBeVisible();
     });
 });
