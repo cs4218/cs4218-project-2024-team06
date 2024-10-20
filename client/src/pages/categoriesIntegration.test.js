@@ -7,16 +7,54 @@ import '@testing-library/jest-dom/extend-expect';
 import { AuthProvider } from "../context/auth";
 import { CartProvider } from "../context/cart";
 import { SearchProvider } from "../context/search";
+import { spawn } from "child_process";
+import mongoose from "mongoose";
+import { MongoMemoryServer } from "mongodb-memory-server";
+import categoryModel from "../../../models/categoryModel";
+import path from "path";
 
-jest.mock('axios');
+axios.defaults.baseURL = 'http://localhost:6060';
+const serverPath = path.join(__dirname, '../../../server.js');
+const timeForServerToStart = 8000;
+const totalTimeBeforeTimeout = 20000;
+jest.setTimeout(totalTimeBeforeTimeout);
 
 describe('integration of categories with layout and useCategory', () => {
+    let serverProcess;
+    let mongodbServer;
+
+    beforeEach(async () => {
+        jest.clearAllMocks();
+
+        mongodbServer = await MongoMemoryServer.create();
+        const mongodbUri = mongodbServer.getUri();
+        process.env.MONGO_URL = mongodbUri;
+        await mongoose.connect(mongodbUri);
+
+        serverProcess = spawn('node', [serverPath], {
+            stdio: 'inherit',
+            env: { 
+                ...process.env,
+                MONGO_URL: mongodbUri
+            }
+        });
+
+        await new Promise(resolve => setTimeout(resolve, timeForServerToStart)); 
+    });
+
+    afterEach(async () => {
+        await mongoose.connection.dropDatabase();
+
+        await mongoose.disconnect();
+        await mongodbServer.stop();
+
+        serverProcess.kill();
+    });
+
+
     test('should call useCategory to fetch categories and display', async () => {
-        const categoriesData = [
-            { _id: '1', name: 'Category 1', slug: 'category-1' },
-            { _id: '2', name: 'Category 2', slug: 'category-2' },
-        ];
-        axios.get.mockResolvedValue({ data: { category: categoriesData } });
+        await new categoryModel({ name: 'Category 1', slug: 'category-1' }).save();
+        await new categoryModel({ name: 'Category 2', slug: 'category-2' }).save();
 
         render(
             <AuthProvider>
