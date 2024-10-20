@@ -37,8 +37,8 @@ test.beforeAll(async () => {
         shipping: false,
     });
 
-    book.save();
-    laptop.save();
+    await book.save();
+    await laptop.save();
 });
 
 test.afterAll(async () => {
