@@ -10,7 +10,7 @@ const order = new orderModel({
 });
 
 const validStatus = ["Not Process", "Processing", "Shipped", "deliverd", "cancel"];
-const invalidStatus = "invalidStatus";
+const invalidStatus = "Teleporting";
 
 const req = {
     body: {}, 
@@ -68,6 +68,11 @@ describe("orderStatusController integration test", () => {
         expect(updatedOrder.status).toBe(orderVerifier.status);
     });
 
+    /**
+     * This test is failing because findByIdAndUpdate is not being called with runValidators: true. 
+     * This means that the enum validation is only run when the document is saved, but not when it 
+     * is updated.
+     */
     it.failing("should return 500 for invalid order status", async () =>  {
         req.body = { status: invalidStatus };
         await orderStatusController(req, res);
