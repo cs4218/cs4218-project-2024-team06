@@ -11,15 +11,12 @@
 
 import '@testing-library/jest-dom';
 import { AuthProvider } from '../../context/auth';
-import { BrowserRouter } from 'react-router-dom';
 import { CartProvider } from '../../context/cart';
 import Dashboard from './Dashboard';
 import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { SearchProvider } from '../../context/search';
 import { waitFor } from '@testing-library/react';
-
-const renderWithRouter = (component) => render(<BrowserRouter>{component}</BrowserRouter>);
 
 const mockAuthData = JSON.stringify({
     user: { name: 'Halimah Yacob', email: 'halimah@gov.sg', address: 'Istana', role: 0 },
