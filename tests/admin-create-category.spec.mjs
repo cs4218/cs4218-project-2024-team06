@@ -41,7 +41,7 @@ test.beforeEach(async () => {
     })
     
     await adminUser.save();
-})
+});
 
 
 test.afterEach(async () => {
@@ -52,7 +52,7 @@ test.afterEach(async () => {
 
     //Disconnect from the database
     await mongoose.disconnect();
-})
+});
 
 
 test.describe('User should be able to create a category', () => {
