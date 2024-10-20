@@ -5,7 +5,7 @@ import { categoryControlller, singleCategoryController } from "./categoryControl
 
 let mongoServer;
 
-describe('category controller integration tests', () => {
+describe('integration of category controller with category model', () => {
     let req, res;
 
     beforeAll(async () => {
