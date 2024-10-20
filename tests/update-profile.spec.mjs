@@ -128,7 +128,7 @@ test.describe('User should be able to update his profile', () => {
         //Log back in with new password
         await page.getByPlaceholder('Enter Your Email').fill(USER_ORIGINAL_DATA.email); //Email should not have changed
         await page.getByPlaceholder('Enter Your Password').click();
-        await page.getByPlaceholder('Enter Your Password').fill(USER_NEW_DATA.password);
+        await page.getByPlaceholder('Enter Your Password').fill(USER_NEW_DATA.password); //Login with new password
         await page.getByRole('button', { name: 'LOGIN' }).click();
 
         //Verify that user can log in
@@ -141,11 +141,11 @@ test.describe('User should be able to update his profile', () => {
         await expect(page.getByRole('heading', { name: USER_NEW_DATA.email })).toBeVisible();
         await expect(page.getByRole('heading', { name: USER_NEW_DATA.address })).toBeVisible();
 
-        //Verify that original user information is populated in Profile page
+        //Verify that updated user information is populated in Profile page
         await page.getByRole('link', { name: 'Profile' }).click();
         await expect(page.getByRole('heading', { name: 'USER PROFILE' })).toBeVisible();
         expect(await page.getByPlaceholder('Enter Your Name').inputValue()).toBe(USER_NEW_DATA.name);
-        expect(await page.getByPlaceholder('Enter Your Email').inputValue()).toBe(USER_ORIGINAL_DATA.email);
+        expect(await page.getByPlaceholder('Enter Your Email').inputValue()).toBe(USER_ORIGINAL_DATA.email); //Email should not have changed
         expect(await page.getByPlaceholder('Enter Your Password').inputValue()).toBe('');
         expect(await page.getByPlaceholder('Enter Your Phone').inputValue()).toBe(USER_NEW_DATA.phone);
         expect(await page.getByPlaceholder('Enter Your Address').inputValue()).toBe(USER_NEW_DATA.address);
