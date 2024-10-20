@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import productModel from '../models/productModel.js';
 
 dotenv.config();
-test.describe.configure({ mode: 'serial' });
 
 test.beforeAll(async () => {
     await mongoose.connect(process.env.MONGO_URL);
@@ -52,5 +51,13 @@ test('filter by price', async ({ page }) => {
 
     await page.click('text=$0 to 19');
     await expect(page.locator('text=best-book')).toBeVisible();
-    await expect(page.locator('text=best-laptop')).toHaveCount(0);
+    await expect(page.locator('text=best-laptop')).not.toBeVisible();
+
+    await page.click('text=$100 or more');
+    await expect(page.locator('text=best-laptop')).toBeVisible();
+    await expect(page.locator('text=best-book')).not.toBeVisible();
+
+    await page.click('text=RESET FILTERS');
+    await expect(page.locator('text=best-laptop')).toBeVisible();
+    await expect(page.locator('text=best-book')).toBeVisible();
 });
