@@ -5,8 +5,8 @@
  * However, the Layout component calls on 2 children components Header.js and Footer.js, of which 
  * the former calls uses useCart(), useCategory() and SearchInput.js. SearchInput.js in turn uses 
  * useSearch and useNavigate. Since the integration test is only concerned with the integration 
- * between Dashboard.js, Layout.js and UserMenu.js, the integration test should not be concerned 
- * with the functionality of these other components.
+ * between Dashboard.js, useAuth(), Layout.js and UserMenu.js, the integration test should not be 
+ * concerned with the functionality of these other components.
  */
 
 import '@testing-library/jest-dom';
