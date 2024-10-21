@@ -48,7 +48,6 @@ test.afterAll(async () => {
 
 test('filter by price', async ({ page }) => {
     await page.goto('http://localhost:3000/');
-    await page.waitForLoadState('networkidle');
 
     await page.getByText('$0 to 19').click();
     await expect(page.getByText('best-book')).toBeVisible();
