@@ -48,20 +48,16 @@ test.afterAll(async () => {
 
 test('filter by price', async ({ page }) => {
     await page.goto('http://localhost:3000/');
-    await page.waitForLoadState('networkidle');
 
-    await page.click('text=$0 to 19');
-    await page.waitForLoadState('networkidle');
+    await page.getByText('$0 to 19').click();
     await expect(page.locator('text=best-book')).toBeVisible();
     await expect(page.locator('text=best-laptop')).not.toBeVisible();
 
-    await page.click('text=$100 or more');
-    await page.waitForLoadState('networkidle');
+    await page.getByText('$100 or more').click();
     await expect(page.locator('text=best-laptop')).toBeVisible();
     await expect(page.locator('text=best-book')).not.toBeVisible();
 
-    await page.click('text=RESET FILTERS');
-    await page.waitForLoadState('networkidle');
+    await page.getByText('RESET FILTERS').click();
     await expect(page.locator('text=best-laptop')).toBeVisible();
     await expect(page.locator('text=best-book')).toBeVisible();
 });
