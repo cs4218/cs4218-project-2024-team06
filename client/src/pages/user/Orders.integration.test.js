@@ -12,7 +12,10 @@
 import '@testing-library/jest-dom';
 import axios from "axios";
 import { AuthProvider } from '../../context/auth';
+import categoryModel from '../../../../models/categoryModel';
 import { CartProvider } from '../../context/cart';
+import dotenv from 'dotenv';
+import JWT from "jsonwebtoken";
 import { MemoryRouter } from 'react-router-dom';
 import mongoose from "mongoose";
 import { MongoMemoryServer } from 'mongodb-memory-server';
@@ -24,6 +27,8 @@ import { render, screen } from '@testing-library/react';
 import { SearchProvider } from '../../context/search';
 import { spawn } from 'child_process';
 import userModel from "../../../../models/userModel";
+
+dotenv.config();
 
 const user1 = new userModel({
     name: "Halimah Yacob", 
@@ -45,12 +50,22 @@ const user2 = new userModel({
     role: 1
 });
 
+const category1 = new categoryModel({
+    name: "Technoglogy", 
+    slug: "Technology"
+});
+
+const category2 = new categoryModel({
+    name: "Fashion", 
+    slug: "Fashion"
+});
+
 const product1 = new productModel({
     name: "Keychron Q2", 
     slug: "Keychron Q2", 
     description: "Amazing keyboard to empty your wallet",  
     price: 250, 
-    category: new mongoose.Types.ObjectId(), 
+    category: category1._id,  
     quantity: 10, 
     shipping: false
 });
@@ -60,7 +75,7 @@ const product2 = new productModel({
     slug: "Keychron K6", 
     description: "Amazing keyboard while not emptying your wallet",  
     price: 100, 
-    category: new mongoose.Types.ObjectId(), 
+    category: category1._id,  
     quantity: 5, 
     shipping: false
 });
@@ -70,7 +85,7 @@ const product3 = new productModel({
     slug: "Logitech Mouse", 
     description: "Not the animal, but the computer accessory",  
     price: 50, 
-    category: new mongoose.Types.ObjectId(),  
+    category: category1._id,   
     quantity: 20, 
     shipping: true
 });
@@ -80,7 +95,7 @@ const product4 = new productModel({
     slug: "Shirt", 
     description: "To be worn on the upper body",  
     price: 30, 
-    category: new mongoose.Types.ObjectId(), 
+    category: category2._id,  
     quantity: 15, 
     shipping: true
 });
@@ -108,17 +123,13 @@ const otherOrder = new orderModel({
     status: orderStatusEnum[3]
 })
 
-const mockAuthData = JSON.stringify({
-    user: user1, 
-    token: 'fakeToken',
-});
-
-const totalTimeBeforeTimeout = 20000;
-jest.setTimeout(totalTimeBeforeTimeout);
+const timeBeforeTimeout = 20000;
+jest.setTimeout(timeBeforeTimeout);
 axios.defaults.baseURL = 'http://localhost:6060';
 
 describe("Orders.js integration test", () => {
-    let mongoServer, serverProcess;
+    let mongoServer
+    let serverProcess;
     const timeForServerToStart = 8000;
 
     /**
@@ -127,12 +138,14 @@ describe("Orders.js integration test", () => {
      * test.
      */
     const usersCollection = "users";
-    const productsCollection = "Products";
-    const ordersCollection = "Order";
+    const categoriesCollection = "categories";
+    const productsCollection = "products";
+    const ordersCollection = "orders";
 
     beforeAll(async () => {
         mongoServer = await MongoMemoryServer.create();
         const uri = mongoServer.getUri();
+        process.env.MONGO_URL = uri;
         await mongoose.connect(uri);
         const serverPath = path.join(__dirname, '../../../../server.js');
         serverProcess = spawn('node', [serverPath], {
@@ -147,16 +160,27 @@ describe("Orders.js integration test", () => {
             console.error(`Server stderr: ${data}`);
         });
 
+        await new Promise(resolve => setTimeout(resolve, timeForServerToStart));
+
+        const mockAuthData = JSON.stringify({ 
+            user: user2, 
+            token: JWT.sign({ _id: user1._id }, process.env.JWT_SECRET, {
+                expiresIn: "7d",
+            })
+        });
+
         localStorage.setItem('auth', mockAuthData);
-        await new Promise((resolve) => setTimeout(resolve, timeForServerToStart));
     });
 
     beforeEach(async () => {
         await mongoose.connection.createCollection(usersCollection);
+        await mongoose.connection.createCollection(categoriesCollection);
         await mongoose.connection.createCollection(productsCollection);
         await mongoose.connection.createCollection(ordersCollection);
         await user1.save();
         await user2.save();
+        await category1.save();
+        await category2.save();
         await product1.save();
         await product2.save();
         await product3.save();
@@ -168,6 +192,7 @@ describe("Orders.js integration test", () => {
 
     afterEach(async () => {
         await mongoose.connection.dropCollection(usersCollection);
+        await mongoose.connection.dropCollection(categoriesCollection);
         await mongoose.connection.dropCollection(productsCollection);
         await mongoose.connection.dropCollection(ordersCollection);
     });
