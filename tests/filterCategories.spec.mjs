@@ -67,22 +67,22 @@ test('filter by categories', async ({ page }) => {
     await page.goto('http://localhost:3000/');
 
     // Click book category
-    await page.click('span:has-text("books-category")');
-    await expect(page.locator('text=best-book')).toBeVisible();
-    await expect(page.locator('text=best-laptop')).not.toBeVisible();
+    await page.getByRole('main').getByText('books-category').click();
+    await expect(page.getByText('best-book')).toBeVisible();
+    await expect(page.getByText('best-laptop')).not.toBeVisible();
 
     // Remove book category and select electronics 
-    await page.click('span:has-text("books-category")');
-    await page.click('span:has-text("electronics-category")');
-    await expect(page.locator('text=best-laptop')).toBeVisible();
-    await expect(page.locator('text=best-book')).not.toBeVisible();
+    await page.getByRole('main').getByText('books-category').click();
+    await page.getByRole('main').getByText('electronics-category').click();
+    await expect(page.getByText('best-laptop')).toBeVisible();
+    await expect(page.getByText('best-book')).not.toBeVisible();
 
     // Select book category 
-    await page.click('span:has-text("books-category")');
-    await expect(page.locator('text=best-laptop')).toBeVisible();
-    await expect(page.locator('text=best-book')).toBeVisible();
+    await page.getByRole('main').getByText('books-category').click();
+    await expect(page.getByText('best-laptop')).toBeVisible();
+    await expect(page.getByText('best-book')).toBeVisible();
 
-    await page.click('text=RESET FILTERS');
-    await expect(page.locator('text=best-laptop')).toBeVisible();
-    await expect(page.locator('text=best-book')).toBeVisible();
+    await page.getByText('RESET FILTERS').click();
+    await expect(page.getByText('best-laptop')).toBeVisible();
+    await expect(page.getByText('best-book')).toBeVisible();
 });
