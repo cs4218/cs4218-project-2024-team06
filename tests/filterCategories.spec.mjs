@@ -65,6 +65,7 @@ test.afterAll(async () => {
 
 test('filter by categories', async ({ page }) => {
     await page.goto('http://localhost:3000/');
+    await page.waitForLoadState('networkidle');
 
     // Click book category
     await page.getByRole('main').getByText('books-category').click();
@@ -73,6 +74,7 @@ test('filter by categories', async ({ page }) => {
 
     // Remove book category and select electronics 
     await page.getByRole('main').getByText('books-category').click();
+    await page.waitForLoadState('networkidle');
     await page.getByRole('main').getByText('electronics-category').click();
     await expect(page.getByText('best-laptop')).toBeVisible();
     await expect(page.getByText('best-book')).not.toBeVisible();
