@@ -74,9 +74,6 @@ test.describe('User should be able to search products using the search bar and v
     //NEVER PASS
     //THE MORE DETAILS BUTTON IN PRODUCTS FOUND IN SEARCH RESULTS APPEARS TO BE BROKEN
     test.fail('by entering a search keyword', async ({ page }) => {
-        //Give more time to run as there are 3 browsers for a test
-        test.slow();
-
 
         //Visit website
         await page.goto('http://localhost:3000/');

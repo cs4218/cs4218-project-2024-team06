@@ -68,8 +68,6 @@ test.afterEach(async () => {
 
 test.describe('User should be able to update his profile', () => {
     test('where he can change name, password, phone number, and address', async ({ page }) => {
-        //Give more time to run as there are 3 browsers for a test
-        test.slow();
 
         //Visit website
         await page.goto('http://localhost:3000/');

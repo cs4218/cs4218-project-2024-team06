@@ -53,8 +53,6 @@ test.afterEach(async () => {
 
 test.describe('Admin should be able to create a category', () => {
     test('where the category should be initialised with no products', async ({ page }) => {
-        //Give more time to run as there are 3 browsers for a test
-        test.slow();
 
         //Visit website
         await page.goto('http://localhost:3000/');
