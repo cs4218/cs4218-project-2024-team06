@@ -1,9 +1,6 @@
 import { test, expect } from '@playwright/test';
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import productModel from '../models/productModel.js';
-
-dotenv.config();
 
 test.beforeAll(async () => {
     await mongoose.connect(process.env.MONGO_URL);
