@@ -45,10 +45,8 @@ describe('Dashboard Integration Test with AuthProvider', () => {
             </AuthProvider>
         );
 
-        await waitFor(() => expect(document.title).toBe('Dashboard - Ecommerce App'));
-        
         // Layout.js
-        expect(document.title).toBe('Dashboard - Ecommerce App');
+        await waitFor(() => expect(document.title).toBe('Dashboard - Ecommerce App'));
         
         // Header.js
         expect(screen.getByText('🛒 Virtual Vault')).toBeInTheDocument();
