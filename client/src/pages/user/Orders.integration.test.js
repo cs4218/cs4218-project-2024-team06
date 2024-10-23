@@ -12,11 +12,13 @@
 import '@testing-library/jest-dom';
 import axios from "axios";
 import { AuthProvider } from '../../context/auth';
+import { waitFor } from '@testing-library/react';
 import categoryModel from '../../../../models/categoryModel';
 import { CartProvider } from '../../context/cart';
 import dotenv from 'dotenv';
 import JWT from "jsonwebtoken";
 import { MemoryRouter } from 'react-router-dom';
+import moment from 'moment';
 import mongoose from "mongoose";
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import orderModel from "../../../../models/orderModel";
@@ -51,18 +53,18 @@ const user2 = new userModel({
 });
 
 const category1 = new categoryModel({
-    name: "Technoglogy", 
-    slug: "Technology"
+    name: "Technology", 
+    slug: "technology"
 });
 
 const category2 = new categoryModel({
     name: "Fashion", 
-    slug: "Fashion"
+    slug: "fashion"
 });
 
 const product1 = new productModel({
     name: "Keychron Q2", 
-    slug: "Keychron Q2", 
+    slug: "keychron_q2", 
     description: "Amazing keyboard to empty your wallet",  
     price: 250, 
     category: category1._id,  
@@ -72,7 +74,7 @@ const product1 = new productModel({
 
 const product2 = new productModel({
     name: "Keychron K6", 
-    slug: "Keychron K6", 
+    slug: "keychron_k6", 
     description: "Amazing keyboard while not emptying your wallet",  
     price: 100, 
     category: category1._id,  
@@ -82,7 +84,7 @@ const product2 = new productModel({
 
 const product3 = new productModel({
     name: "Logitech Mouse", 
-    slug: "Logitech Mouse", 
+    slug: "logitech_mouse", 
     description: "Not the animal, but the computer accessory",  
     price: 50, 
     category: category1._id,   
@@ -92,7 +94,7 @@ const product3 = new productModel({
 
 const product4 = new productModel({
     name: "Shirt", 
-    slug: "Shirt", 
+    slug: "shirt", 
     description: "To be worn on the upper body",  
     price: 30, 
     category: category2._id,  
@@ -163,7 +165,7 @@ describe("Orders.js integration test", () => {
         await new Promise(resolve => setTimeout(resolve, timeForServerToStart));
 
         const mockAuthData = JSON.stringify({ 
-            user: user2, 
+            user: user1, 
             token: JWT.sign({ _id: user1._id }, process.env.JWT_SECRET, {
                 expiresIn: "7d",
             })
@@ -205,17 +207,106 @@ describe("Orders.js integration test", () => {
         localStorage.removeItem('auth');
     });
 
+    const checkProducts = async (products) => {
+        for(let i = 0; i < products.length; i++) {
+            const product = products[i];
+            expect(await screen.findByAltText(product.name)).toBeInTheDocument();
+            expect(await screen.findByText(product.name)).toBeInTheDocument();
+            expect(await screen.findByText(product.description.substring(0, 30))).toBeInTheDocument();
+            expect(await screen.findByText("Price : " + product.price)).toBeInTheDocument();
+        }
+    };
+
     it("should fetch orders from the server and display them", async () => {
         render(
             <AuthProvider>
                 <CartProvider>
                     <SearchProvider>
-                        <MemoryRouter>
+                        <MemoryRouter initialEntries={['/user/orders']}>
                             <Orders />
                         </MemoryRouter>
                     </SearchProvider>
                 </CartProvider>
             </AuthProvider>
         );
+        
+        await waitFor(() => expect(document.title).toBe('Your Orders'));
+        expect(await screen.findByText('All Orders')).toBeInTheDocument();
+
+        // Header.js
+        expect(screen.getByText('🛒 Virtual Vault')).toBeInTheDocument();
+        expect(screen.getByText('Home')).toBeInTheDocument();
+        expect(screen.getByText('Categories')).toBeInTheDocument();
+        expect(screen.getByText('All Categories')).toBeInTheDocument();
+        expect(screen.queryByText('Register')).not.toBeInTheDocument();
+        expect(screen.queryByText('Login')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Halimah Yacob' })).toBeInTheDocument();
+        const dashboardNavLink = screen.getByRole('link', { name: /dashboard/i });
+        expect(dashboardNavLink).toHaveAttribute('href', '/dashboard/user');
+        expect(screen.getByText('Logout')).toBeInTheDocument();
+        expect(screen.getByText('Cart')).toBeInTheDocument();
+
+        // SearchInput.js
+        expect(screen.getByText('Search')).toBeInTheDocument();
+
+        // UserMenu.js
+        const dashboardHeader = screen.getByRole('heading', { name: /dashboard/i });
+        expect(dashboardHeader).toBeInTheDocument();
+        const profileNavLink = screen.getByRole('link', { name: /profile/i });
+        expect(profileNavLink).toHaveAttribute('href', '/dashboard/user/profile');
+        const ordersNavLink = screen.getByRole('link', { name: /orders/i });
+        expect(ordersNavLink).toHaveAttribute('href', '/dashboard/user/orders');
+
+        // Orders.js
+        const numberOfOrders = 2;
+        const allHashElements = await screen.findAllByText("#");
+        expect(allHashElements.length).toBe(numberOfOrders);
+        const allStatusElements = await screen.findAllByText("Status");
+        expect(allStatusElements.length).toBe(numberOfOrders);
+        const allBuyerElements = await screen.findAllByText("Buyer");
+        expect(allBuyerElements.length).toBe(numberOfOrders);
+        const allDateElements = await screen.findAllByText("date");
+        expect(allDateElements.length).toBe(numberOfOrders);
+        const allPaymentElements = await screen.findAllByText("Payment");
+        expect(allPaymentElements.length).toBe(numberOfOrders);
+        const allQuantityElements = await screen.findAllByText("Quantity");
+        expect(allQuantityElements.length).toBe(numberOfOrders);
+        
+        const all1Elements = await screen.findAllByText("1");
+        expect(all1Elements.length).toBe(2); // 1st index number and quantity of second order
+        const all2Elements = await screen.findAllByText("2");
+        expect(all2Elements.length).toBe(2); // Quantity of first order and 2nd index number
+        expect(await screen.findByText(order1.status)).toBeInTheDocument();
+        expect(await screen.findByText(order2.status)).toBeInTheDocument();
+        const allUserNameElements = await screen.findAllByText(user1.name);
+        expect(allUserNameElements.length).toBe(numberOfOrders + 1); // 1 for username in dropdown box
+        const allDateValueElements = await screen.findAllByText(moment(order1.createdAt).fromNow());
+        // Both orders are created at the same time at the start of running this test
+        expect(allDateValueElements.length).toBe(numberOfOrders);
+        expect(await screen.findByText(order1.payment.success ? "Success" : "Failed")).toBeInTheDocument();
+        expect(await screen.findByText(order2.payment.success ? "Success" : "Failed")).toBeInTheDocument();
+        // Quantity values have already been checked above
+
+        for (let product of [product1, product2, product3]) {
+            expect(await screen.findByAltText(product.name)).toBeInTheDocument();
+            expect(await screen.findByText(product.name)).toBeInTheDocument();
+            expect(await screen.findByText(product.description.substring(0, 30))).toBeInTheDocument();
+            expect(await screen.findByText("Price : " + product.price)).toBeInTheDocument();
+        }
+
+        expect(screen.queryByText(otherOrder.status)).not.toBeInTheDocument();
+        expect(screen.queryByAltText(product4.name)).not.toBeInTheDocument();
+        expect(screen.queryByText(product4.name)).not.toBeInTheDocument();
+        expect(screen.queryByText(product4.description.substring(0, 30))).not.toBeInTheDocument();
+        expect(screen.queryByText("Price : " + product4.price)).not.toBeInTheDocument();
+
+        // Footer.js
+        expect(screen.getByText('About')).toBeInTheDocument();
+        const aboutNavLink = screen.getByRole('link', { name: /about/i });
+        const contactNavLink = screen.getByRole('link', { name: /contact/i });
+        const privacyNavLink = screen.getByRole('link', { name: /privacy policy/i });
+        expect(aboutNavLink).toHaveAttribute('href', '/about');
+        expect(contactNavLink).toHaveAttribute('href', '/contact');
+        expect(privacyNavLink).toHaveAttribute('href', '/policy');
     });
 });
