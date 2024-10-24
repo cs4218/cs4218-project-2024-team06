@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import CreateCategory from "./CreateCategory";
 import { render, screen, waitFor} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { toast } from "react-toastify";
 import { BrowserRouter as Router } from "react-router-dom";
 import '@testing-library/jest-dom/extend-expect';
 import { AuthProvider } from "../../context/auth";
@@ -51,10 +53,12 @@ describe('Integration of create category page in rendering and functionality', (
         serverProcess.kill();
     });
 
-    describe("When the component is rendered", () => {
-        test('The different components are rendered with successful fetching of categories', async () => {
+    describe("When the component is rendered and user creates a new category ", () => {
+        test('The different components are successfully rendered and user can create new category', async () => {
             
-            //ARRANGE
+            //ARRANGE 
+
+            //categories already existing
             await new categoryModel({ name: 'dresses', slug: 'dresses' }).save();
             await new categoryModel({ name: 'toys', slug: 'toys' }).save();
             await new categoryModel({ name: 'books', slug: 'books' }).save();
@@ -75,6 +79,11 @@ describe('Integration of create category page in rendering and functionality', (
                 </AuthProvider>
             );
 
+            // user adds new category
+            userEvent.clear(screen.getByRole('textbox'));
+            userEvent.type(screen.getByRole('textbox'), "laptops"); 
+            userEvent.click(screen.getByText("Submit"));
+
             //ASSERT
             
             await waitFor(() => {
@@ -91,14 +100,21 @@ describe('Integration of create category page in rendering and functionality', (
                 expect(screen.getByRole('textbox')).toHaveProperty('placeholder', "Enter new category");
                 expect(screen.getByText('Submit')).toBeInTheDocument();
                 
-                //Correctly displays fetched categories
+                //Correctly displays fetched categories (existing)
                 expect(screen.getAllByText('dresses').length).toBeGreaterThan(0);
                 expect(screen.getAllByText('books').length).toBeGreaterThan(0);
                 expect(screen.getAllByText('toys').length).toBeGreaterThan(0);
                 expect(screen.getAllByText('pens').length).toBeGreaterThan(0);
                 expect(screen.getAllByText('pants').length).toBeGreaterThan(0);
                 expect(screen.getAllByText('phones').length).toBeGreaterThan(0);
+
             })
+
+            //Correctly displays toast for new category
+            setTimeout(() => {
+                expect(screen.getByText(`laptops is created`)).toBeInTheDocument();
+            }, 2000);
         });
     });
+
 });
