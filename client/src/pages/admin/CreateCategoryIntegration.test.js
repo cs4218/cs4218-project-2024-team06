@@ -2,8 +2,6 @@ import React from "react";
 import axios from "axios";
 import CreateCategory from "./CreateCategory";
 import { render, screen, waitFor} from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { toast } from "react-toastify";
 import { BrowserRouter as Router } from "react-router-dom";
 import '@testing-library/jest-dom/extend-expect';
 import { AuthProvider } from "../../context/auth";
@@ -13,6 +11,7 @@ import { spawn } from "child_process";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import categoryModel from "../../../../models/categoryModel";
+import { Toaster } from "react-hot-toast";
 import path from "path";
 
 axios.defaults.baseURL = 'http://localhost:6060';
@@ -46,15 +45,13 @@ describe('Integration of create category page and subcomponents', () => {
 
     afterEach(async () => {
         await mongoose.connection.dropDatabase();
-
         await mongoose.disconnect();
         await mongodbServer.stop();
-
         serverProcess.kill();
     });
 
-    describe("When the component is rendered", () => {
-        test('The different components are successfully rendered', async () => {
+    describe("When the parent component is rendered", () => {
+        test('The subcomponents are successfully rendered', async () => {
             
             //ARRANGE 
 
@@ -72,6 +69,7 @@ describe('Integration of create category page and subcomponents', () => {
                 <CartProvider>
                     <SearchProvider>
                         <Router>
+                            <Toaster />
                             <CreateCategory />
                         </Router>
                     </SearchProvider>
@@ -80,36 +78,69 @@ describe('Integration of create category page and subcomponents', () => {
             );
 
             //ASSERT
+
+            //Admin Panel: mock replaced with actual component
             await waitFor(() => {
-
-                //Admin Panel: mock replaced with actual component
                 expect(screen.getByText(/Admin Panel/)).toBeInTheDocument(); 
-                expect(screen.getByRole('link', { name: 'Create Category' })).toBeInTheDocument(); //link 1
-                expect(screen.getByRole('link', { name: 'Create Product' })).toBeInTheDocument(); //link 2
-                expect(screen.getByRole('link', { name: 'Products' })).toBeInTheDocument();
-                expect(screen.getByRole('link', { name: 'Orders' })).toBeInTheDocument();
-
-                //Category Form: mock replaced with actual component
-                expect(screen.getByRole('textbox')).toBeInTheDocument();
-                expect(screen.getByRole('textbox')).toHaveProperty('placeholder', "Enter new category");
-                expect(screen.getByText('Submit')).toBeInTheDocument();
-                
-                //Correctly displays fetched categories (existing)
-                expect(screen.getAllByText('dresses').length).toBeGreaterThan(0);
-                expect(screen.getAllByText('books').length).toBeGreaterThan(0);
-                expect(screen.getAllByText('toys').length).toBeGreaterThan(0);
-                expect(screen.getAllByText('pens').length).toBeGreaterThan(0);
-                expect(screen.getAllByText('pants').length).toBeGreaterThan(0);
-                expect(screen.getAllByText('phones').length).toBeGreaterThan(0);
-
-                //categories not there should not be on screen 
-                const socks = screen.queryByText('socks');
-                const bottles = screen.queryByText('bottles');
-
-                expect(socks).not.toBeInTheDocument();
-                expect(bottles).not.toBeInTheDocument();
-                
             })
+            await waitFor(() => {
+                expect(screen.getByRole('link', { name: 'Create Category' })).toBeInTheDocument(); //link 1
+            })
+            await waitFor(() => {
+                expect(screen.getByRole('link', { name: 'Create Product' })).toBeInTheDocument(); //link 2
+            })   
+            await waitFor(() => {    
+                expect(screen.getByRole('link', { name: 'Products' })).toBeInTheDocument();
+            })
+            await waitFor(() => {    
+                expect(screen.getByRole('link', { name: 'Orders' })).toBeInTheDocument();
+            })
+
+            //Category Form: mock replaced with actual component
+
+            await waitFor(() => {
+                expect(screen.getByRole('textbox')).toBeInTheDocument();
+            })
+            
+            await waitFor(() => {
+                expect(screen.getByRole('textbox')).toHaveProperty('placeholder', "Enter new category");
+            })
+            await waitFor(() => {    
+                expect(screen.getByText('Submit')).toBeInTheDocument();
+            })
+
+            //Correctly displays fetched categories (existing)
+            await waitFor(() => {
+                expect(screen.getAllByText('dresses').length).toBeGreaterThan(0);
+            })
+            
+            await waitFor(() => {
+                expect(screen.getAllByText('books').length).toBeGreaterThan(0);
+            })
+            await waitFor(() => {    
+                expect(screen.getAllByText('toys').length).toBeGreaterThan(0);
+            })   
+            await waitFor(() => {
+                expect(screen.getAllByText('pens').length).toBeGreaterThan(0);
+            })
+            await waitFor(() => {    
+                expect(screen.getAllByText('pants').length).toBeGreaterThan(0);
+            })
+            await waitFor(() => {    
+                expect(screen.getAllByText('phones').length).toBeGreaterThan(0);
+            })
+
+            //categories not there should not be on screen 
+            await waitFor(() => {
+                const socks = screen.queryByText('socks');
+                expect(socks).not.toBeInTheDocument();
+            })
+
+            await waitFor(() => {
+                const bottles = screen.queryByText('bottles');
+                expect(bottles).not.toBeInTheDocument();
+            })
+
         });
     });
 
