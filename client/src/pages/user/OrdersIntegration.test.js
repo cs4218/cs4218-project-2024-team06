@@ -123,7 +123,7 @@ const otherOrder = new orderModel({
     payment: { success: true }, 
     buyer: user2._id, 
     status: orderStatusEnum[3]
-})
+});
 
 const timeBeforeTimeout = 20000;
 jest.setTimeout(timeBeforeTimeout);
