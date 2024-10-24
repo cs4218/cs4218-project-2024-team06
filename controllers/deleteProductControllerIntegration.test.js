@@ -32,10 +32,11 @@ describe('integration of delete product controller', () => {
         
         //fails as original message is buggy (capitalisation)
 
+        //ARRANGE
         const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-img-1.jpg');
         const expectedCategory = new mongoose.Types.ObjectId();
 
-        //products in the database (empty buffer and category mock for testing)
+        //products in the database
         const pdt1 = await new productModel({name: "sneakers", slug: "sneakers", description: "adidas sneakers",price: 134, quantity: 10,
             category: expectedCategory,  
             photo: {
@@ -56,7 +57,6 @@ describe('integration of delete product controller', () => {
         .save();
         const delPid = pdt2._id;
 
-        //ARRANGE
         req.params = {
             pid: delPid
         };
@@ -73,19 +73,19 @@ describe('integration of delete product controller', () => {
         );
 
         //not deleted
-        const foundPdt1 = await productModel.findById(pid1);
-        expect(foundPdt1).not.toBeNull();
-        expect(foundPdt1.name).toEqual("sneakers");
-        expect(foundPdt1.description).toEqual("adidas sneakers");
-        expect(foundPdt1.quantity).toEqual(10);
-        expect(foundPdt1.price).toEqual(134);
-        expect(foundPdt1.category).toEqual(expectedCategory);
-        expect(foundPdt1.shipping).toEqual(true);
-        expect(Buffer.compare(foundPdt1.photo.data, expectedBuffer)).toBe(0);
+        const samplePdt1 = await productModel.findById(pid1);
+        expect(samplePdt1).not.toBeNull();
+        expect(samplePdt1.name).toEqual("sneakers");
+        expect(samplePdt1.description).toEqual("adidas sneakers");
+        expect(samplePdt1.quantity).toEqual(10);
+        expect(samplePdt1.price).toEqual(134);
+        expect(samplePdt1.category).toEqual(expectedCategory);
+        expect(samplePdt1.shipping).toEqual(true);
+        expect(Buffer.compare(samplePdt1.photo.data, expectedBuffer)).toBe(0);
 
         //deleted
-        const foundPdt2 = await productModel.findById(delPid);
-        expect(foundPdt2).toBeNull(); 
+        const samplePdt2 = await productModel.findById(delPid);
+        expect(samplePdt2).toBeNull(); 
         
     });
 
