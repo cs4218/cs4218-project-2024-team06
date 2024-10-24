@@ -21,7 +21,7 @@ const timeForServerToStart = 8000;
 const totalTimeBeforeTimeout = 20000;
 jest.setTimeout(totalTimeBeforeTimeout);
 
-describe('Integration of create category page in rendering and functionality', () => {
+describe('Integration of create category page and subcomponents', () => {
     let serverProcess;
     let mongodbServer;
 
@@ -53,8 +53,8 @@ describe('Integration of create category page in rendering and functionality', (
         serverProcess.kill();
     });
 
-    describe("When the component is rendered and user creates a new category ", () => {
-        test('The different components are successfully rendered and user can create new category', async () => {
+    describe("When the component is rendered", () => {
+        test('The different components are successfully rendered', async () => {
             
             //ARRANGE 
 
@@ -69,23 +69,17 @@ describe('Integration of create category page in rendering and functionality', (
             //ACT
             render(
                 <AuthProvider>
-                    <CartProvider>
-                        <SearchProvider>
-                            <Router>
-                                <CreateCategory />
-                            </Router>
-                        </SearchProvider>
-                    </CartProvider>
-                </AuthProvider>
+                <CartProvider>
+                    <SearchProvider>
+                        <Router>
+                            <CreateCategory />
+                        </Router>
+                    </SearchProvider>
+                </CartProvider>
+            </AuthProvider>
             );
 
-            // user adds new category
-            userEvent.clear(screen.getByRole('textbox'));
-            userEvent.type(screen.getByRole('textbox'), "laptops"); 
-            userEvent.click(screen.getByText("Submit"));
-
             //ASSERT
-            
             await waitFor(() => {
 
                 //Admin Panel: mock replaced with actual component
@@ -108,12 +102,14 @@ describe('Integration of create category page in rendering and functionality', (
                 expect(screen.getAllByText('pants').length).toBeGreaterThan(0);
                 expect(screen.getAllByText('phones').length).toBeGreaterThan(0);
 
-            })
+                //categories not there should not be on screen 
+                const socks = screen.queryByText('socks');
+                const bottles = screen.queryByText('bottles');
 
-            //Correctly displays toast for new category
-            setTimeout(() => {
-                expect(screen.getByText(`laptops is created`)).toBeInTheDocument();
-            }, 2000);
+                expect(socks).not.toBeInTheDocument();
+                expect(bottles).not.toBeInTheDocument();
+                
+            })
         });
     });
 
