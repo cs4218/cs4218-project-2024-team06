@@ -7,11 +7,10 @@ import mongoose from "mongoose";
 This UI tests the E2E flow of an admin creating a product.
 1. User logins as admin.
 2. User enters Admin Dashboard.
-3. User views All Products and finds it empty.
-4. User creates a product.
-5. User views the newly created product under All Categories.
-6. User creates another product.
-7. User views the newly created product under All Categories.
+3. User creates a product.
+4. User views the newly created product under All Products and target category.
+5. User creates another product.
+6. User views the newly created product under All Products and target category.
 */
 
 //Variables for setting up mongodb collections
@@ -62,7 +61,7 @@ test.afterEach(async () => {
 });
 
 
-test.describe('Admin should be able to create products', () => {
+test.describe('Admin should be able to create multiple valid products', () => {
     test('where initially no products present and admin creates multiple products', async ({ page }) => {
 
         //Visit website
