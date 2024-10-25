@@ -7,12 +7,12 @@ import fs from 'fs'
 
 /**
 This UI tests the E2E flow of product deletion by admin
-1. User logins as admin.
-2. User enters Admin Dashboard.
-3. User navigates to Products and views existing products.
+1. User logins as admin
+2. User enters Admin Dashboard
+3. User navigates to Products and views existing products
 4. User deletes a product
-5. User views updated product list on Products
-6. User checks categories' product lists for corresponding changes.
+5. User views updated product list under All Products
+6. User checks categories' product lists for corresponding changes
 */
 
 //Variables for setting up mongodb collections
