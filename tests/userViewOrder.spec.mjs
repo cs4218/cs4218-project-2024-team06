@@ -84,7 +84,7 @@ const product3 = new productModel({
     name: "Logitech Mouse", 
     slug: "logitech_mouse", 
     description: "Not the animal, but the computer accessory",  
-    price: 50, 
+    price: 60, 
     category: category1._id,   
     quantity: 20, 
     photo: {
@@ -198,29 +198,47 @@ test.describe("User should only be able to", () => {
         await page.getByRole('link', { name: "Orders" }).click();
 
         // Check that table head is displayed correctly
-        // const numberOfOrders = 3;
-        // const hashHeader = await page.getByText("#");
-        // const statusHeader = await page.getByText("Status");
-        // const buyerHeader = await page.getByText("Buyer");
-        // const dateHeader = await page.getByText("Date");
-        // const paymentHeader = await page.getByText("Payment");
-        // const quantityHeader = await page.getByText("Quantity");
+        await expect(page.getByText("#")).toBeVisible();
+        await expect(page.getByText("Status")).toBeVisible();
+        await expect(page.getByText("Buyer")).toBeVisible();
+        await expect(page.getByText("Date")).toBeVisible();
+        await expect(page.getByText("Payment")).toBeVisible();
+        await expect(page.getByText("Quantity")).toBeVisible();
 
-        // for (let i = 0; i < numberOfOrders; i++) {
-        //     if (i < 1) {
-        //         await expect(hashHeader).toBeVisible();
-        //         await expect(statusHeader).toBeVisible();
-        //         await expect(buyerHeader).toBeVisible();
-        //         await expect(dateHeader).toBeVisible();
-        //         await expect(paymentHeader).toBeVisible();
-        //         await expect(quantityHeader).toBeVisible();
-        //     }
-        //     await expect(hashHeader.nth(i)).toBeVisible();
-        //     await expect(statusHeader.nth(i)).toBeVisible();
-        //     await expect(buyerHeader.nth(i)).toBeVisible();
-        //     await expect(dateHeader.nth(i)).toBeVisible();
-        //     await expect(paymentHeader.nth(i)).toBeVisible();
-        //     await expect(quantityHeader.nth(i)).toBeVisible();
-        // }
+        // Check that table body is displayed correctly
+        await expect(page.getByRole('cell', { name: '1' })).toBeVisible();
+        await expect(page.getByText(order1.status)).toBeVisible();
+        await expect(page.getByRole('cell', { name: normalUser1.name })).toBeVisible();
+        await expect(page.getByText("a few seconds ago")).toBeVisible();
+        await expect(page.getByRole('cell', { name: 'Success' })).toBeVisible();
+        await expect(page.getByRole('cell', { name: '2' })).toBeVisible();
+
+        // Check that products are displayed correctly
+        await expect(page.getByRole('img', { name: product1.name })).toBeVisible();
+        await expect(page.getByText(product1.name)).toBeVisible();
+        await expect(page.getByText(product1.description.substring(0, 30))).toBeVisible();
+        await expect(page.getByText(product1.price)).toBeVisible();
+
+        await expect(page.getByRole('img', { name: product2.name })).toBeVisible();
+        await expect(page.getByText(product2.name)).toBeVisible();
+        await expect(page.getByText(product2.description.substring(0, 30))).toBeVisible();
+        await expect(page.getByText(product2.price)).toBeVisible();
+
+        // Check that orders from other users are not displayed
+        await expect(page.getByText(order2.status)).not.toBeVisible();
+        await expect(page.getByText(normalUser2.name)).not.toBeVisible();
+        await expect(page.getByText(order3.status)).not.toBeVisible();
+        await expect(page.getByText(adminUser.name)).not.toBeVisible();
+
+        // Check that products from other users are not displayed
+        await expect(page.getByRole('img', { name: product3.name })).not.toBeVisible();
+        await expect(page.getByText(product3.name)).not.toBeVisible();
+        await expect(page.getByText(product3.description.substring(0, 30))).not.toBeVisible();
+        await expect(page.getByText(product3.price, { exact: true })).not.toBeVisible();
+
+        await expect(page.getByRole('img', { name: product4.name })).not.toBeVisible();
+        await expect(page.getByText(product4.name)).not.toBeVisible();
+        await expect(page.getByText(product4.description.substring(0, 30))).not.toBeVisible();
+        await expect(page.getByText(product4.price, { exact: true })).not.toBeVisible();
     })
 });
