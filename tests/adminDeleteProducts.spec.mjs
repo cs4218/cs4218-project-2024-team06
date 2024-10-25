@@ -179,7 +179,7 @@ test.describe('Admin should be able to delete products', () => {
         await expect(page.getByText('Soft Toys')).toBeVisible();
         await expect(page.getByText('112')).toBeVisible();
         
-        //Go back to producst page
+        //Go back to products page
 
         //Delete shoes
         await page.getByRole('button', { name: 'Harry' }).click();
