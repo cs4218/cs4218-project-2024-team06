@@ -68,6 +68,13 @@ test.beforeAll(async () => {
 
 test("Adding to cart", async ({ page }) => {
 	await page.goto("http://localhost:3000/");
+    await page.getByRole("link", { name: "LOGIN" }).click();
+
+    //entering details to log in
+	await page.getByPlaceholder("Enter Your Email").fill(email);
+	await page.getByPlaceholder("Enter Your Password").fill("test@test.com");
+	await page.locator(".btn.btn-primary").click();
+	await expect(page.getByText("login successfully")).toBeVisible();
 
     //add 2 items to cart
     const productTitleLocator = page.getByText(productName);
@@ -75,8 +82,7 @@ test("Adding to cart", async ({ page }) => {
 	const firstButton = parentLocator.locator('div > button').filter({hasText: 'ADD TO CART'});
 	await expect(firstButton).toBeVisible();
 	await firstButton.click();
-	// await page.getByRole("button", { name: "ADD TO CART" }).nth(0).click();
-	// await page.getByRole("button", { name: "ADD TO CART" }).nth(1).click();
+
 	const productTitleLocator2 = page.getByText(productName2);
 	const parentLocator2 = productTitleLocator2.locator('..').locator('..');
 	const secondButton = parentLocator2.locator('div > button').filter({hasText: 'ADD TO CART'});
@@ -100,11 +106,23 @@ test("Adding to cart", async ({ page }) => {
 	await expect(page.getByText("price : 18")).toBeVisible();
 	await expect(page.getByText("price : 19")).toBeVisible();
 
-    //log in now
-	await page
-		.getByRole("button", { name: "Plase Login to checkout" })
-		.nth(0)
-		.click();
+
+    const productTitleLocator3 = page.getByText(productName);
+	const parentLocator3 = productTitleLocator3.locator('..').locator('..');
+	const removeButton = parentLocator3.locator('div > button').filter({hasText: 'Remove'});
+	await expect(removeButton).toBeVisible();
+	await removeButton.click();
+
+    //ensure correct rendering of items in cart
+	await expect(page.getByText(productName2, { exact: true })).toBeVisible();
+	await expect(
+		page.getByText("this is the best book2", { exact: true })
+	).toBeVisible();
+	await expect(page.getByText("price : 19")).toBeVisible();
+
+    //log out
+    await page.getByRole("button", { name: "TESTING NAME" }).click();
+    await page.getByRole("link", { name: "LOGOUT" }).click();
 
     //entering details to log in
 	await page.getByPlaceholder("Enter Your Email").fill(email);
@@ -112,16 +130,16 @@ test("Adding to cart", async ({ page }) => {
 	await page.locator(".btn.btn-primary").click();
 	await expect(page.getByText("login successfully")).toBeVisible();
 
-    //ensure correct rendering of items in cart after logging in
-    await expect(page.getByText(productName, { exact: true })).toBeVisible();
+    await page.waitForTimeout(1000);
+    await page.waitForLoadState();
+    //go to cart page
+	await page.getByRole("link", { name: "CART" }).click();
+	
+    //ensure correct rendering of items in cart
 	await expect(page.getByText(productName2, { exact: true })).toBeVisible();
-	await expect(
-		page.getByText("this is the best book", { exact: true })
-	).toBeVisible();
 	await expect(
 		page.getByText("this is the best book2", { exact: true })
 	).toBeVisible();
-	await expect(page.getByText("price : 18")).toBeVisible();
 	await expect(page.getByText("price : 19")).toBeVisible();
 });
 
