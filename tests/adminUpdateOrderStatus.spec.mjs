@@ -100,7 +100,7 @@ const product4 = new productModel({
 
 const orderStatusEnum = ["Not Process", "Processing", "Shipped", "deliverd", "cancel"];
 
-test.describe("Admin should be able to view orders and update order statuses of", () => {
+test.describe("Admin should be able to update order statuses of", () => {
     const usersCollection = "users";
     const categoriesCollection = "categories";
     const productsCollection = "products";
