@@ -159,10 +159,10 @@ test.describe("Admin should be able to view orders and update order statuses of"
     });
 
     test.afterEach(async () => {
-        // await mongoose.connection.collection(usersCollection).deleteMany({});
-        // await mongoose.connection.collection(categoriesCollection).deleteMany({});
-        // await mongoose.connection.collection(productsCollection).deleteMany({});
-        // await mongoose.connection.collection(ordersCollection).deleteMany({});
+        await mongoose.connection.collection(usersCollection).deleteMany({});
+        await mongoose.connection.collection(categoriesCollection).deleteMany({});
+        await mongoose.connection.collection(productsCollection).deleteMany({});
+        await mongoose.connection.collection(ordersCollection).deleteMany({});
         await mongoose.disconnect();
     });
 
