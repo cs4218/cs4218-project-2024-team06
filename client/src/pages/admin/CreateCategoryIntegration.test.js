@@ -56,12 +56,12 @@ describe('Integration of create category page and subcomponents', () => {
             //ARRANGE 
 
             //categories already existing
-            await new categoryModel({ name: 'dresses', slug: 'dresses' }).save();
-            await new categoryModel({ name: 'toys', slug: 'toys' }).save();
-            await new categoryModel({ name: 'books', slug: 'books' }).save();
-            await new categoryModel({ name: 'pens', slug: 'pens' }).save();
-            await new categoryModel({ name: 'phones', slug: 'phones' }).save();
-            await new categoryModel({ name: 'pants', slug: 'pants' }).save();
+            await new categoryModel({ name: 'Dresses', slug: 'dresses' }).save();
+            await new categoryModel({ name: 'Toys', slug: 'toys' }).save();
+            await new categoryModel({ name: 'Books', slug: 'books' }).save();
+            await new categoryModel({ name: 'Pens', slug: 'pens' }).save();
+            await new categoryModel({ name: 'Phones', slug: 'phones' }).save();
+            await new categoryModel({ name: 'Pants', slug: 'pants' }).save();
 
             //ACT
             render(
@@ -111,23 +111,23 @@ describe('Integration of create category page and subcomponents', () => {
 
             //Correctly displays fetched categories (existing)
             await waitFor(() => {
-                expect(screen.getAllByText('dresses').length).toBeGreaterThan(0);
+                expect(screen.getAllByText('Dresses').length).toBeGreaterThan(0);
             })
             
             await waitFor(() => {
-                expect(screen.getAllByText('books').length).toBeGreaterThan(0);
+                expect(screen.getAllByText('Books').length).toBeGreaterThan(0);
             })
             await waitFor(() => {    
-                expect(screen.getAllByText('toys').length).toBeGreaterThan(0);
+                expect(screen.getAllByText('Toys').length).toBeGreaterThan(0);
             })   
             await waitFor(() => {
-                expect(screen.getAllByText('pens').length).toBeGreaterThan(0);
+                expect(screen.getAllByText('Pens').length).toBeGreaterThan(0);
             })
             await waitFor(() => {    
-                expect(screen.getAllByText('pants').length).toBeGreaterThan(0);
+                expect(screen.getAllByText('Pants').length).toBeGreaterThan(0);
             })
             await waitFor(() => {    
-                expect(screen.getAllByText('phones').length).toBeGreaterThan(0);
+                expect(screen.getAllByText('Phones').length).toBeGreaterThan(0);
             })
 
         });
