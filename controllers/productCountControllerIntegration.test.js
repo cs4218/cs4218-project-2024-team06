@@ -69,32 +69,4 @@ describe("productCountController Integration Test", () => {
             total: 2,  // Verify the count is correct
         });
     });
-
-    // it("should handle errors correctly", async () => {
-    //     // Mock request and response objects
-    //     const req = {};
-    //     const res = {
-    //         status: jest.fn().mockReturnThis(),
-    //         send: jest.fn(),
-    //     };
-
-    //     // Simulate an error by mocking the model's method
-    //     jest.spyOn(productModel, 'find').mockImplementation(() => {
-    //         throw new Error('Database error');
-    //     });
-
-    //     // Call the controller function
-    //     await productCountController(req, res);
-
-    //     // Verify error response
-    //     expect(res.status).toHaveBeenCalledWith(400);
-    //     expect(res.send).toHaveBeenCalledWith({
-    //         message: "Error in product count",
-    //         error: expect.any(Error), // Check that an error object was returned
-    //         success: false,
-    //     });
-
-    //     // Restore the original implementation
-    //     productModel.find.mockRestore();
-    // });
 });
