@@ -181,7 +181,7 @@ test.describe('Admin should be able to delete products', () => {
         
         //Go back to products page
 
-        //Delete shoes
+        //Delete product
         await page.getByRole('button', { name: 'Harry' }).click();
         await page.getByRole('link', { name: 'Dashboard' }).click();
         await page.getByRole('link', { name: 'Products' }).click();
