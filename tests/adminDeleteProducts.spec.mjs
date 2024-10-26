@@ -37,7 +37,7 @@ test.beforeEach(async () => {
     //Create admin account to log in with
     const adminUser = new userModel({
         name: 'Harry',
-        email: 'harry@gmail.com',
+        email: 'harrypotter@gmail.com',
         password: PASSWORD_HASHED,
         phone: '12345678',
         address: 'Hogwarts',
@@ -46,10 +46,10 @@ test.beforeEach(async () => {
     })
     await adminUser.save();
 
-    const dresses = await new categoryModel({ name: 'dress', slug: 'dress' }).save();
-    const toys = await new categoryModel({ name: 'toys', slug: 'toys' }).save();
-    const books = await new categoryModel({ name: 'books', slug: 'books' }).save();
-    const shoes = await new categoryModel({ name: 'shoes', slug: 'shoes' }).save();
+    const dresses = await new categoryModel({ name: 'Dresses', slug: 'dress' }).save();
+    const toys = await new categoryModel({ name: 'Toys', slug: 'toys' }).save();
+    const books = await new categoryModel({ name: 'Books', slug: 'books' }).save();
+    const shoes = await new categoryModel({ name: 'Shoes', slug: 'shoes' }).save();
 
     const expectedBufferBook = fs.readFileSync('client/public/images/test-pdt-img-1.jpg');
     const expectedBufferDress = fs.readFileSync('client/public/images/test-pdt-img-2.jpg');
@@ -59,7 +59,7 @@ test.beforeEach(async () => {
     const novel = new productModel({
         name: 'Deathly Hallows',
         slug: 'deathly-hallows',
-        description: 'Harry Potter last book',
+        description: 'Harry fights Voldemort.',
         price: 22,
         category: books,
         quantity: 2,
@@ -71,9 +71,9 @@ test.beforeEach(async () => {
     }).save();
 
     const shirt = new productModel({
-        name: 'Pretty Dress',
-        slug: 'pretty-dress',
-        description: 'This is a beautiful dress',
+        name: 'Summer Sensation',
+        slug: 'summer-sensation',
+        description: 'A floral dress with a sprinkle of gold.',
         price: 123,
         category: dresses,
         quantity: 10,
@@ -85,9 +85,9 @@ test.beforeEach(async () => {
     }).save();
 
     const sneakers = new productModel({
-        name: 'Polished Shoes',
-        slug: 'polished-shoes',
-        description: 'New Arrival Oxford Shoes',
+        name: 'Formal Oxfords',
+        slug: 'formal-oxfords',
+        description: 'Polished classic wear for office.',
         price: 32,
         category: shoes,
         quantity: 43,
@@ -99,9 +99,9 @@ test.beforeEach(async () => {
     }).save();
 
     const plushie = new productModel({
-        name: 'Soft Toys',
-        slug: 'soft-toys',
-        description: 'Soft Teddy Bear',
+        name: 'Happy Teddy',
+        slug: 'happy-teddy',
+        description: 'Freddy the joyous bear.',
         price: 112,
         category: toys,
         quantity: 3,
@@ -134,7 +134,7 @@ test.describe('Admin should be able to delete products', () => {
 
         //Login to admin account
         await page.getByRole('link', { name: 'Login'}).click();
-        await page.getByPlaceholder('Enter Your Email').fill('harry@gmail.com');
+        await page.getByPlaceholder('Enter Your Email').fill('harrypotter@gmail.com');
         await page.getByPlaceholder('Enter Your Password').click();
         await page.getByPlaceholder('Enter Your Password').fill(PASSWORD_UNHASHED);
         await page.getByRole('button', { name: 'LOGIN' }).click();
@@ -150,9 +150,9 @@ test.describe('Admin should be able to delete products', () => {
         //Check existing products correctly reflected in products page
         await page.getByRole('link', { name: 'Products' }).click();
         await expect(page.getByText('Deathly Hallows')).toBeVisible();
-        await expect(page.getByText('Pretty Dress')).toBeVisible();
-        await expect(page.getByText('Polished Shoes')).toBeVisible();
-        await expect(page.getByText('Soft Toys')).toBeVisible();
+        await expect(page.getByText('Summer Sensation')).toBeVisible();
+        await expect(page.getByText('Formal Oxfords')).toBeVisible();
+        await expect(page.getByText('Happy Teddy')).toBeVisible();
 
         //Check existing products correctly reflected in categories page
         //PRODUCT 1
@@ -163,20 +163,20 @@ test.describe('Admin should be able to delete products', () => {
 
         //PRODUCT 2
         await page.getByRole('link', { name: 'Categories' }).click();
-        await page.getByRole('link', { name: 'Dress' }).click();
-        await expect(page.getByText('Pretty Dress')).toBeVisible();
+        await page.getByRole('link', { name: 'Dresses' }).click();
+        await expect(page.getByText('Summer Sensation')).toBeVisible();
         await expect(page.getByText('123')).toBeVisible();
 
         //PRODUCT 3
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'Shoes' }).click();
-        await expect(page.getByText('Polished Shoes')).toBeVisible();
+        await expect(page.getByText('Formal Oxfords')).toBeVisible();
         await expect(page.getByText('32')).toBeVisible();
 
         //PRODUCT 4
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'Toys' }).click();
-        await expect(page.getByText('Soft Toys')).toBeVisible();
+        await expect(page.getByText('Happy Teddy')).toBeVisible();
         await expect(page.getByText('112')).toBeVisible();
         
         //Go back to products page
@@ -185,7 +185,7 @@ test.describe('Admin should be able to delete products', () => {
         await page.getByRole('button', { name: 'Harry' }).click();
         await page.getByRole('link', { name: 'Dashboard' }).click();
         await page.getByRole('link', { name: 'Products' }).click();
-        await page.locator('.product-link', { hasText: "Polished Shoes" }).click();
+        await page.locator('.product-link', { hasText: "Formal Oxfords" }).click();
         page.on('dialog', async (dialog) => {
             if (dialog.type() === 'prompt' && dialog.message() === "Are You Sure want to delete this product ? ") {
               await dialog.accept('Yes'); 
@@ -199,12 +199,12 @@ test.describe('Admin should be able to delete products', () => {
         await page.getByRole('button', { name: 'Harry' }).click();
         await page.getByRole('link', { name: 'Dashboard' }).click();
         await page.getByRole('link', { name: 'Products' }).click();
-        await expect(page.getByText("Polished Shoes")).not.toBeVisible();
+        await expect(page.getByText("Formal Oxfords")).not.toBeVisible();
 
         //Confirm no other products affected
         await expect(page.getByText("Deathly Hallows")).toBeVisible();
-        await expect(page.getByText("Soft Toys")).toBeVisible();
-        await expect(page.getByText("Pretty Dress")).toBeVisible();
+        await expect(page.getByText("Happy Teddy")).toBeVisible();
+        await expect(page.getByText("Summer Sensation")).toBeVisible();
 
         //Confirm no products under shoes category
         await page.getByRole('link', { name: 'Categories' }).click();
