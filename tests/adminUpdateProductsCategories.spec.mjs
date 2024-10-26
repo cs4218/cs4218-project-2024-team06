@@ -59,7 +59,7 @@ test.beforeEach(async () => {
     const novel = new productModel({
         name: 'Deathly Hallows',
         slug: 'deathly-hallows',
-        description: 'Harry Potter last book',
+        description: 'Harry fights Voldemort.',
         price: 22,
         category: books,
         quantity: 2,
@@ -71,9 +71,9 @@ test.beforeEach(async () => {
     }).save();
 
     const shirt = new productModel({
-        name: 'Pretty Dress',
-        slug: 'pretty-dress',
-        description: 'This is a beautiful dress',
+        name: 'Summer Sensation',
+        slug: 'summer-sensation',
+        description: 'A floral dress with a sprinkle of gold.',
         price: 123,
         category: dresses,
         quantity: 10,
@@ -85,9 +85,9 @@ test.beforeEach(async () => {
     }).save();
 
     const sneakers = new productModel({
-        name: 'Polished Formals',
-        slug: 'polished-shoes',
-        description: 'New Arrival Oxford Shoes',
+        name: 'Formal Oxfords',
+        slug: 'formal-oxfords',
+        description: 'Polished classic wear for office.',
         price: 32,
         category: shoes,
         quantity: 43,
@@ -99,9 +99,9 @@ test.beforeEach(async () => {
     }).save();
 
     const plushie = new productModel({
-        name: 'Soft Toys',
-        slug: 'soft-toys',
-        description: 'Soft Teddy Bear',
+        name: 'Happy Teddy',
+        slug: 'happy-teddy',
+        description: 'Freddy the joyous bear.',
         price: 112,
         category: toys,
         quantity: 3,
@@ -150,9 +150,9 @@ test.describe('Admin should be able to update products', () => {
         //Check existing products correctly reflected in products page
         await page.getByRole('link', { name: 'Products' }).click();
         await expect(page.getByText('Deathly Hallows')).toBeVisible();
-        await expect(page.getByText('Pretty Dress')).toBeVisible();
-        await expect(page.getByText('Polished Formals')).toBeVisible();
-        await expect(page.getByText('Soft Toys')).toBeVisible();
+        await expect(page.getByText('Summer Sensation')).toBeVisible();
+        await expect(page.getByText('Formal Oxfords')).toBeVisible();
+        await expect(page.getByText('Happy Teddy')).toBeVisible();
 
         //Check existing products correctly reflected in categories' page
 
@@ -165,19 +165,19 @@ test.describe('Admin should be able to update products', () => {
         //PRODUCT 2
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'Dresses' }).click();
-        await expect(page.getByText('Pretty Dress')).toBeVisible();
+        await expect(page.getByText('Summer Sensation')).toBeVisible();
         await expect(page.getByText('123')).toBeVisible();
 
         //PRODUCT 3
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'Shoes' }).click();
-        await expect(page.getByText('Polished Formals')).toBeVisible();
+        await expect(page.getByText('Formal Oxfords')).toBeVisible();
         await expect(page.getByText('32')).toBeVisible();
 
         //PRODUCT 4
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'Toys' }).click();
-        await expect(page.getByText('Soft Toys')).toBeVisible();
+        await expect(page.getByText('Happy Teddy')).toBeVisible();
         await expect(page.getByText('112')).toBeVisible();
         
         //Go back to product page
@@ -186,41 +186,42 @@ test.describe('Admin should be able to update products', () => {
         await page.getByRole('button', { name: 'Harry' }).click();
         await page.getByRole('link', { name: 'Dashboard' }).click();
         await page.getByRole('link', { name: 'Products' }).click();
-        await page.locator('.product-link', { hasText: "Soft Toys" }).click();
+        await page.locator('.product-link', { hasText: "Happy Teddy" }).click();
         
         //Check it shows existing data correctly
-        await expect(page.locator('input[placeholder="write a name"]')).toHaveValue('Soft Toys'); //Changed
+        await expect(page.locator('input[placeholder="write a name"]')).toHaveValue('Happy Teddy'); //Changed
         await expect(page.locator('input[placeholder="write a Price"]')).toHaveValue('112'); //Changed to 56
-        await expect(page.locator('textarea[placeholder="write a description"]')).toHaveValue('Soft Teddy Bear'); //Changed
+        await expect(page.locator('textarea[placeholder="write a description"]')).toHaveValue('Freddy the joyous bear.'); //Changed
         await expect(page.locator('input[placeholder="write a quantity"]')).toHaveValue('3');; // no change
         await expect(page.getByText('Yes')).toBeVisible(); //shipping - no change
 
-        await page.locator('input[placeholder="write a name"]').fill('Last Stock! Plushies');
+        await page.locator('input[placeholder="write a name"]').fill('Laughing George');
         await page.locator('input[placeholder="write a Price"]').fill('56');
-        await page.locator('textarea[placeholder="write a description"]').fill('Discounted plushie toy');
+        await page.locator('textarea[placeholder="write a description"]').fill('Renamed toy with a lower price!');
 
         await page.getByRole('button', { name: 'UPDATE' }).click();
 
+        //Original implementation erraneous: hence, we directly navigate to make sure intended functionality is tested for
         //Check reflected in products page
         await page.getByRole('button', { name: 'Harry' }).click();
         await page.getByRole('link', { name: 'Dashboard' }).click();
         await page.getByRole('link', { name: 'Products' }).click();
-        await expect(page.getByText("Soft Toys")).not.toBeVisible();
-        await expect(page.getByText("Last Stock! Plushies")).toBeVisible();
-        await expect(page.getByText("Soft Teddy Bear")).not.toBeVisible();
-        await expect(page.getByText("Discounted plushie toy")).toBeVisible();
+        await expect(page.getByText("Happy Teddy")).not.toBeVisible();
+        await expect(page.getByText("Laughing George")).toBeVisible();
+        await expect(page.getByText("Freddy the joyous bear.")).not.toBeVisible();
+        await expect(page.getByText("Renamed toy with a lower price!")).toBeVisible();
 
         //Confirm no other products affected
         await expect(page.getByText("Deathly Hallows")).toBeVisible();
-        await expect(page.getByText("Polished Formals")).toBeVisible();
-        await expect(page.getByText("Pretty Dress")).toBeVisible();
+        await expect(page.getByText("Formal Oxfords")).toBeVisible();
+        await expect(page.getByText("Summer Sensation")).toBeVisible();
 
         //Confirm changes under toys category
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'All Categories' }).click();
         await page.getByRole('link', { name: 'Toys' }).click(); 
         await expect(page.getByRole('heading', { name: 'Category - Toys' })).toBeVisible();
-        await expect(page.getByText('Last Stock! Plushies')).toBeVisible();
+        await expect(page.getByText('Laughing George')).toBeVisible();
         await expect(page.getByText('56')).toBeVisible();
     });
 });
