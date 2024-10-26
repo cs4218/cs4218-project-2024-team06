@@ -17,7 +17,7 @@ const adminUser = new userModel({
         role: 1
 });
 
-const user1Password = "saferPassword";
+const user1Password = "safePassword";
 const createNormalUser1 = async () => {
     const passwordHash = await hashPassword(user1Password);
     const normalUser1 = new userModel({
