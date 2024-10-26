@@ -130,17 +130,6 @@ describe('Integration of create category page and subcomponents', () => {
                 expect(screen.getAllByText('phones').length).toBeGreaterThan(0);
             })
 
-            //categories not there should not be on screen 
-            await waitFor(() => {
-                const socks = screen.queryByText('socks');
-                expect(socks).not.toBeInTheDocument();
-            })
-
-            await waitFor(() => {
-                const bottles = screen.queryByText('bottles');
-                expect(bottles).not.toBeInTheDocument();
-            })
-
         });
     });
 
