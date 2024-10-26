@@ -6,7 +6,7 @@ import fs from 'fs';
 
 let mongoServer;
 
-describe('integration of update product controller', () => {
+describe('Integration of update product controller', () => {
     let req, res;
 
     beforeAll(async () => {
@@ -41,8 +41,8 @@ describe('integration of update product controller', () => {
         const updatedCat = new mongoose.Types.ObjectId();
         
         req.fields = {
-            name: "updated timeless", //change
-            description: "updated version of timeless book", //change
+            name: "timeless", //change
+            description: "Poetry book written entirely in lowercase.", //change
             price: 73, //change
             category: updatedCat, //change
             quantity: 11, //same
@@ -50,31 +50,43 @@ describe('integration of update product controller', () => {
         };
         req.files = {
             photo: { //same
-                path: 'client/public/images/test-pdt-img-1.jpg',
+                path: 'client/public/images/test-pdt-image-gen.jpg',
                 size: 1024
             }
         };
 
-        const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-img-1.jpg');
+        const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-image-gen.jpg');
 
         //products in the database
-        const pdt1 = await new productModel({name: "sneakers", slug: "sneakers", description: "adidas sneakers",price: 134, quantity: 10,
+        const pdt1 = await new productModel({
+            name: "Classic Oxfords",
+            slug: "classic-oxfords",
+            description: "Polished shoes with extended soles.",
+            price: 134,
+            quantity: 10,
             category: pdtCat,  
             photo: {
                 data: expectedBuffer,  
                 contentType: "image/png"
             },
-            shipping: true, timestamp:Date.now()})
+            shipping: true,
+            timestamp:Date.now()})
         .save();
         const pid1 = pdt1._id;
 
-        const pdt2 = await new productModel({name: "timeless", slug: "timeless", description: "book called timeless",price: 149, quantity: 71,
+        const pdt2 = await new productModel({
+            name: "Order of Phoenix",
+            slug: "order-of-phoenix",
+            description: "Harry enters his fifth year at Hogwarts.",
+            price: 149,
+            quantity: 71,
             category: new mongoose.Types.ObjectId(),  
                 photo: {
                     data: expectedBuffer,  
                     contentType: "image/png"
                 },
-            shipping: true, timestamp:Date.now()})
+            shipping: true,
+            timestamp:Date.now()})
         .save();
         const updatePid = pdt2._id;
 
@@ -88,8 +100,8 @@ describe('integration of update product controller', () => {
         //product originally present remains
         const samplePdt1 = await productModel.findById(pid1);
         expect(samplePdt1).not.toBeNull();
-        expect(samplePdt1.name).toEqual("sneakers");
-        expect(samplePdt1.description).toEqual("adidas sneakers");
+        expect(samplePdt1.name).toEqual("Classic Oxfords");
+        expect(samplePdt1.description).toEqual("Polished shoes with extended soles.");
         expect(samplePdt1.quantity).toEqual(10);
         expect(samplePdt1.price).toEqual(134);
         expect(samplePdt1.category).toEqual(pdtCat);
@@ -99,8 +111,8 @@ describe('integration of update product controller', () => {
         //updated product 
         const samplePdt2 = await productModel.findById(updatePid);
         expect(samplePdt2).not.toBeNull(); 
-        expect(samplePdt2.name).toEqual("updated timeless");
-        expect(samplePdt2.description).toEqual("updated version of timeless book");
+        expect(samplePdt2.name).toEqual("timeless");
+        expect(samplePdt2.description).toEqual("Poetry book written entirely in lowercase.");
         expect(samplePdt2.quantity).toEqual(11);
         expect(samplePdt2.price).toEqual(73);
         expect(samplePdt2.category).toEqual(updatedCat);
@@ -112,9 +124,9 @@ describe('integration of update product controller', () => {
             success: true,
             message: "Product Updated Successfully",
             products: expect.objectContaining({
-                    name: "updated timeless",
-                    description: "updated version of timeless book",
-                    slug: "updated-timeless",
+                    name: "timeless",
+                    description: "Poetry book written entirely in lowercase.",
+                    slug: "timeless",
                     price: 73,
                     category: updatedCat, 
                     quantity: 11, //same

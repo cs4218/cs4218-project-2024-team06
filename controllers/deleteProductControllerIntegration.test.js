@@ -33,7 +33,7 @@ describe('Integration of delete product controller', () => {
         //fails as original message is buggy (capitalisation)
 
         //ARRANGE
-        const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-gen.jpg');
+        const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-image-gen.jpg');
         const expectedCategory = new mongoose.Types.ObjectId();
 
         //products in the database
