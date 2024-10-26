@@ -194,6 +194,7 @@ test.describe('Admin should be able to delete products', () => {
             }
           });
         await page.getByRole('button', { name: 'DELETE' }).click();
+        await expect(page.getByText('Product DEleted Succfully')).toBeVisible();
 
         //Check reflected in products page
         await page.getByRole('button', { name: 'Harry' }).click();
