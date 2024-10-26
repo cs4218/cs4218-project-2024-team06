@@ -35,7 +35,7 @@ test.beforeEach(async () => {
     //Create admin account to log in with
     const adminUser = new userModel({
         name: 'Harry',
-        email: 'harry@gmail.com',
+        email: 'harrypotter@gmail.com',
         password: PASSWORD_HASHED,
         phone: '12345678',
         address: 'Hogwarts',
@@ -44,9 +44,9 @@ test.beforeEach(async () => {
     })
     await adminUser.save();
 
-    await new categoryModel({ name: 'dresses', slug: 'dresses' }).save();
-    await new categoryModel({ name: 'toys', slug: 'toys' }).save();
-    await new categoryModel({ name: 'books', slug: 'books' }).save();
+    await new categoryModel({ name: 'Dresses', slug: 'dresses' }).save();
+    await new categoryModel({ name: 'Toys', slug: 'toys' }).save();
+    await new categoryModel({ name: 'Books', slug: 'books' }).save();
 });
 
 
@@ -69,7 +69,7 @@ test.describe('Admin should be able to create multiple valid products', () => {
 
         //Login to admin account
         await page.getByRole('link', { name: 'Login'}).click();
-        await page.getByPlaceholder('Enter Your Email').fill('harry@gmail.com');
+        await page.getByPlaceholder('Enter Your Email').fill('harrypotter@gmail.com');
         await page.getByPlaceholder('Enter Your Password').click();
         await page.getByPlaceholder('Enter Your Password').fill(PASSWORD_UNHASHED);
         await page.getByRole('button', { name: 'LOGIN' }).click();
@@ -92,13 +92,13 @@ test.describe('Admin should be able to create multiple valid products', () => {
         await fileInput.setInputFiles("client/public/images/test-pdt-img-1.jpg");
         
         await page.getByPlaceholder('write a name').fill("Goblet of Fire");
-        await page.getByPlaceholder('write a description').fill("Harry enters TriWizard tournament.");
+        await page.getByPlaceholder('write a description').fill("Harry enters the Triwizard tournament.");
         
 
         await page.locator('div.col-md-9 .form-select.mb-3').filter({ hasText: 'Select a category' }).click();
         const catOptions = await page.locator('.ant-select-item-option-content').allTextContents();
         await expect(catOptions.length).toBeGreaterThan(0);
-        await page.locator('.ant-select-item-option-content').filter({ hasText: 'books' }).click();
+        await page.locator('.ant-select-item-option-content').filter({ hasText: 'Books' }).click();
         
         await page.locator('div.col-md-9 .form-select.mb-3').filter({ hasText: 'Select Shipping' }).click();
         const shipOptions = await page.locator('.ant-select-item-option-content').allTextContents();
@@ -110,11 +110,12 @@ test.describe('Admin should be able to create multiple valid products', () => {
 
         await page.getByRole('button', { name: 'CREATE PRODUCT' }).click();
         
+        //Original implementation erraneous: hence, we directly navigate to make sure intended functionality is tested for
         //Go to products page and check if product is there
         await page.getByRole('link', { name: 'Products' }).click();
         await page.reload(); //refresh
         await expect(page.getByText('Goblet of Fire')).toBeVisible();
-        await expect(page.getByText('Harry enters TriWizard tournament.')).toBeVisible();
+        await expect(page.getByText('Harry enters the Triwizard tournament.')).toBeVisible();
 
         //PRODUCT CREATION 2
         
@@ -125,14 +126,14 @@ test.describe('Admin should be able to create multiple valid products', () => {
         const fileInput2 = await page.locator('input[type="file"][name="photo"]');
         await fileInput2.setInputFiles("client/public/images/test-pdt-img-2.jpg");
         
-        await page.getByPlaceholder('write a name').fill("Lavender Dress");
-        await page.getByPlaceholder('write a description').fill("Soft purple fabric with tinge of gold.");
+        await page.getByPlaceholder('write a name').fill("Summer Sensation");
+        await page.getByPlaceholder('write a description').fill("A floral dress with a sprinkle of gold.");
         
 
         await page.locator('div.col-md-9 .form-select.mb-3').filter({ hasText: 'Select a category' }).click();
         const catOptions2 = await page.locator('.ant-select-item-option-content').allTextContents();
         await expect(catOptions2.length).toBeGreaterThan(0);
-        await page.locator('.ant-select-item-option-content').filter({ hasText: 'dresses' }).click();
+        await page.locator('.ant-select-item-option-content').filter({ hasText: 'Dresses' }).click();
         
         await page.locator('div.col-md-9 .form-select.mb-3').filter({ hasText: 'Select Shipping' }).click();
         const shipOptions2 = await page.locator('.ant-select-item-option-content').allTextContents();
@@ -144,11 +145,12 @@ test.describe('Admin should be able to create multiple valid products', () => {
 
         await page.getByRole('button', { name: 'CREATE PRODUCT' }).click();
         
+        //Original implementation erraneous: hence, we directly navigate to make sure intended functionality is tested for        
         //Go to products page and check if product is there
         await page.getByRole('link', { name: 'Products' }).click();
         await page.reload(); //refresh
-        await expect(page.getByText('Lavender Dress')).toBeVisible();
-        await expect(page.getByText('Soft purple fabric with tinge of gold.')).toBeVisible();
+        await expect(page.getByText('Summer Sensation')).toBeVisible();
+        await expect(page.getByText('A floral dress with a sprinkle of gold.')).toBeVisible();
 
         //Go to categories page and check both are shown
 
@@ -161,7 +163,7 @@ test.describe('Admin should be able to create multiple valid products', () => {
         //PRODUCT 2
         await page.getByRole('link', { name: 'Categories' }).click();
         await page.getByRole('link', { name: 'Dresses' }).click();
-        await expect(page.getByText('Lavender Dress')).toBeVisible();
+        await expect(page.getByText('Summer Sensation')).toBeVisible();
         await expect(page.getByText('456')).toBeVisible();
     });
 });
