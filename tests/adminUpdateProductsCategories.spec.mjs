@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import fs from 'fs'
 
 /**
-This UI tests the E2E flow of product and category update by admin
+This UI tests the E2E flow of product update by admin
 1. User logins as admin.
 2. User enters Admin Dashboard.
 3. User navigates to Products and views existing products.
@@ -182,7 +182,7 @@ test.describe('Admin should be able to update products', () => {
         
         //Go back to product page
 
-        //Update Soft Toy for discount sale
+        //Update product for discount sale
         await page.getByRole('button', { name: 'Harry' }).click();
         await page.getByRole('link', { name: 'Dashboard' }).click();
         await page.getByRole('link', { name: 'Products' }).click();
