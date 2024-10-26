@@ -6,7 +6,7 @@ import fs from 'fs';
 
 let mongoServer;
 
-describe('integration of create product controller', () => {
+describe('Integration of create product controller', () => {
     let req, res;
 
     beforeAll(async () => {
@@ -39,8 +39,8 @@ describe('integration of create product controller', () => {
         //ARRANGE
         const pdtCat = new mongoose.Types.ObjectId();
         req.fields = {
-            name: "ballpoint",
-            description: 'ballpoint pen',
+            name: "Invictus",
+            description: 'The latest ink pen by Parker.',
             price: 100,
             category: pdtCat,
             quantity: 11,
@@ -48,21 +48,27 @@ describe('integration of create product controller', () => {
         };
         req.files = {
             photo: {
-                path: 'client/public/images/test-pdt-img-1.jpg',
+                path: 'client/public/images/test-pdt-image-gen.jpg',
                 size: 1024
             }
         };
 
-        const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-img-1.jpg');
+        const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-image-gen.jpg');
 
         //products in the database
-        const pdt1 = await new productModel({name: "sneakers", slug: "sneakers", description: "adidas sneakers",price: 134, quantity: 10,
+        const pdt1 = await new productModel({
+            name: "Sneakers",
+            slug: "sneakers",
+            description: "Latest version of Adidas Sneakers.",
+            price: 134,
+            quantity: 10,
             category: pdtCat,  
             photo: {
                 data: expectedBuffer,  
                 contentType: "image/png"
             },
-            shipping: true, timestamp:Date.now()})
+            shipping: true,
+            timestamp:Date.now()})
         .save();
         const pid1 = pdt1._id;
         
@@ -75,9 +81,9 @@ describe('integration of create product controller', () => {
             success: true,
             message: "Product Created Successfully",
             products: expect.objectContaining({
-                    name: "ballpoint",
-                    description: "ballpoint pen",
-                    slug: "ballpoint",
+                    name: "Invictus",
+                    description: "The latest ink pen by Parker.",
+                    slug: "invictus",
                     price: 100,
                     category: pdtCat, 
                     quantity: 11,
@@ -92,8 +98,8 @@ describe('integration of create product controller', () => {
         //product originally present remains
         const samplePdt1 = await productModel.findById(pid1);
         expect(samplePdt1).not.toBeNull();
-        expect(samplePdt1.name).toEqual("sneakers");
-        expect(samplePdt1.description).toEqual("adidas sneakers");
+        expect(samplePdt1.name).toEqual("Sneakers");
+        expect(samplePdt1.description).toEqual("Latest version of Adidas Sneakers.");
         expect(samplePdt1.quantity).toEqual(10);
         expect(samplePdt1.price).toEqual(134);
         expect(samplePdt1.category).toEqual(pdtCat);
@@ -101,9 +107,9 @@ describe('integration of create product controller', () => {
         expect(Buffer.compare(samplePdt1.photo.data, expectedBuffer)).toBe(0);
 
         //new product created
-        const samplePdt2 = await productModel.findOne({ name: "ballpoint" });
+        const samplePdt2 = await productModel.findOne({ name: "Invictus" });
         expect(samplePdt2).not.toBeNull(); 
-        expect(samplePdt2.description).toEqual("ballpoint pen");
+        expect(samplePdt2.description).toEqual("The latest ink pen by Parker.");
         expect(samplePdt2.quantity).toEqual(11);
         expect(samplePdt2.price).toEqual(100);
         expect(samplePdt2.category).toEqual(pdtCat);
@@ -120,28 +126,34 @@ describe('integration of create product controller', () => {
         const pdtCat = new mongoose.Types.ObjectId();
         
         req.fields = {
-            name: "ballpoint",
-            description: "some ballpoint pen",
+            name: "Invictus",
+            description: "The latest ink pen by Parker.",
             category: pdtCat,
             quantity: 11,
             shipping: true
         };
         req.files = {
             photo: {
-                path: 'client/public/images/test-pdt-img-1.jpg',
+                path: 'client/public/images/test-pdt-image-gen.jpg',
                 size: 1024
             }
         };
-        const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-img-1.jpg');
+        const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-image-gen.jpg');
 
         //products in the database
-        const pdt1 = await new productModel({name: "sneakers", slug: "sneakers", description: "adidas sneakers",price: 134, quantity: 10,
+        const pdt1 = await new productModel({
+            name: "Sneakers",
+            slug: "sneakers",
+            description: "Latest version of Adidas Sneakers.",
+            price: 134,
+            quantity: 10,
             category: pdtCat,  
             photo: {
                 data: expectedBuffer,  
                 contentType: "image/png"
             },
-            shipping: true, timestamp:Date.now()})
+            shipping: true,
+            timestamp:Date.now()})
         .save();
         const pid1 = pdt1._id;
 
@@ -149,12 +161,11 @@ describe('integration of create product controller', () => {
         await createProductController(req, res);
 
         //ASSERT
-
         //product originally present remains
         const samplePdt1 = await productModel.findById(pid1);
         expect(samplePdt1).not.toBeNull();
-        expect(samplePdt1.name).toEqual("sneakers");
-        expect(samplePdt1.description).toEqual("adidas sneakers");
+        expect(samplePdt1.name).toEqual("Sneakers");
+        expect(samplePdt1.description).toEqual("Latest version of Adidas Sneakers.");
         expect(samplePdt1.quantity).toEqual(10);
         expect(samplePdt1.price).toEqual(134);
         expect(samplePdt1.category).toEqual(pdtCat);
@@ -162,7 +173,7 @@ describe('integration of create product controller', () => {
         expect(Buffer.compare(samplePdt1.photo.data, expectedBuffer)).toBe(0);
 
         //no product created
-        const samplePdt2 = await productModel.findOne({ name: "ballpoint" });
+        const samplePdt2 = await productModel.findOne({ name: "Invictus" });
         expect(samplePdt2).toBeNull(); 
 
 

@@ -6,7 +6,7 @@ import fs from 'fs';
 
 let mongoServer;
 
-describe('integration of delete product controller', () => {
+describe('Integration of delete product controller', () => {
     let req, res;
 
     beforeAll(async () => {
@@ -33,27 +33,39 @@ describe('integration of delete product controller', () => {
         //fails as original message is buggy (capitalisation)
 
         //ARRANGE
-        const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-img-1.jpg');
+        const expectedBuffer = fs.readFileSync('client/public/images/test-pdt-gen.jpg');
         const expectedCategory = new mongoose.Types.ObjectId();
 
         //products in the database
-        const pdt1 = await new productModel({name: "sneakers", slug: "sneakers", description: "adidas sneakers",price: 134, quantity: 10,
+        const pdt1 = await new productModel({
+            name: "Sneakers",
+            slug: "sneakers",
+            description: "Latest version of Adidas sneakers.",
+            price: 134,
+            quantity: 10,
             category: expectedCategory,  
             photo: {
               data: expectedBuffer,  
               contentType: "image/png"
             },
-            shipping: true, timestamp:Date.now()})
+            shipping: true,
+            timestamp:Date.now()})
         .save();
         const pid1 = pdt1._id;
 
-        const pdt2 = await new productModel({name: "timeless", slug: "timeless", description: "book called timeless",price: 149, quantity: 71,
+        const pdt2 = await new productModel({
+            name: "Order of Phoenix",
+            slug: "order-of-phoenix",
+            description: "Harry returns for the fifth year at Hogwarts.",
+            price: 149,
+            quantity: 71,
             category: new mongoose.Types.ObjectId(),  
                 photo: {
                     data: expectedBuffer,  
                     contentType: "image/png"
                 },
-            shipping: true, timestamp:Date.now()})
+            shipping: true,
+            timestamp:Date.now()})
         .save();
         const delPid = pdt2._id;
 
@@ -75,8 +87,8 @@ describe('integration of delete product controller', () => {
         //not deleted
         const samplePdt1 = await productModel.findById(pid1);
         expect(samplePdt1).not.toBeNull();
-        expect(samplePdt1.name).toEqual("sneakers");
-        expect(samplePdt1.description).toEqual("adidas sneakers");
+        expect(samplePdt1.name).toEqual("Sneakers");
+        expect(samplePdt1.description).toEqual("Latest version of Adidas sneakers.");
         expect(samplePdt1.quantity).toEqual(10);
         expect(samplePdt1.price).toEqual(134);
         expect(samplePdt1.category).toEqual(expectedCategory);
