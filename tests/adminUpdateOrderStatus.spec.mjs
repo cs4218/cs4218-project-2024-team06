@@ -174,7 +174,9 @@ test.describe("Admin should be able to update order statuses of", () => {
      * will pass. Since there is a bug in the getAllOrdersController function, the API call for all 
      * orders in AdminOrder.js line 24 will fail and no orders will be displayed. Thus, everything 
      * after navigating to AdminOrders in this test, which checks that all orders in the database 
-     * are displayed and that the status can be edited, will fail.
+     * are displayed and that the status can be edited, will fail. However, since this is UI testing 
+     * and is blackbox testing, the tester will not know about this bug. This explanation is only 
+     * here to explain why this test will fail.
      */
     test.fail("all orders in the orders database", async ({ page }) => {
         await page.goto('http://localhost:3000/');
