@@ -66,7 +66,7 @@ test.beforeAll(async () => {
 	await db.collection("products").insertOne(book2);
 });
 
-test("Adding to cart", async ({ page }) => {
+test("Adding to cart and removing and relogin", async ({ page }) => {
 	await page.goto("http://localhost:3000/");
     await page.getByRole("link", { name: "LOGIN" }).click();
 

@@ -66,7 +66,7 @@ test.beforeAll(async () => {
 	await db.collection("products").insertOne(book2);
 });
 
-test("Adding to cart", async ({ page }) => {
+test("Adding to cart and checkout", async ({ page }) => {
 	await page.goto("http://localhost:3000/");
 
     //add 2 items to cart
