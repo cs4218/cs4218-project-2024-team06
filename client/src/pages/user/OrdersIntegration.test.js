@@ -138,11 +138,6 @@ describe("Orders.js integration test", () => {
     let serverProcess;
     const timeForServerToStart = 8000;
 
-    /**
-     * Note that the naming convention here is not standardised and extremely confusing. However, 
-     * we will keep what is used in the schemas as this falls outside the scope of this integration 
-     * test.
-     */
     const usersCollection = "users";
     const categoriesCollection = "categories";
     const productsCollection = "products";
@@ -155,15 +150,8 @@ describe("Orders.js integration test", () => {
         await mongoose.connect(uri);
         const serverPath = path.join(__dirname, '../../../../server.js');
         serverProcess = spawn('node', [serverPath], {
+            stdio: 'inherit',
             env: { ...process.env, MONGO_URL: uri }
-        });
-
-        serverProcess.stdout.on('data', (data) => {
-            console.log(`Server stdout: ${data}`);
-        });
-
-        serverProcess.stderr.on('data', (data) => {
-            console.error(`Server stderr: ${data}`);
         });
 
         await new Promise(resolve => setTimeout(resolve, timeForServerToStart));
