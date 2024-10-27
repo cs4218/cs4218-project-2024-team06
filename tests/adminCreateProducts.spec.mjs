@@ -110,7 +110,11 @@ test.describe('Admin should be able to create multiple valid products', () => {
 
         await page.getByRole('button', { name: 'CREATE PRODUCT' }).click();
         
-        //Original implementation erraneous: hence, we directly navigate to make sure intended functionality is tested for
+        /** Note original code's if-else implementation in lines 53-58 is buggy (should have success 
+         * toaster upon success and not error message). So, we directly navigate to make sure intended functionality 
+         * beyond the component is tested for.
+         */
+
         //Go to products page and check if product is there
         await page.getByRole('link', { name: 'Products' }).click();
         await page.reload(); //refresh
@@ -145,7 +149,11 @@ test.describe('Admin should be able to create multiple valid products', () => {
 
         await page.getByRole('button', { name: 'CREATE PRODUCT' }).click();
         
-        //Original implementation erraneous: hence, we directly navigate to make sure intended functionality is tested for        
+        //Original implementation erraneous: Intended toast behavior tested for
+        await expect(page.getByText('Product Created Successfully')).toBeVisible();
+
+        //Then, we directly navigate to make sure other intended functionality is tested for        
+        
         //Go to products page and check if product is there
         await page.getByRole('link', { name: 'Products' }).click();
         await page.reload(); //refresh

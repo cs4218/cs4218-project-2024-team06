@@ -201,7 +201,11 @@ test.describe('Admin should be able to update products', () => {
 
         await page.getByRole('button', { name: 'UPDATE' }).click();
 
-        //Original implementation erraneous: hence, we directly navigate to make sure intended functionality is tested for
+        /** Note original code's if-else implementation in lines 77-82 is buggy (should have success 
+         * toaster upon success and not error message). So, we directly navigate to make sure intended functionality 
+         * beyond the component is tested for.
+         */
+
         //Check reflected in products page
         await page.getByRole('button', { name: 'Harry' }).click();
         await page.getByRole('link', { name: 'Dashboard' }).click();

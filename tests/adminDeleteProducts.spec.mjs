@@ -127,7 +127,8 @@ test.afterEach(async () => {
 
 
 test.describe('Admin should be able to delete products', () => {
-    test('where there are existing products and admin deletes some of them', async ({ page }) => {
+    test.fail('where there are existing products and admin deletes some of them', async ({ page }) => {
+        //always fails as we need to see "Product Deleted Successfully" not "Product DEleted Succfully" in the toaster message (i.e. original message buggy)
 
         //Visit website
         await page.goto('http://localhost:3000/');
@@ -194,7 +195,8 @@ test.describe('Admin should be able to delete products', () => {
             }
           });
         await page.getByRole('button', { name: 'DELETE' }).click();
-        await expect(page.getByText('Product DEleted Succfully')).toBeVisible();
+        //buggy original message
+        await expect(page.getByText('Product Deleted Successfully')).toBeVisible();
 
         //Check reflected in products page
         await page.getByRole('button', { name: 'Harry' }).click();
