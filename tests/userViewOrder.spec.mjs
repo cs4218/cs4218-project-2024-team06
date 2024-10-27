@@ -110,6 +110,10 @@ const product4 = new productModel({
 
 const orderStatusEnum = ["Not Process", "Processing", "Shipped", "deliverd", "cancel"];
 
+const renderProductDescription = (productDescription) => {
+    return productDescription.substring(0, 30);
+};
+
 test.describe("User should only be able to", () => {
     const usersCollection = "users";
     const categoriesCollection = "categories";
@@ -216,12 +220,12 @@ test.describe("User should only be able to", () => {
         // Check that products are displayed correctly
         await expect(page.getByRole('img', { name: product1.name })).toBeVisible();
         await expect(page.getByText(product1.name)).toBeVisible();
-        await expect(page.getByText(product1.description.substring(0, 30))).toBeVisible();
+        await expect(page.getByText(renderProductDescription(product1.description))).toBeVisible();
         await expect(page.getByText(product1.price)).toBeVisible();
 
         await expect(page.getByRole('img', { name: product2.name })).toBeVisible();
         await expect(page.getByText(product2.name)).toBeVisible();
-        await expect(page.getByText(product2.description.substring(0, 30))).toBeVisible();
+        await expect(page.getByText(renderProductDescription(product2.description))).toBeVisible();
         await expect(page.getByText(product2.price)).toBeVisible();
 
         // Check that orders from other users are not displayed
@@ -233,12 +237,12 @@ test.describe("User should only be able to", () => {
         // Check that products from other users are not displayed
         await expect(page.getByRole('img', { name: product3.name })).not.toBeVisible();
         await expect(page.getByText(product3.name)).not.toBeVisible();
-        await expect(page.getByText(product3.description.substring(0, 30))).not.toBeVisible();
+        await expect(page.getByText(renderProductDescription(product3.description))).not.toBeVisible();
         await expect(page.getByText(product3.price, { exact: true })).not.toBeVisible();
 
         await expect(page.getByRole('img', { name: product4.name })).not.toBeVisible();
         await expect(page.getByText(product4.name)).not.toBeVisible();
-        await expect(page.getByText(product4.description.substring(0, 30))).not.toBeVisible();
+        await expect(page.getByText(renderProductDescription(product4.description))).not.toBeVisible();
         await expect(page.getByText(product4.price, { exact: true })).not.toBeVisible();
     })
 });
