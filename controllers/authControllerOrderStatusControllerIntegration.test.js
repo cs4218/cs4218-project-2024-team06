@@ -72,6 +72,11 @@ describe("orderStatusController integration test", () => {
      * This test is failing because findByIdAndUpdate is not being called with runValidators: true. 
      * This means that the enum validation is only run when the document is created and saved, but 
      * not when it is updated.
+     * 
+     * This bug was not caught in orderStatusController's unit test as its interaction with the 
+     * database was mocked. It was also not caught in orderModel's unit test as the enum validation 
+     * can be enforced by the function call which was does not fall under the scope of orderModel's 
+     * unit test.
      */
     it.failing("should return 500 for invalid order status", async () =>  {
         req.body = { status: invalidStatus };
