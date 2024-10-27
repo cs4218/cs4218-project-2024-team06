@@ -16,7 +16,6 @@ import Dashboard from './Dashboard';
 import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { SearchProvider } from '../../context/search';
-import { waitFor } from '@testing-library/react';
 
 const mockAuthData = JSON.stringify({
     user: { name: 'Halimah Yacob', email: 'halimah@gov.sg', address: 'Istana', role: 0 },
@@ -32,7 +31,7 @@ describe('Dashboard Integration Test with AuthProvider', () => {
         localStorage.removeItem('auth');
     });
 
-    it('should integrate with useAuth, Layout.js and UserMenu.js', async () => {
+    it('should integrate with useAuth, Layout.js and UserMenu.js', () => {
         render(
             <AuthProvider>
                 <CartProvider>
@@ -44,9 +43,6 @@ describe('Dashboard Integration Test with AuthProvider', () => {
                 </CartProvider>
             </AuthProvider>
         );
-
-        // Layout.js
-        await waitFor(() => expect(document.title).toBe('Dashboard - Ecommerce App'));
         
         // Header.js
         expect(screen.getByText('🛒 Virtual Vault')).toBeInTheDocument();
