@@ -132,6 +132,7 @@ npx playwright test tests/
 | tests/adminDeleteProducts.spec.mjs            | Aishwarya |
 | tests/adminUpdateProductsCategories.spec.mjs  | Aishwarya |
 | tests/adminUpdateOrderStatus.spec.mjs         | Kai Xun   |
+| tests/createOrder.spec.mjs                    | Kai Xun   |
 | tests/userViewOrder.spec.mjs                  | Kai Xun   |
 | tests/authenticatedAddingAndRemoving.spec.cjs | Kang Quan |
 | tests/register.spec.cjs                       | Kang Quan |
