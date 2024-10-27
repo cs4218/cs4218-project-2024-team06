@@ -131,7 +131,8 @@ test.describe("User can create order", () => {
      * - npx playwright test tests/userCreateOrder.spec.mjs --browser=chromium
      * - npx playwright test tests/userCreateOrder.spec.mjs --browser=firefox
      * - npx playwright test tests/userCreateOrder.spec.mjs --browser=webkit
-     * with sufficient time between each run.
+     * with sufficient time between each run. An estimated would be 1 minute between each run but 
+     * this time may vary.
      */
     test("after making payment", async ({ page }) => {
         await page.goto("http://localhost:3000");
