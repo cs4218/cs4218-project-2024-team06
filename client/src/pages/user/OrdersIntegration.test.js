@@ -125,6 +125,10 @@ const otherOrder = new orderModel({
     status: orderStatusEnum[3]
 });
 
+const renderProductDescription = (productDescription) => {
+    return productDescription.substring(0, 30);
+};
+
 const timeBeforeTimeout = 20000;
 jest.setTimeout(timeBeforeTimeout);
 axios.defaults.baseURL = 'http://localhost:6060';
@@ -207,16 +211,6 @@ describe("Orders.js integration test", () => {
         localStorage.removeItem('auth');
     });
 
-    const checkProducts = async (products) => {
-        for(let i = 0; i < products.length; i++) {
-            const product = products[i];
-            expect(await screen.findByAltText(product.name)).toBeInTheDocument();
-            expect(await screen.findByText(product.name)).toBeInTheDocument();
-            expect(await screen.findByText(product.description.substring(0, 30))).toBeInTheDocument();
-            expect(await screen.findByText("Price : " + product.price)).toBeInTheDocument();
-        }
-    };
-
     it("should fetch orders from the server and display them", async () => {
         render(
             <AuthProvider>
@@ -272,10 +266,10 @@ describe("Orders.js integration test", () => {
         const allQuantityElements = await screen.findAllByText("Quantity");
         expect(allQuantityElements.length).toBe(numberOfOrders);
         
-        const all1Elements = await screen.findAllByText("1");
-        expect(all1Elements.length).toBe(2); // 1st index number and quantity of second order
-        const all2Elements = await screen.findAllByText("2");
-        expect(all2Elements.length).toBe(2); // Quantity of first order and 2nd index number
+        const allOneTextElements = await screen.findAllByText("1");
+        expect(allOneTextElements.length).toBe(2); // 1st index number and quantity of second order
+        const allTwoTextElements = await screen.findAllByText("2");
+        expect(allTwoTextElements.length).toBe(2); // Quantity of first order and 2nd index number
         expect(await screen.findByText(order1.status)).toBeInTheDocument();
         expect(await screen.findByText(order2.status)).toBeInTheDocument();
         const allUserNameElements = await screen.findAllByText(user1.name);
@@ -290,14 +284,14 @@ describe("Orders.js integration test", () => {
         for (let product of [product1, product2, product3]) {
             expect(await screen.findByAltText(product.name)).toBeInTheDocument();
             expect(await screen.findByText(product.name)).toBeInTheDocument();
-            expect(await screen.findByText(product.description.substring(0, 30))).toBeInTheDocument();
+            expect(await screen.findByText(renderProductDescription(product.description))).toBeInTheDocument();
             expect(await screen.findByText("Price : " + product.price)).toBeInTheDocument();
         }
 
         expect(screen.queryByText(otherOrder.status)).not.toBeInTheDocument();
         expect(screen.queryByAltText(product4.name)).not.toBeInTheDocument();
         expect(screen.queryByText(product4.name)).not.toBeInTheDocument();
-        expect(screen.queryByText(product4.description.substring(0, 30))).not.toBeInTheDocument();
+        expect(screen.queryByText(renderProductDescription(product4.description))).not.toBeInTheDocument();
         expect(screen.queryByText("Price : " + product4.price)).not.toBeInTheDocument();
 
         // Footer.js
