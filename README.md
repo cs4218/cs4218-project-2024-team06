@@ -61,6 +61,8 @@ npm test
 ```
 
 ### How to Run UI Tests
+
+#### Running a Single UI Test
 The following illustrates the steps required to run a UI test, demonstrating it through an example.
 
 1. Suppose we want to run a UI test called `adminCreateCategory.spec.mjs`.
@@ -75,11 +77,18 @@ as the UI tests would wipe out the memory of the database during execution.
 4. In another terminal, run one of the following commands to execute the UI test.
 
 ```
-# To generate test results in HTML format
+#To generate test results in HTML format
 npx playwright test adminCreateCategory.spec.mjs
 
 #To view test results in UI mode
 npx playwright test adminCreateCategory.spec.mjs -- ui
+```
+
+#### Running All UI Tests
+To run all UI tests in the `tests` folder at once, use the following command.
+```
+#Runs all UI tests
+npx playwright test tests/
 ```
 
 ### Location of Test Files
