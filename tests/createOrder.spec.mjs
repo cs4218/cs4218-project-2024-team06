@@ -146,6 +146,17 @@ test.describe("User can create order", () => {
         // Navigate to Cart
         await page.getByRole('link', { name: "Cart" }).click();
 
+        // Check that products are displayed correctly in cart
+        await expect(page.getByRole('img', { name: product1.name })).toBeVisible();
+        await expect(page.getByText(product1.name)).toBeVisible();
+        await expect(page.getByText(renderProductDescription(product1.description))).toBeVisible();
+        await expect(page.getByText(product1.price)).toBeVisible();
+
+        await expect(page.getByRole('img', { name: product2.name })).toBeVisible();
+        await expect(page.getByText(product2.name)).toBeVisible();
+        await expect(page.getByText(renderProductDescription(product2.description))).toBeVisible();
+        await expect(page.getByText(product2.price)).toBeVisible();
+
         // Click on card payment
         await page.getByRole('button', { name: 'Paying with Card' }).click();
 
