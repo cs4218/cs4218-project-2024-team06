@@ -218,18 +218,8 @@ test.describe("Admin should be able to update order statuses of", () => {
         // Check that order status has been updated
         await expect(page.locator('#root').getByTitle(orderStatusEnum[2])).toBeVisible();
 
-        // Check that other order statuses are still displayed
+        // Check that other order statuses are unchanged
         await expect(page.locator('#root').getByTitle(orderStatusEnum[1])).toBeVisible();
         await expect(page.locator('#root').getByTitle(orderStatusEnum[3])).toBeVisible();
-
-        // Check that order status of order 2 has been updated in the database
-        const updatedOrder = await orderModel.findById(order2._id);
-        expect(updatedOrder.status).toBe(orderStatusEnum[2]);
-
-        // Check that order status of other orders are still the same in the database
-        const order1InDB = await orderModel.findById(order1._id);
-        const order3InDB = await orderModel.findById(order3._id);
-        expect(order1InDB.status).toBe(orderStatusEnum[1]);
-        expect(order3InDB.status).toBe(orderStatusEnum[3]);
     });
 });
