@@ -5,8 +5,8 @@ import mongoose from "mongoose";
 import { FASHION_CATEGORY_DATA, FASHION_PRODUCT_DATA } from "../data/index.js";
 
 /**
-This UI test aims to test the E2E flow of a user searching a product using the search bar, viewing information about
-the product that is found and adding it to cart, just like the consumer pattern of window shopping.
+This UI test aims to test the E2E flow of a user searching a product using the search bar, viewing information
+about the product that is found and adding it to cart, just like the consumer pattern of window shopping.
 
 1. User enters a search term in the search bar.
 2. User views more details about a result from the search.
@@ -18,7 +18,7 @@ const CATEGORIES_COLLECTION = "categories"
 const PRODUCTS_COLLECTION = "products"
 
 
-//VariableS for keeping track of products
+//Variables for keeping track of products
 const FASHION_CATEGORY_IDS = {};
 let numberOfShirtProducts = 0;
 let numberOfBlouseProducts = 0;
