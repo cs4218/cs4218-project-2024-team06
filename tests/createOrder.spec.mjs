@@ -120,6 +120,10 @@ test.describe("User can create order", () => {
      * However, as we aren't testing the fraudulent detection mechanism, this test will assume that 
      * the user is making this payment for the "first" time and should not be run multiple times in a 
      * short period of time.
+     * 
+     * Do note that this will be triggered when executing the test using npx plauwright test which 
+     * will run the tesst 3 times (Chromium, Firefox, Webkit) in quick succession. As such, the 
+     * browser in which the test is run in first will pass while the other two may fail.
      */
     test("after making payment", async ({ page }) => {
         await page.goto("http://localhost:3000");
