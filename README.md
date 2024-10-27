@@ -88,7 +88,7 @@ npx playwright test adminCreateCategory.spec.mjs -- ui
 ```
 
 #### Running All UI Tests
-To run all UI tests in the `tests` folder at once, use the following command.
+To run all UI tests in the `tests` folder at once, use the following command. However, we would **discourage** doing this because the quick succession of some UI tests could lead to indeterministic test results at times.
 ```
 #Runs all UI tests
 npx playwright test tests/
