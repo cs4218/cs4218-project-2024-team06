@@ -64,4 +64,4 @@ jobs:
 
       # Step 4: Run tests
       - name: Run tests
-        run: npm test
+        run: npm test --maxworkers=1
