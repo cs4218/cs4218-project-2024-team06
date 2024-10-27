@@ -66,7 +66,7 @@ The following illustrates the steps required to run a UI test, demonstrating it 
 1. Suppose we want to run a UI test called `adminCreateCategory.spec.mjs`.
 2. Head to `.env`. Replace `MONGO_URL` with the URL of a test database.
 
-[!WARNING]
+> [!WARNING]  
 > Please make sure that you update the `.env` file with the URL of a test database,
 as the UI tests would wipe out the memory of the database during execution.
 
