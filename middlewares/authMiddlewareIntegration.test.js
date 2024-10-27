@@ -66,7 +66,9 @@ describe('isAdmin Middleware should successfully integrate with user model in th
     });
 
 
-    it('where it should be able to fetch a non-admin user', async () => {
+    //NEVER PASS
+    //Typo in Line 25 of authMiddleware.js where the capitalisation of the message is incorrect
+    it.failing('where it should be able to fetch a non-admin user', async () => {
         //Insert a non-admin into the mongodb in-memory server
         const nonAdminUser = new userModel({
             name: 'James',
@@ -88,8 +90,7 @@ describe('isAdmin Middleware should successfully integrate with user model in th
         expect(res.status).toHaveBeenCalledWith(401);
         expect(res.send).toHaveBeenCalledWith(({
             success: false,
-            //Got typo where it should be 'Unauthorized', but identifying bugs within isAdmin is the focus of unit testing and not integration testing
-            message: 'UnAuthorized Access'
+            message: 'Unauthorized Access'
         }));
         expect(next).toHaveBeenCalledTimes(0);
     });

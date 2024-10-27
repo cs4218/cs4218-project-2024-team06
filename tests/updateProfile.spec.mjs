@@ -117,7 +117,7 @@ test.describe('User should be able to update his profile', () => {
 
         //Log out
         await page.getByRole('button', { name: 'James Tan' }).click(); //Name should be updated
-        await page.getByRole('link', { name: 'Logout' }).click(); //Name should be updated
+        await page.getByRole('link', { name: 'Logout' }).click();
 
         //Log back in with new password
         await page.getByPlaceholder('Enter Your Email').fill(USER_ORIGINAL_DATA.email); //Email should not have changed

@@ -14,7 +14,6 @@ import {
 import "../styles/ProductDetailsStyles.css";
 const axios = require("axios");
 import "@testing-library/jest-dom/extend-expect";
-import { createMemoryHistory } from "history";
 
 // Mock axios for API requests
 jest.mock("axios");
