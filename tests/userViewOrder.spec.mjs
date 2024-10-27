@@ -194,7 +194,7 @@ test.describe("User should only be able to", () => {
         await page.getByRole('button', { name: normalUser1.name }).click();
         await page.getByRole('link', { name: "Dashboard" }).click();
 
-        // Navigate to AdminOrders
+        // Navigate to Orders
         await page.getByRole('link', { name: "Orders" }).click();
 
         // Check that table head is displayed correctly
