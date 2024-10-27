@@ -60,6 +60,9 @@ To run all tests (unit + integration) at once, run the following command in the 
 npm test
 ```
 
+> [!NOTE]
+> Ensure that your local server is not running in another terminal before running the integration tests. This is because some integration tests would spin up a server for testing, so they would not work if your local server is running in another terminal.
+
 ### How to Run UI Tests
 
 #### Running a Single UI Test
