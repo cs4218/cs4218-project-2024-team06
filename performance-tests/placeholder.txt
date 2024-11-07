@@ -1,0 +1,1 @@
+Insert your JMeter test plan file (.JMX) into this folder.
