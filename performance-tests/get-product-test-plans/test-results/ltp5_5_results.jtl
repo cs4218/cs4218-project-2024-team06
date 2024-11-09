@@ -1,0 +1,6 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1731129262478,47,HTTP Request,200,OK,5 User Thread Group 1-1,text,true,,2318,142,1,1,http://localhost:6060/api/v1/product/get-product,44,0,12
+1731129263435,30,HTTP Request,200,OK,5 User Thread Group 1-2,text,true,,2318,142,1,1,http://localhost:6060/api/v1/product/get-product,30,0,2
+1731129264434,37,HTTP Request,200,OK,5 User Thread Group 1-3,text,true,,2318,142,1,1,http://localhost:6060/api/v1/product/get-product,37,0,2
+1731129265435,34,HTTP Request,200,OK,5 User Thread Group 1-4,text,true,,2318,142,1,1,http://localhost:6060/api/v1/product/get-product,34,0,2
+1731129266434,32,HTTP Request,200,OK,5 User Thread Group 1-5,text,true,,2318,142,1,1,http://localhost:6060/api/v1/product/get-product,32,0,2
