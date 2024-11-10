@@ -23,7 +23,7 @@ can handle within 1s.
 6. If you want to run another test, remove any data from the `users` collection. This is because all the tests will read in data from the `userdata.csv` file as input, so if you do not reset the data across runs, there will be errors due to users already existing in the database.
 
 > [!NOTE]
-> Before you run any test in JMeter, ensure that you have **started a local server running Virtual Vault** (preferably with a database that has no users). Also, please make sure that the JMeter test plan file that you want to run is located in the **same directory** as `userdata.csv` as the test plan file requires the data from the csv file.
+> Before you run any test in JMeter, ensure that you have **started a local server running Virtual Vault** (preferably with a database that has no users). Also, please make sure that the JMeter test plan file that you want to run is located in the **same directory** as `userdata.csv` as the test plan file reads the data from the csv file.
 
 
 ### Remarks
