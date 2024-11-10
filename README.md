@@ -8,7 +8,7 @@ The focus of this repository is to provide **comprehensive testing** for Virtual
 - [x] Integration Testing (Jest)
 - [x] UI Testing (PlayWright)
 - [x] Code Coverage (SonarQube)
-- [ ] Performance Testing (JMeter)
+- [x] Performance Testing (JMeter)
 
 
 ### How to Run the Application
@@ -94,9 +94,14 @@ To run all UI tests in the `tests` folder at once, use the following command. Ho
 npx playwright test tests/
 ```
 
+### How to Run Performance Tests
+Ensure that you have [JMeter](https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.zip) downloaded on your computer. The detailed instructions to run the performance tests can be found in the respective READMEs in the `performance-tests` folder.
+
+
 ### Location of Test Files
 - Unit and integration tests are located in the same folder as the components that they are testing for.
 - UI tests are located in the `tests` folder found in the root directory.
+- Performance tests are located in the `performance-tests` folder found in the root directory.
 
 
 ### Integration Test Contributions
@@ -143,3 +148,13 @@ npx playwright test tests/
 | tests/cartToCheckout.spec.mjs                 | Zenith    |
 | tests/filterCategories.spec.mjs               | Zenith    |
 | tests/filterPrice.spec.mjs                    | Zenith    |
+
+
+### Performance Test Contributions
+| What performance is being tested              | Member    |
+|-----------------------------------------------|-----------|
+| /api/v1/auth/register                         | Eugene    |
+| /api/v1/product/get-product                   | Aishwarya |
+| tests/adminUpdateOrderStatus.spec.mjs         | Kai Xun   |
+| tests/authenticatedAddingAndRemoving.spec.cjs | Kang Quan |
+| /api/v1/category/get-category                 | Zenith    |
