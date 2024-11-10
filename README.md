@@ -95,7 +95,7 @@ npx playwright test tests/
 ```
 
 ### How to Run Performance Tests
-Ensure that you have [JMeter](https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.zip) downloaded on your computer. The detailed instructions to run the performance tests can be found in the respective READMEs in the `performance-tests` folder.
+Ensure that you have [JMeter](https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.zip) downloaded on your computer. The detailed instructions on how to run the performance tests can be found in the respective READMEs in the `performance-tests` folder.
 
 
 ### Location of Test Files
@@ -151,10 +151,10 @@ Ensure that you have [JMeter](https://dlcdn.apache.org//jmeter/binaries/apache-j
 
 
 ### Performance Test Contributions
-| What performance is being tested              | Member    |
-|-----------------------------------------------|-----------|
-| /api/v1/auth/register                         | Eugene    |
-| /api/v1/product/get-product                   | Aishwarya |
-| tests/adminUpdateOrderStatus.spec.mjs         | Kai Xun   |
-| tests/authenticatedAddingAndRemoving.spec.cjs | Kang Quan |
-| /api/v1/category/get-category                 | Zenith    |
+| What performance is being tested | Member    |
+|----------------------------------|-----------|
+| /api/v1/auth/register            | Eugene    |
+| /api/v1/product/get-product      | Aishwarya |
+| /api/v1/auth/orders              | Kai Xun   |
+| /api/v1/product/search/:keyword  | Kang Quan |
+| /api/v1/category/get-category    | Zenith    |
